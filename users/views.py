@@ -33,15 +33,15 @@ def login(request):
         else:
             return render(request,'users/login.html', {'error':'Username or password is incorrect!'})
     else:
-        return render(request, 'users/login.html')
+        return render(request, 'users/phat_log.html')
     
 
 def logout(request):
     auth.logout(request)
     return redirect('index')
 
-@login_required
-def profile(request):
+# @login_required
+# def profile(request):
     # if request.method == 'POST':
         # form = EditProfileForm(request.POST, instance=request.user)
         # profile_form = ProfileForm(request.POST, request.FILES, instance=request.user.userprofile)  # request.FILES is show the selected image or file
@@ -55,7 +55,7 @@ def profile(request):
     # else:
         # form = EditProfileForm(instance=request.user)
         # profile_form = ProfileForm(instance=request.user.userprofile)
-        args = {}
+        # args = {}
         # args.update(csrf(request))
         # args['form'] = form
         # args['profile_form'] = profile_form

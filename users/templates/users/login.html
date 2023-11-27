@@ -6,12 +6,13 @@
     <meta charset="utf-8">
     <link rel="icon" href="./static/images/logo.jpg">
     <title>Login Page | SkinDetect.ai</title>
-    {% comment %} <link rel="stylesheet" href="login.css"> {% endcomment %}
+    {% comment %}
+    <link rel="stylesheet" href="login.css"> {% endcomment %}
     <link rel="stylesheet" href="./static/css/login.css">
-    
+
     {% tailwind_preload_css %}
     {% tailwind_css %}
-    <link rel="stylesheet" href="./static/css/app.css">
+    <link rel="stylesheet" href="./static/css/login.css">
 </head>
 {% block content %}
 
@@ -20,11 +21,11 @@
         <div class="title">
             <img src="./static/images/logo.jpg" alt='logo'>
         </div>
-        <form action=""{% url 'login' %} method="POST">
+        <form action="" {% url 'login' %} method="POST">
             <div class="text-red-600 text-sm">
                 {% if error %}
-                    <span>*</span>
-                    {{ error }} 
+                <span>*</span>
+                {{ error }}
                 {% endif %}
             </div>
             {% csrf_token %}
@@ -53,4 +54,5 @@
     </div>
 </body>
 {% endblock %}
+
 </html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="">
+        <title>{{ user.email }} Profile</title>
+        {% comment %} <title>Profile</title> {% endcomment %}
+        <style>
+            #avatar-preview {
+                max-width: 300px;
+                max-height: 300px; 
+                border: 1px solid #ddd; 
+                border-radius: 5px;
+            }
+        </style>
+    </head>
+    
+    {% block body %}
+    <body>
+        <div class="container">
+            {% comment %} {% if profile.dob != None and profile.gender != None %}
+                <h2>{{ user.email }} Profile</h2>
+                <img src="{{ profile.avatar.url }}" alt="Avatar">
+                <p>Date of Birth: {{ profile.dob }}</p>
+                <p>Gender: {{ profile.gender }}</p>
+            {% else %} {% endcomment %}
+            <h2>Profile</h2>
+            <form method="post" enctype="multipart/form-data">
+              {% csrf_token %}
+          
+              <!-- Display existing avatar with clickable label -->
+              <label for="{{ form.avatar.id_for_label }}" id="avatar-label">
+                <input type="file" name="{{ form.avatar.name }}" id="{{ form.avatar.id_for_label }}" accept="image/*" hidden onchange="loadFile(this)">
+                <img src="{{ profile.avatar.url }}" alt="Avatar" id="avatar-preview">
+              </label>
+          
+              <div>
+                <label for="{{ form.first_name.id_for_label }}">First name:</label>
+                {{ form.first_name }}
+            </div>
+            
+            <div>
+                <label for="{{ form.last_name.id_for_label }}">Last name:</label>
+                {{ form.last_name }}
+            </div>
+
+              <!-- Date of Birth Field -->
+              <div>
+                <label for="{{ form.dob.id_for_label }}">Date of Birth:</label>
+                {% comment %} <input type="date" name="{{ form.dob.name }}" value="{{ form.dob.value }}"> {% endcomment %}
+                {{ form.dob }}
+              </div>
+          
+              <!-- Gender Field -->
+              <div>
+                <label for="{{ form.gender.id_for_label }}">Gender:</label>
+                {{ form.gender }}
+              </div>
+
+              <div>
+                <label for="{{ form.address.id_for_label }}">Address:</label>
+                {{ form.address }}
+              </div>
+          
+              <div>
+                <label for="{{ form.phone.id_for_label }}">Phone:</label>
+                {{ form.phone }}
+              </div>
+
+              <button type="submit">Save Changes</button>
+            </form>
+            {% comment %} {% endif %} {% endcomment %}
+        </div>
+    </body>
+    {% endblock %}
+</html>
+
+<script>
+    // Function to update the avatar preview
+    var loadFile = function (event) {
+      var output = document.getElementById('avatar-preview');
+      console.log(output);
+      output.src = URL.createObjectURL(event.files[0]);
+      output.onload = function () {
+          URL.revokeObjectURL(output.src) // free memory
+      }
+  };
+  </script>

@@ -18,6 +18,7 @@ urlpatterns = [
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),
     path('updateMobile', views.updateMobile, name='updateMobile'),
+    path('getimage' ,views.getimage, name='getimage'),
 ]
 
 

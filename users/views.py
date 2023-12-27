@@ -22,41 +22,31 @@ from django.views.decorators.http import require_POST
 from django.db import connection
 from django.shortcuts import render
 from rest_framework.decorators import api_view
-from users.models import Profile
 from django.core.files.base import ContentFile
 import base64
 import base64
 import torch
 
 
-name_arr = ['Actinic keratoses',
-            'Actinic keratoses',
-            'Actinic keratoses',
-            'Cell carcinoma',
-            'Cell carcinoma',
-            'Cell carcinoma',
-            'Cell carcinoma',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
-            'Dermatofibroma',
-            'Dermatofibroma',
-            'Melanoma',
-            'Melanoma back',
-            'Melanoma lower',
-            'Melanoma upper',
-            'Melanocytic nevi',
-            'Melanocytic nevi',
-            'Melanocytic nevi',
-            'Vascular lesions',
-            'Vascular lesions',
-            'Vascular lesions',
-            'Vascular lesions']
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt', force_reload=True)
 
+
+from django.shortcuts import redirect, render
+from django.contrib.auth.models import User
+from django.contrib import auth
+# from django.views.decorators.csrf import csrf_protect
+from django.contrib.auth.decorators import login_required
+from .models import Profile
+from .forms import ProfileForm
+import uuid
+from django.shortcuts import get_object_or_404
+from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
+# from users.forms import (EditProfileForm, ProfileForm)
+
+# Create your views here.
 def index(request):
     return render(request, 'users/index.html')
+
 def register(request):
     if request.method == 'POST':
         if (request.POST['password1'])== (request.POST['password2']):
@@ -65,6 +55,7 @@ def register(request):
                return render(request,'users/register.html', {'error':'Username is already exist!'})
             except User.DoesNotExist:
                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
+            #    Profile(user=user, dob=None, gender=None)
                auth.login(request,user)
                return redirect('index')
         else:
@@ -72,15 +63,18 @@ def register(request):
     else:
        return render(request, 'users/register.html')
     
-
 def login(request):
     if request.method == 'POST':
-        user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
+        username = request.POST['username']
+        password = request.POST['password']
+
+        user = auth.authenticate(username=username, password=password)
+
         if user is not None:
-            auth.login(request,user)
-            return redirect('index')
+            auth.login(request, user)
+            return redirect('index')  # Make sure you have an 'index' URL pattern
         else:
-            return render(request,'users/login.html', {'error':'Username or password is incorrect!'})
+            return render(request, 'users/login.html', {'error': 'Username or password is incorrect!'})
     else:
         return render(request, 'users/login.html')
     
@@ -124,6 +118,34 @@ def profile(request):
 
     return render(request, 'users/view_profile.html', {'user': user, 'profile': profile, 'form': form})
 
+
+name_arr = ['Actinic keratoses',
+            'Actinic keratoses',
+            'Actinic keratoses',
+            'Cell carcinoma',
+            'Cell carcinoma',
+            'Cell carcinoma',
+            'Cell carcinoma',
+            'Benign lesions',
+            'Benign lesions',
+            'Benign lesions',
+            'Benign lesions',
+            'Dermatofibroma',
+            'Dermatofibroma',
+            'Melanoma',
+            'Melanoma back',
+            'Melanoma lower',
+            'Melanoma upper',
+            'Melanocytic nevi',
+            'Melanocytic nevi',
+            'Melanocytic nevi',
+            'Vascular lesions',
+            'Vascular lesions',
+            'Vascular lesions',
+            'Vascular lesions']
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt', force_reload=True)
+
+
 # @api_view(['POST'])
 # def loginMobileTest(request):
 #     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Login >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
@@ -143,6 +165,8 @@ def profile(request):
 
 #     return JsonResponse(result)
 
+from django.core.exceptions import ObjectDoesNotExist
+
 @api_view(['POST'])
 def profileMobile(request):
     user = request.user
@@ -150,12 +174,12 @@ def profileMobile(request):
         profile = user.profile
     except ObjectDoesNotExist:
         try:
-            profile = Profile(user=user)
+            profile = Profile(user=user)  # Pass the 'user' parameter to the Profile constructor
             profile.save()
         except FileNotFoundError:
             # Handle the case where the 'default.jpg' file is not found
             # Provide a default image path or handle this differently
-            profile = Profile(user=user)
+            profile = Profile(user=user)  # Pass the 'user' parameter to the Profile constructor
     if request.method == 'POST':
         
 
@@ -178,6 +202,9 @@ def loginMobile(request):
             auth.login(request, user)
  
             try:
+                from users.models import Profile
+
+                # Rest of the code...
                 profile = Profile.objects.get(user=user)
 
                 result['message'] = 'Logged in successfully!'
@@ -453,92 +480,3 @@ def getimage(request):
         # storeImageById(image_path, txt_path, user_id, id, score)
         return data, 500
         print(f"An error occurred: {str(e)}")
-
-
-from django.shortcuts import redirect, render
-from django.contrib.auth.models import User
-from django.contrib import auth
-# from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth.decorators import login_required
-from .models import Profile
-from .forms import ProfileForm
-import uuid
-from django.shortcuts import get_object_or_404
-from django.http import Http404
-from django.core.exceptions import ObjectDoesNotExist
-# from users.forms import (EditProfileForm, ProfileForm)
-
-# Create your views here.
-def index(request):
-    return render(request, 'users/index.html')
-
-def register(request):
-    if request.method == 'POST':
-        if (request.POST['password1'])== (request.POST['password2']):
-            try:
-               User.objects.get(username = request.POST['username'])
-               return render(request,'users/register.html', {'error':'Username is already exist!'})
-            except User.DoesNotExist:
-               user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
-            #    Profile(user=user, dob=None, gender=None)
-               auth.login(request,user)
-               return redirect('index')
-        else:
-            return render (request,'users/register.html', {'error':'Password does not match!'})
-    else:
-       return render(request, 'users/register.html')
-    
-def login(request):
-    if request.method == 'POST':
-        username = request.POST['username']
-        password = request.POST['password']
-
-        user = auth.authenticate(username=username, password=password)
-
-        if user is not None:
-            auth.login(request, user)
-            return redirect('index')  # Make sure you have an 'index' URL pattern
-        else:
-            return render(request, 'users/login.html', {'error': 'Username or password is incorrect!'})
-    else:
-        return render(request, 'users/login.html')
-    
-
-def logout(request):
-    auth.logout(request)
-    return redirect('index')
-
-@login_required
-def profile(request):
-    user = request.user
-    try:
-        profile = user.profile
-    except ObjectDoesNotExist:
-        try:
-            profile = Profile(user=user)
-            profile.save()
-        except FileNotFoundError:
-            # Handle the case where the 'default.jpg' file is not found
-            # Provide a default image path or handle this differently
-            profile = Profile(user=user)
-
-    if request.method == 'POST':
-        form = ProfileForm(request.POST, request.FILES, instance=profile)
-        if form.is_valid():
-           # Get the avatar file from the form
-            avatar_file = form.cleaned_data['avatar']
-
-            # Check if a new avatar file was provided
-            if avatar_file:
-                # Rename the avatar file based on user ID
-                user_id = user.id
-                filename = f"{user.id}_{str(uuid.uuid4())[:8]}_{avatar_file.name}"
-                profile.avatar.save(filename, avatar_file)
-            form.save()
-            return redirect('profile') 
-    else:
-        # Pass the user data to the form when instantiating it
-        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name})
-
-
-    return render(request, 'users/view_profile.html', {'user': user, 'profile': profile, 'form': form})

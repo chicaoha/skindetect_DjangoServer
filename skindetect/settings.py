@@ -16,7 +16,14 @@ from pathlib import Path
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+if os.environ.get('DJANGO_DEBUG'):
+    print("Debug is enabled.")
+    DEBUG = True
+    # When not specified, ALLOW_HOSTS defaults to:
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+else:
+    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -26,10 +33,11 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# In settings.py
+ALLOWED_HOSTS = ['yourdomain.com', 'ae9a-103-17-88-39.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
-# Application definition
+# Application definitionpy
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,6 +51,8 @@ INSTALLED_APPS = [
     'theme',
     'django_browser_reload',
     'users',
+    'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
@@ -53,10 +63,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-     "django_browser_reload.middleware.BrowserReloadMiddleware",
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
+    
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "https://ae9a-103-17-88-39.ngrok-free.app",  # Add your NGROK URL here
+    # Add other allowed origins if needed
+]
 ROOT_URLCONF = 'skindetect.urls'
 
 TEMPLATES = [
@@ -150,3 +164,4 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Directory where uploaded media is
 MEDIA_URL = '/media/' # Public URL at the browser
 
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
+APPEND_SLASH = False

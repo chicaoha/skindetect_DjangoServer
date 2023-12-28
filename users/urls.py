@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from . import views
 from django.urls import path
 from . import views
-
+from . import viewDetect
 # from django.conf.urls import patterns, url
 
 
@@ -18,8 +18,12 @@ urlpatterns = [
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),
     path('updateMobile', views.updateMobile, name='updateMobile'),
-    path('getimage' ,views.getimage, name='getimage'),
+    path('getimage' ,viewDetect.getimage, name='getimage'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

@@ -24,7 +24,6 @@ from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.core.files.base import ContentFile
 import base64
-import base64
 import torch
 
 

@@ -15,7 +15,34 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
+class DetectInfo(models.Model):
+    detect_id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    detect_date = models.DateTimeField()
+    detect_photo = models.ImageField(upload_to='detect_pics/')
+    detect_result = models.FileField(upload_to='detect_tex/')
+    disease = models.ForeignKey('SkinDisease', on_delete=models.CASCADE)
+    detect_score = models.FloatField()
+    
+    def __str__(self) -> str:
+        return super().__str__()
+    
 
+class SkinDisease(models.Model):
+    disease_id = models.AutoField(primary_key=True)
+    disease_name = models.CharField(max_length =255)
+    disease_overview = models.TextField()
+    disease_symptoms = models.TextField()
+    disease_causeses = models.TextField()
+    disease_preventions = models.TextField()
+    disease_image1 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image2 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image3 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image4 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image5 = models.ImageField(upload_to='disease_pics/', null=True)
+
+    def __str__(self) -> str:
+        return self.disease_name
 @receiver(pre_save, sender=Profile)
 def delete_old_avatar(sender, instance, **kwargs):
     try:

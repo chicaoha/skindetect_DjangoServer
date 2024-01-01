@@ -11,14 +11,21 @@ from . import viewDetect
 
 
 urlpatterns = [
+    #-----------web----------------
     path('', views.index, name='index'),
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
+    #-----------profile mobile api----------------
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),
     path('updateMobile', views.updateMobile, name='updateMobile'),
+    #-----------detect mobile api----------------
     path('getimage' ,viewDetect.getimage, name='getimage'),
+    path('getHistory', viewDetect.getHistory, name='getHistory'),
+    path('deleteImage', viewDetect.deleteImage, name='deleteImage'),
+    path('getDetail', viewDetect.getDetail, name='getDetail'),
+    path('getListDetail', viewDetect.getListDetail, name='getListDetail'),
 ]
 
 if settings.DEBUG:

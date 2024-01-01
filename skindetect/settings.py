@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 DEBUG = True
 
 # In settings.py
-ALLOWED_HOSTS = ['yourdomain.com', 'ae9a-103-17-88-39.ngrok-free.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yourdomain.com', 'fb42-2402-800-6327-5194-3595-6c12-970c-d9ae.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
 # Application definitionpy
@@ -68,7 +68,7 @@ MIDDLEWARE = [
     
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://ae9a-103-17-88-39.ngrok-free.app",  # Add your NGROK URL here
+    "https://fb42-2402-800-6327-5194-3595-6c12-970c-d9ae.ngrok-free.app",  # Add your NGROK URL here
     # Add other allowed origins if needed
 ]
 ROOT_URLCONF = 'skindetect.urls'
@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'skindetect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'project',
+        'NAME': 'project1',
         'USER': 'root',
         'PASSWORD': '123456789',
         'HOST': 'localhost',   

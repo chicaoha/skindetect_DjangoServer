@@ -38,3 +38,4 @@ def save_new_avatar(sender, instance, **kwargs):
 pre_save.connect(delete_old_avatar, sender=Profile)
 pre_save.connect(save_new_avatar, sender=Profile)  
 
+

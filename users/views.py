@@ -1,15 +1,6 @@
 import base64
-import datetime
-import io
 import os
-import random
-import cv2
 import django
-from cProfile import Profile
-from imaplib import _Authenticator
-from multiprocessing import connection
-import MySQLdb
-import numpy as np
 from sympy import use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
@@ -18,27 +9,17 @@ from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
 from django.contrib.auth.decorators import login_required
-from requests import request
-from django.views.decorators.http import require_POST
-from django.db import connection
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.core.files.base import ContentFile
-import base64
-import base64
-import torch
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
-# from django.views.decorators.csrf import csrf_protect
 from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import ProfileForm
 import uuid
-from django.shortcuts import get_object_or_404
-from django.http import Http404
 from django.core.exceptions import ObjectDoesNotExist
-from PIL import Image
 
 # Create your views here.
 def index(request):

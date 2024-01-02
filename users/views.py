@@ -12,11 +12,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
 from rest_framework.decorators import api_view
 from django.core.files.base import ContentFile
-<<<<<<< HEAD
-import base64
-import torch
-=======
->>>>>>> origin/caodev
+
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth

@@ -20,7 +20,7 @@
         <div class="title">
             <img src="./static/images/logo.jpg" alt='logo'>
         </div>
-        <form action=""{% url 'login' %} method="POST">
+        <form action="{% url 'login' %}" method="POST">
             <div class="text-red-600 text-sm">
                 {% if error %}
                     <span>*</span>

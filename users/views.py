@@ -57,31 +57,34 @@ def profile(request):
     try:
         profile = user.profile
     except ObjectDoesNotExist:
-        try:
-            profile = Profile(user=user)
-            profile.save()
-        except FileNotFoundError:
-            # Handle the case where the 'default.jpg' file is not found
-            # Provide a default image path or handle this differently
-            profile = Profile(user=user)
+        profile = Profile(user=user)
+        profile.save()
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-           # Get the avatar file from the form
+            # Get the avatar file from the form
             avatar_file = form.cleaned_data['avatar']
 
             # Check if a new avatar file was provided
             if avatar_file:
-                # Rename the avatar file based on user ID
-                user_id = user.id
-                filename = f"{user.id}_{str(uuid.uuid4())[:8]}_{avatar_file.name}"
+                # Check if the profile has an existing avatar
+                if profile.avatar and profile.avatar.name:
+                    # Delete the old avatar file
+                    profile.avatar.delete(save=False)
+
+                # Save the new avatar file, rename it based on user ID
+                user_id = profile.user.id
+                filename = f"profile_{user_id}_{avatar_file.name}"
                 profile.avatar.save(filename, avatar_file)
+
+            # Save the form, which also saves the profile
             form.save()
-            return redirect('profile') 
+
+            return redirect('profile')
+
     else:
         # Pass the user data to the form when instantiating it
-        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name})
+        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-
-    return render(request, 'users/view_profile.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profile.html', {'user': user, 'profile': profile, 'form': form})

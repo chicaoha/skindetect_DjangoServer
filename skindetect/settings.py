@@ -12,12 +12,18 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
-# from users.models import CustomUser
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
+if os.environ.get('DJANGO_DEBUG'):
+    print("Debug is enabled.")
+    DEBUG = True
+    # When not specified, ALLOW_HOSTS defaults to:
+    # ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]']
+else:
+    DEBUG = False
+    ALLOWED_HOSTS = ["*"]
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
@@ -27,10 +33,11 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+# In settings.py
+ALLOWED_HOSTS = ['yourdomain.com', '1bdb-2402-800-6327-2659-351c-f8a2-77eb-f8ed.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
-# Application definition
+# Application definitionpy
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -43,8 +50,9 @@ INSTALLED_APPS = [
     'tailwind',
     'theme',
     'django_browser_reload',
-    # 'users',
-    'users.apps.MyappConfig',
+    'users',
+    'corsheaders',
+    
 ]
 
 MIDDLEWARE = [
@@ -55,10 +63,14 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django_browser_reload.middleware.BrowserReloadMiddleware",
+    'corsheaders.middleware.CorsMiddleware',
     
-     "django_browser_reload.middleware.BrowserReloadMiddleware",
 ]
-
+CORS_ALLOWED_ORIGINS = [
+    "https://1bdb-2402-800-6327-2659-351c-f8a2-77eb-f8ed.ngrok-free.app",  # Add your NGROK URL here
+    # Add other allowed origins if needed
+]
 ROOT_URLCONF = 'skindetect.urls'
 
 TEMPLATES = [
@@ -145,11 +157,11 @@ INTERNAL_IPS = [
 NPM_BIN_PATH = r"C:\\Program Files\\nodejs\\npm.cmd"
 
 STATIC_URL = '/static/'
-MEDIA_URL='/images/'
+
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media') # Directory where uploaded media is saved.
 MEDIA_URL = '/media/' # Public URL at the browser
 
-CRISPY_TEMPLATE_PACK = 'bootstrap4'
-# AUTH_USER_MODEL = 'users.CustomUser'
+# CRISPY_TEMPLATE_PACK = 'bootstrap4'
+APPEND_SLASH = False

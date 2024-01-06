@@ -14,7 +14,7 @@ class Profile(models.Model):
     phone = models.CharField(max_length = 10, null=True)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return f'{self.user.username} Profile'  
 class DetectInfo(models.Model):
     detect_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)

@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 DEBUG = True
 
 # In settings.py
-ALLOWED_HOSTS = ['yourdomain.com', '1bdb-2402-800-6327-2659-351c-f8a2-77eb-f8ed.ngrok-free.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yourdomain.com', 'f364-103-17-88-39.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
 # Application definitionpy
@@ -68,7 +68,7 @@ MIDDLEWARE = [
     
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://1bdb-2402-800-6327-2659-351c-f8a2-77eb-f8ed.ngrok-free.app",  # Add your NGROK URL here
+    "https://f364-103-17-88-39.ngrok-free.app",  # Add your NGROK URL here
     # Add other allowed origins if needed
 ]
 ROOT_URLCONF = 'skindetect.urls'

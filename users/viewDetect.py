@@ -7,8 +7,6 @@ from unittest import result
 import cv2
 import django
 import numpy as np
-from requests import get
-from sympy import use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
 from django.http import JsonResponse
@@ -30,10 +28,10 @@ name_arr = ['Actinic keratoses',
             'Cell carcinoma',
             'Cell carcinoma',
             'Cell carcinoma',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
             'Dermatofibroma',
             'Dermatofibroma',
             'Melanoma',

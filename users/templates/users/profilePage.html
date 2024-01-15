@@ -1,296 +1,312 @@
-<!DOCTYPE html>
-<html lang="en">
+{% load static %}
+{% block content %}
 
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Profile Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="theme-color" content="#ffffff">
-
-    <link type="text/css" href="volt.css" rel="stylesheet">
+        <link rel="stylesheet" href="./static/css/style.css">
+        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
+        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript"></script>
+        <link rel="stylesheet" href="./static/css/profile.css">
 </head>
 
+<header
+        class="navbar absolute top-0 left-0 z-50 w-full border-stroke bg-white duration-300 dark:border-stroke-dark dark:bg-black">
+        <div class="container relative max-w-[1400px]">
+                <div class="flex items-center justify-between">
+                        <div class="block py-4 lg:py-0">
+                                <a href="/home" class="block max-w-[145px] sm:max-w-[180px]">
+                                        <img src="{% static 'images/logo.png' %}" alt="logo"
+                                                class="block dark:hidden" />
+                                        <img src="{% static 'images/logo2.png' %}" alt="logo"
+                                                class="hidden dark:block" />
+                                </a>
+                        </div>
+                        <button class="navbarOpen absolute right-4 top-1/2 z-50 flex h-10 w-10 -translate-y-1/2 flex-col items-center justify-center space-y-[6px] font-bold lg:hidden"
+                                aria-label="navbarOpen" name="navbarOpen">
+                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
+                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
+                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
+                        </button>
+                        <div class="menu-wrapper relative hidden justify-between lg:flex">
+                                <button class="navbarClose fixed top-10 right-10 z-[9999] flex h-10 w-10 flex-col items-center justify-center font-bold lg:hidden"
+                                        name="navbarClose" aria-label="navbarClose">
+                                        <span class="block h-[2px] w-7 rotate-45 bg-black dark:bg-white"></span>
+                                        <span
+                                                class="-mt-[2px] block h-[2px] w-7 -rotate-45 bg-black dark:bg-white"></span>
+                                </button>
+                                <nav
+                                        class="fixed top-0 left-0 z-[999] flex h-screen w-full items-center justify-center bg-white bg-opacity-95 text-center backdrop-blur-sm dark:bg-black dark:bg-opacity-95 lg:static lg:h-auto lg:w-max lg:bg-transparent lg:backdrop-blur-none lg:dark:bg-transparent">
+                                        <ul
+                                                class="items-center space-y-3 lg:flex lg:space-x-8 lg:space-y-0 xl:space-x-10">
+                                                <li class="menu-item">
+                                                        <a href="/home"
+                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                Home
+                                                        </a>
+                                                </li>
+
+                                                <li class="menu-item">
+                                                        <a href="/about"
+                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                About
+                                                        </a>
+                                                </li>
+                                                <li class="menu-item">
+                                                        <a href="/detect"
+                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                Detection
+                                                        </a>
+                                                </li>
+                                                <li class="menu-item">
+                                                        <a href="/mobileApp"
+                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                Download
+                                                        </a>
+                                                </li>
+                                                <li class="menu-item">
+                                                        <a href="/contact"
+                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                Contact
+                                                        </a>
+                                                </li>
+                                                <li class="submenu-item menu-item group relative">
+                                                        <a href="javascript:void(0)"
+                                                                class="submenu-taggler inline-flex items-center text-base font-medium text-black hover:text-primary group-hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
+                                                                Blogs
+                                                                <span class="pl-3">
+                                                                        <svg width="14" height="8" viewBox="0 0 14 8"
+                                                                                class="fill-current">
+                                                                                <path
+                                                                                        d="M6.54564 5.09128L11.6369 0L13.0913 1.45436L6.54564 8L0 1.45436L1.45436 0L6.54564 5.09128Z" />
+                                                                        </svg>
+                                                                </span>
+                                                        </a>
+                                                        <ul
+                                                                class="submenu hidden space-y-5 pt-5 duration-300 lg:invisible lg:absolute lg:top-[120%] lg:block lg:w-[250px] lg:rounded-lg lg:bg-white lg:px-8 lg:pb-5 lg:text-left lg:opacity-0 lg:shadow-card lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100 dark:lg:border-transparent dark:lg:bg-[#15182A] lg:dark:shadow-card-dark">
+                                                                <li>
+                                                                        <a href="/blog1"
+                                                                                class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary">
+                                                                                Skin Cancer Information
+                                                                        </a>
+                                                                </li>
+                                                                <li>
+                                                                        <a href="/blog2"
+                                                                                class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary">
+                                                                                Latest News
+                                                                        </a>
+                                                                </li>
+
+
+                                                        </ul>
+                                                </li>
+                                        </ul>
+                                </nav>
+                        </div>
+                        <div class="mr-[60px] flex items-center justify-end lg:mr-0">
+
+                                <!-- <a href="{% url 'login' %}"
+                        class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
+                        Sign In
+                    </a>
+                    <a href="{% url 'register' %}"
+                        class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
+                        Sign Up
+                    </a> -->
+
+                                <a href="{% url 'profilePage' %}"
+                                        class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
+                                        <img class="w-10 h-10 rounded-full" src="{% static 'images/clpBot.jpg'%}"
+                                                alt="Rounded avatar">
+                                </a>
+
+                                <a href="{% url 'logout' %}"
+                                        class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
+                                        Log out
+                                </a>
+                        </div>
+                </div>
+        </div>
+</header>
+
 <body>
-    <main class="content">
-        <div class="row">
-            <div class="col-12 col-xl-8">
-                <div class="card card-body border-0 shadow mb-4">
-                    <h2 class="h5 mb-4">General information</h2>
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div>
-                                    <label for="first_name">First Name</label>
-                                    <input class="form-control" id="first_name" type="text"
-                                        placeholder="Enter your first name" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div>
-                                    <label for="last_name">Last Name</label>
-                                    <input class="form-control" id="last_name" type="text"
-                                        placeholder="Also your last name" required>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-3">
-                                <label for="birthday">Birthday</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                                clip-rule="evenodd"></path>
-                                        </svg>
-                                    </span>
-                                    <input data-datepicker="" class="form-control" id="birthday" type="text"
-                                        placeholder="dd/mm/yyyy" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="gender">Gender</label>
-                                <select class="form-select mb-0" id="gender" aria-label="Gender select example">
-                                    <option selected>Gender</option>
-                                    <option value="1">Female</option>
-                                    <option value="2">Male</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input class="form-control" id="email" type="email" placeholder="name@company.com"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input class="form-control" id="phone" type="number" placeholder="+12-345 678 910"
-                                        required>
-                                </div>
-                            </div>
-                        </div>
-                        <h2 class="h5 my-4">Location</h2>
-                        <div class="row">
-                            <div class="col-sm-9 mb-3">
-                                <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <input class="form-control" id="address" type="text"
-                                        placeholder="Enter your home address" required>
-                                </div>
-                            </div>
+        <div class="container light-style flex-grow-1 container-p-y">
 
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4 mb-3">
-                                <div class="form-group">
-                                    <label for="city">District</label>
-                                    <input class="form-control" id="city" type="text" placeholder="City" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-4 mb-3">
-                                <label for="state">Province</label>
-                                <select class="form-select w-100 mb-0" id="province" name="province"
-                                    aria-label="Province select example">
-                                    <option selected>Province</option>
-                                    <option value="An Giang">An Giang</option>
-                                    <option value="Bà Rịa-Vũng Tàu">Bà Rịa-Vũng Tàu</option>
-                                    <option value="Bắc Giang">Bắc Giang</option>
-                                    <option value="Bắc Kạn">Bắc Kạn</option>
-                                    <option value="Bạc Liêu">Bạc Liêu</option>
-                                    <option value="Bắc Ninh">Bắc Ninh</option>
-                                    <option value="Bến Tre">Bến Tre</option>
-                                    <option value="Bình Định">Bình Định</option>
-                                    <option value="Bình Dương">Bình Dương</option>
-                                    <option value="Bình Phước">Bình Phước</option>
-                                    <option value="Bình Thuận">Bình Thuận</option>
-                                    <option value="Cà Mau">Cà Mau</option>
-                                    <option value="Cần Thơ">Cần Thơ</option>
-                                    <option value="Cao Bằng">Cao Bằng</option>
-                                    <option value="Đà Nẵng">Đà Nẵng</option>
-                                    <option value="Đắk Lắk">Đắk Lắk</option>
-                                    <option value="Đắk Nông">Đắk Nông</option>
-                                    <option value="Điện Biên">Điện Biên</option>
-                                    <option value="Đồng Nai">Đồng Nai</option>
-                                    <option value="Đồng Tháp">Đồng Tháp</option>
-                                    <option value="Gia Lai">Gia Lai</option>
-                                    <option value="Hà Giang">Hà Giang</option>
-                                    <option value="Hà Nam">Hà Nam</option>
-                                    <option value="Hà Nội">Hà Nội</option>
-                                    <option value="Hà Tĩnh">Hà Tĩnh</option>
-                                    <option value="Hải Dương">Hải Dương</option>
-                                    <option value="Hải Phòng">Hải Phòng</option>
-                                    <option value="Hậu Giang">Hậu Giang</option>
-                                    <option value="Hòa Bình">Hòa Bình</option>
-                                    <option value="Hưng Yên">Hưng Yên</option>
-                                    <option value="Khánh Hòa">Khánh Hòa</option>
-                                    <option value="Kiên Giang">Kiên Giang</option>
-                                    <option value="Kon Tum">Kon Tum</option>
-                                    <option value="Lai Châu">Lai Châu</option>
-                                    <option value="Lâm Đồng">Lâm Đồng</option>
-                                    <option value="Lạng Sơn">Lạng Sơn</option>
-                                    <option value="Lào Cai">Lào Cai</option>
-                                    <option value="Long An">Long An</option>
-                                    <option value="Nam Định">Nam Định</option>
-                                    <option value="Nghệ An">Nghệ An</option>
-                                    <option value="Ninh Bình">Ninh Bình</option>
-                                    <option value="Ninh Thuận">Ninh Thuận</option>
-                                    <option value="Phú Thọ">Phú Thọ</option>
-                                    <option value="Phú Yên">Phú Yên</option>
-                                    <option value="Quảng Bình">Quảng Bình</option>
-                                    <option value="Quảng Nam">Quảng Nam</option>
-                                    <option value="Quảng Ngãi">Quảng Ngãi</option>
-                                    <option value="Quảng Ninh">Quảng Ninh</option>
-                                    <option value="Quảng Trị">Quảng Trị</option>
-                                    <option value="Sóc Trăng">Sóc Trăng</option>
-                                    <option value="Sơn La">Sơn La</option>
-                                    <option value="Tây Ninh">Tây Ninh</option>
-                                    <option value="Thái Bình">Thái Bình</option>
-                                    <option value="Thái Nguyên">Thái Nguyên</option>
-                                    <option value="Thanh Hóa">Thanh Hóa</option>
-                                    <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
-                                    <option value="Tiền Giang">Tiền Giang</option>
-                                    <option value="Trà Vinh">Trà Vinh</option>
-                                    <option value="Tuyên Quang">Tuyên Quang</option>
-                                    <option value="Vĩnh Long">Vĩnh Long</option>
-                                    <option value="Vĩnh Phúc">Vĩnh Phúc</option>
-                                    <option value="Yên Bái">Yên Bái</option>
-                                </select>
+                <h6 class="breadcrumbs font-weight-bold py-3 mb-4">
+                        <span><span><a href="{% url 'home' %}">Home</a></span> › <span class="breadcrumb_last"
+                                        aria-current="page">Account Setting</span></span>
+                </h6>
 
-                            </div>
-
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-            <div class="col-12 col-xl-4">
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card shadow border-0 text-center p-0">
-                            <div class="profile-cover rounded-top">
-                            </div>
-                            <div class="card-body pb-5">
-                                <img src="0.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4"
-                                    alt="Neil Portrait">
-                                <h4 class="h3">Phat</h4>
-                                <h5 class="fw-normal">Age</h5>
-                                <p class="text-gray mb-4">Address</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card card-body border-0 shadow mb-4">
-                            <h2 class="h5 mb-4">Select profile photo</h2>
-                            <div class="d-flex align-items-center">
-                                <div class="file-field">
-                                    <div class="d-flex justify-content-xl-center ms-xl-3">
-                                        <div class="d-flex">
-                                            <svg class="icon text-gray-500 me-2" fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <input type="file">
-                                            <div class="d-md-block text-left">
-                                                <div class="fw-normal text-dark mb-1">Choose Image</div>
-                                                <div class="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
-                                            </div>
+                <div class="card overflow-hidden">
+                        <div class="row no-gutters row-bordered row-border-light">
+                                <div class="col-md-3 pt-0">
+                                        <div class="list-group list-group-flush account-settings-links">
+                                                <a class="list-group-item list-group-item-action active"
+                                                        data-toggle="list" href="#account-general">General</a>
+                                                <a class="list-group-item list-group-item-action" data-toggle="list"
+                                                        href="#account-change-password">Change password</a>
+                                                <a class="list-group-item list-group-item-action" data-toggle="list"
+                                                        href="#account-info">Information</a>
                                         </div>
-                                    </div>
                                 </div>
-                            </div>
+                                <div class="col-md-9">
+                                        <div class="tab-content">
+                                                <div class="tab-pane fade active show" id="account-general">
+                                                        <div class="card-body media align-items-center">
+                                                                <img width="100px" src="{% static 'images/clpBot.jpg'%}"
+                                                                        alt class="d-block ui-w-80">
+                                                                <div class="media-body ml-4">
+                                                                        <label class="btn btn-outline-primary">
+                                                                                Upload new photo
+                                                                                <input type="file"
+                                                                                        class="account-settings-fileinput">
+                                                                        </label> &nbsp;
+                                                                        <button type="button"
+                                                                                class="btn btn-default md-btn-flat">Reset</button>
+                                                                        <div class="text-light small mt-1">Allowed JPG,
+                                                                                GIF or PNG. Max size of 800K</div>
+                                                                </div>
+                                                        </div>
+                                                        <hr class="border-light m-0">
+                                                        <div class="card-body">
+                                                                <div class="form-row">
+                                                                        <div class="col-md-4 mb-3">
+                                                                                <label for="validationServer01">First
+                                                                                        name</label>
+                                                                                <input type="text"
+                                                                                        class="form-control is-valid"
+                                                                                        id="validationServer01"
+                                                                                        placeholder="First name"
+                                                                                        value="" required>
+                                                                                <div class="valid-feedback">
+                                                                                        Looks good!
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-3">
+                                                                                <label for="validationServer02">Last
+                                                                                        name</label>
+                                                                                <input type="text"
+                                                                                        class="form-control is-valid"
+                                                                                        id="validationServer02"
+                                                                                        placeholder="Last name" value=""
+                                                                                        required>
+                                                                                <div class="valid-feedback">
+                                                                                        Looks good!
+                                                                                </div>
+                                                                        </div>
+                                                                        <div class="col-md-4 mb-3">
+                                                                                <label
+                                                                                        for="validationServerUsername">Username</label>
+                                                                                <div class="input-group">
+                                                                                        <div
+                                                                                                class="input-group-prepend">
+                                                                                                <span class="input-group-text"
+                                                                                                        id="inputGroupPrepend3">@</span>
+                                                                                        </div>
+                                                                                        <input type="text"
+                                                                                                class="form-control is-invalid"
+                                                                                                id="validationServerUsername"
+                                                                                                placeholder="Username"
+                                                                                                aria-describedby="inputGroupPrepend3"
+                                                                                                required>
+                                                                                        <div class="invalid-feedback">
+                                                                                                Please choose a
+                                                                                                username.
+                                                                                        </div>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+                                                                <div class="form-group">
+                                                                        <label class="form-label">E-mail</label>
+                                                                        <input type="text" class="form-control mb-1"
+                                                                                value="phat@mail.com">
+                                                                        <!-- <div class="alert alert-warning mt-3">
+                                                                                Your email is not confirmed. Please
+                                                                                check your inbox.<br>
+                                                                                <a href="javascript:void(0)">Resend
+                                                                                        confirmation</a>
+                                                                        </div> -->
+                                                                </div>
+
+                                                        </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="account-change-password">
+                                                        <div class="card-body pb-2">
+                                                                <div class="form-group">
+                                                                        <label class="form-label">Current
+                                                                                password</label>
+                                                                        <input type="password" class="form-control">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                        <label class="form-label">New password</label>
+                                                                        <input type="password" class="form-control">
+                                                                </div>
+                                                                <div class="form-group">
+                                                                        <label class="form-label">Repeat new
+                                                                                password</label>
+                                                                        <input type="password" class="form-control">
+                                                                </div>
+                                                        </div>
+                                                </div>
+                                                <div class="tab-pane fade" id="account-info">
+                                                        <div class="card-body pb-2">
+                                                                <div class="form-group">
+                                                                        <label class="form-label">Gender</label>
+                                                                        <div>
+                                                                                <div
+                                                                                        class="custom-control custom-radio custom-control-inline">
+                                                                                        <input type="radio"
+                                                                                                id="customRadioInline1"
+                                                                                                name="customRadioInline1"
+                                                                                                class="custom-control-input">
+                                                                                        <label class="custom-control-label"
+                                                                                                for="customRadioInline1">Male</label>
+                                                                                </div>
+                                                                                <div
+                                                                                        class="custom-control custom-radio custom-control-inline">
+                                                                                        <input type="radio"
+                                                                                                id="customRadioInline2"
+                                                                                                name="customRadioInline1"
+                                                                                                class="custom-control-input">
+                                                                                        <label class="custom-control-label"
+                                                                                                for="customRadioInline2">Female</label>
+                                                                                </div>
+                                                                        </div>
+                                                                </div>
+
+                                                                <form action="">
+                                                                        <label for="birthday">Date of Birth:</label>
+                                                                        <input type="date">
+                                                                </form>
+                                                                <div class="form-group">
+                                                                        <label class="form-label">Address</label>
+                                                                        <input type="text" class="form-control mb-1"
+                                                                                value="">
+                                                                </div>
+
+
+                                                                <div class="form-group">
+                                                                        <label class="form-label">Phone</label>
+                                                                        <input type="text" class="form-control"
+                                                                                value="(+84) ">
+                                                                </div>
+
+
+                                                        </div>
+                                                </div>
+                                        </div>
+                                </div>
                         </div>
-                    </div>
-                    <div class="col-12">
 
-                    </div>
-                    <script type="text/javascript">
-                        (function (d, m) {
-                            var kommunicateSettings =
-                            {
-                                "appId": "e8bdb391eea372af0219e3329ba92e89",
-                                "popupWidget": true,
-                                "automaticChatOpenOnNavigation": true
-                            };
-                            var s = document.createElement("script");
-                            s.type = "text/javascript"; s.async = true;
-                            s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-                            var h = document.getElementsByTagName("head")[0];
-                            h.appendChild(s);
-                            window.kommunicate = m;
-                            m._globals = kommunicateSettings;
-                        })(document, window.kommunicate || {});
-                        /* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
-                    </script>
                 </div>
-            </div>
-        </div>
-        <div class="theme-settings card bg-gray-800 pt-2 collapse" id="theme-settings">
-            <div class="card-body bg-gray-800 text-white pt-4">
-                <button type="button" class="btn-close theme-settings-close" aria-label="Close"
-                    data-bs-toggle="collapse" href="#theme-settings" role="button" aria-expanded="false"
-                    aria-controls="theme-settings"></button>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="m-0 mb-1 me-4 fs-7">Open source <span role="img" aria-label="gratitude">💛</span></p>
-                    <a class="github-button" href="https://github.com/themesberg/volt-bootstrap-5-dashboard"
-                        data-color-scheme="no-preference: dark; light: light; dark: light;" data-icon="octicon-star"
-                        data-size="large" data-show-count="true"
-                        aria-label="Star themesberg/volt-bootstrap-5-dashboard on GitHub">Star</a>
+                <div class="text-right mt-3">
+                        <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
+                        <button type="button" class="btn btn-default">Cancel</button>
                 </div>
-                <a href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard" target="_blank"
-                    class="btn btn-secondary d-inline-flex align-items-center justify-content-center mb-3 w-100">
-                    Download
-                    <svg class="icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                </a>
-                <p class="fs-7 text-gray-300 text-center">Available in the following technologies:</p>
-                <div class="d-flex justify-content-center">
-                    <a class="me-3" href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard"
-                        target="_blank">
-                        <img src="../assets/img/technologies/bootstrap-5-logo.svg" class="image image-xs">
-                    </a>
-                    <a href="https://demo.themesberg.com/volt-react-dashboard/#/" target="_blank">
-                        <img src="../assets/img/technologies/react-logo.svg" class="image image-xs">
-                    </a>
-                </div>
-            </div>
-        </div>
-
-        <div class="card theme-settings bg-gray-800 theme-settings-expand" id="theme-settings-expand">
-            <div class="card-body bg-gray-800 text-white rounded-top p-3 py-2">
-                <span class="fw-bold d-inline-flex align-items-center h6">
-                    <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    Settings
-                </span>
-            </div>
-        </div>
-
-
-    </main>
-
-  
-
-
 </body>
+{% endblock %}
 
-</html>
+<!-- {% block footer %}
+{# Empty block to hide the footer in profilePage.html #}
+{% endblock %} -->

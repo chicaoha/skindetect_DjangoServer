@@ -1,0 +1,90 @@
+{% extends 'users/base.html' %}
+{% load tailwind_tags %}
+<!DOCTYPE html>
+{% load static %}
+
+<head>
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+    <link rel="stylesheet" href="./static/css/FAQ.css">
+</head>
+{% block content %}
+<section class="faq section-padding prelative" data-scroll-index="5">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="sectioner-header text-center">
+                    <h3>Frequently Asked Questions</h3>
+                    <span class="line"></span>
+                    <p style="text-align: center;">
+                        Here are some frequent questions that users often ask
+                    </p>
+                </div>
+                <div class="section-content">
+                    <div class="row">
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.2s">
+                            <h4>What is skin cancer?</h4>
+                            <p>
+                                Skin cancer is a disease where malignant (cancerous) cells form in the tissues of the
+                                skin. It is the
+                                most common type
+                                of cancer.
+                            </p>
+                        </div>
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.2s">
+                            <h4>What are the main types of skin cancer?</h4>
+                            <p>
+                                The three main types of skin cancer are basal cell carcinoma (BCC), squamous cell
+                                carcinoma (SCC), and
+                                melanoma.
+                                Melanoma is the most aggressive type.
+                            </p>
+                        </div>
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.4s">
+                            <h4>What causes skin cancer?</h4>
+                            <p>
+                                The primary cause of skin cancer is exposure to ultraviolet (UV) radiation from the sun
+                                or tanning
+                                beds. Genetic factors
+                                and a history of severe sunburns can also contribute.
+                            </p>
+                        </div>
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.4s">
+                            <h4>
+                                How can I protect my skin from skin cancer?
+                            </h4>
+                            <p>
+                                You can protect your skin by wearing sunscreen, protective clothing (like hats and
+                                sunglasses),
+                                seeking shade, and
+                                avoiding tanning beds. Regular skin checks and early detection are also crucial.
+                            </p>
+                        </div>
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.6s">
+                            <h4>
+                                What is the prognosis for skin cancer if detected early?
+                            </h4>
+                            <p>
+                                Skin cancer has a high cure rate when detected and treated early. Melanoma, in
+                                particular, has a
+                                better prognosis when
+                                caught in its early stages.
+                            </p>
+                        </div>
+                        <div class="col-md-6 faq-content wow fadeInUp" data-wow-delay="0.6s">
+                            <h4>What are the warning signs of skin cancer?</h4>
+                            <p>
+                                Warning signs include changes in the size, shape, color, or texture of moles or
+                                pigmented areas, new
+                                growths, or sores
+                                that don't heal.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

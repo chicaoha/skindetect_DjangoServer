@@ -12,10 +12,22 @@ from . import viewDetect
 
 urlpatterns = [
     #-----------web----------------
-    path('', views.index, name='index'),
+    path('', views.index, name=''),
+    path('home', views.index, name='home'),
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
+    path('about', views.about, name='about'),
+    path('FAQ', views.FAQ, name='FAQ'),
+    path('contact', views.contact, name='contact'),
+    path('blog1', views.blog1, name='blog1'),
+    path('blog2', views.blog2, name='blog2'),
+    path('article1', views.article1, name='article1'),
+    path('profilePage', views.profilePage, name='profilePage'),
+    path('page404', views.page404, name='page404'),
+    path('detect', views.detect, name='detect'),
+    path('mobileApp', views.mobileApp, name='mobileApp'),
+    path('forgotPassword', views.forgotPassword, name='forgotPassword'),
     #-----------profile mobile api----------------
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),

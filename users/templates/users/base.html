@@ -1,0 +1,166 @@
+{% load tailwind_tags %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="light">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title> {% block title %} Skin Cancer Detection {% endblock %} </title>
+    <link rel="icon" href="{% static 'images/logoA.png' %}">
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+    <link href="./static/css/style.css" rel="stylesheet">
+</head>
+
+<body class="bg-white dark:bg-black">
+
+    {% block header %}{% include 'users/header.html' %}{% endblock %}
+
+    {% block content %}
+
+    {% endblock %}
+
+    <!-- {% if include_footer %}
+    <label for="themeSwitcher" class="inline-flex cursor-pointer items-center" aria-label="themeSwitcher"
+        name="themeSwitcher">
+        <input type="checkbox" name="themeSwitcher" id="themeSwitcher" class="sr-only" />
+        <span class="hidden dark:block">
+            <svg width="21" height="21" viewBox="0 0 21 21" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_420_119)">
+                    <path
+                        d="M8.40276 5.88205C8.40259 7.05058 8.75048 8.19267 9.40204 9.16268C10.0536 10.1327 10.9793 10.8866 12.0611 11.3284C13.143 11.7701 14.3318 11.8796 15.4761 11.6429C16.6204 11.4062 17.6683 10.8341 18.4861 9.99941V10.0834C18.4861 14.7243 14.7242 18.4862 10.0833 18.4862C5.44247 18.4862 1.68054 14.7243 1.68054 10.0834C1.68054 5.44259 5.44247 1.68066 10.0833 1.68066H10.1673C9.60775 2.22779 9.16333 2.88139 8.86028 3.60295C8.55722 4.32451 8.40166 5.09943 8.40276 5.88205V5.88205ZM3.3611 10.0834C3.36049 11.5833 3.86151 13.0403 4.78444 14.2226C5.70737 15.4049 6.99919 16.2446 8.45437 16.608C9.90954 16.9715 11.4445 16.8379 12.8149 16.2284C14.1854 15.6189 15.3127 14.5686 16.0174 13.2446C14.7632 13.54 13.4543 13.5102 12.215 13.1578C10.9756 12.8054 9.84679 12.1422 8.93568 11.2311C8.02457 10.32 7.36136 9.19119 7.00898 7.95181C6.6566 6.71243 6.62672 5.40357 6.92219 4.1494C5.84629 4.72259 4.94652 5.57759 4.31923 6.62288C3.69194 7.66817 3.36074 8.86438 3.3611 10.0834V10.0834Z"
+                        fill="white" />
+                </g>
+                <defs>
+                    <clipPath id="clip0_420_119">
+                        <rect width="20.1667" height="20.1667" fill="white" />
+                    </clipPath>
+                </defs>
+            </svg>
+        </span>
+        <span class="block dark:hidden">
+            <svg width="23" height="22" viewBox="0 0 23 22" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <g clip-path="url(#clip0_1_11114)">
+                    <path
+                        d="M11.5658 16.4998C10.1071 16.4998 8.70815 15.9204 7.6767 14.8889C6.64525 13.8575 6.06579 12.4585 6.06579 10.9998C6.06579 9.54115 6.64525 8.1422 7.6767 7.11075C8.70815 6.0793 10.1071 5.49984 11.5658 5.49984C13.0245 5.49984 14.4234 6.0793 15.4549 7.11075C16.4863 8.1422 17.0658 9.54115 17.0658 10.9998C17.0658 12.4585 16.4863 13.8575 15.4549 14.8889C14.4234 15.9204 13.0245 16.4998 11.5658 16.4998ZM11.5658 14.6665C12.5382 14.6665 13.4709 14.2802 14.1585 13.5926C14.8461 12.9049 15.2325 11.9723 15.2325 10.9998C15.2325 10.0274 14.8461 9.09475 14.1585 8.40711C13.4709 7.71948 12.5382 7.33317 11.5658 7.33317C10.5933 7.33317 9.6607 7.71948 8.97306 8.40711C8.28543 9.09475 7.89912 10.0274 7.89912 10.9998C7.89912 11.9723 8.28543 12.9049 8.97306 13.5926C9.6607 14.2802 10.5933 14.6665 11.5658 14.6665ZM10.6491 0.916504H12.4825V3.6665H10.6491V0.916504ZM10.6491 18.3332H12.4825V21.0832H10.6491V18.3332ZM3.78787 4.51809L5.08404 3.22192L7.02829 5.16617L5.73212 6.46234L3.78787 4.519V4.51809ZM16.1033 16.8335L17.3995 15.5373L19.3437 17.4816L18.0475 18.7778L16.1033 16.8335ZM18.0475 3.221L19.3437 4.51809L17.3995 6.46234L16.1033 5.16617L18.0475 3.22192V3.221ZM5.73212 15.5373L7.02829 16.8335L5.08404 18.7778L3.78787 17.4816L5.73212 15.5373ZM21.6491 10.0832V11.9165H18.8991V10.0832H21.6491ZM4.23245 10.0832V11.9165H1.48245V10.0832H4.23245Z"
+                        fill="#181C31" />
+                </g>
+                <defs>
+                    <clipPath id="clip0_1_11114">
+                        <rect width="22" height="22" fill="white" transform="translate(0.565796)" />
+                    </clipPath>
+                </defs>
+            </svg>
+        </span>
+    </label>
+    {% endif %} -->
+
+
+
+    {% block footer %}{% include 'users/footer.html' %}{% endblock %}
+
+
+
+    <a href="javascript:void(0)"
+        class="back-to-top fixed bottom-8 right-8 left-auto z-[999] hidden h-10 w-10 items-center justify-center rounded-md bg-primary text-white shadow-md duration-300 ease-in-out hover:bg-opacity-80">
+        <span class="mt-[6px] h-3 w-3 rotate-45 border-t border-l border-white"></span>
+    </a>
+
+
+    <script>
+        // ==== pricing plan toggler
+        let togglePlan = document.querySelector("#togglePlan");
+
+        document.querySelector(".monthly").addEventListener("click", () => {
+            togglePlan.checked = true;
+        });
+        document.querySelector(".yearly").addEventListener("click", () => {
+            togglePlan.checked = false;
+        });
+
+        // ==== for menu scroll
+        const pageLink = document.querySelectorAll(".menu-scroll");
+
+        pageLink.forEach((elem) => {
+            elem.addEventListener("click", (e) => {
+                e.preventDefault();
+                document.querySelector(elem.getAttribute("href")).scrollIntoView({
+                    behavior: "smooth",
+                    offsetTop: 1 - 60,
+                });
+            });
+        });
+
+        // section menu active
+        function onScroll(event) {
+            const sections = document.querySelectorAll(".menu-scroll");
+            const scrollPos =
+                window.pageYOffset ||
+                document.documentElement.scrollTop ||
+                document.body.scrollTop;
+
+            for (let i = 0; i < sections.length; i++) {
+                const currLink = sections[i];
+                const val = currLink.getAttribute("href");
+                const refElement = document.querySelector(val);
+                const scrollTopMinus = scrollPos + 73;
+                if (
+                    refElement.offsetTop <= scrollTopMinus &&
+                    refElement.offsetTop + refElement.offsetHeight > scrollTopMinus
+                ) {
+                    document.querySelector(".menu-scroll").classList.remove("active");
+                    currLink.classList.add("active");
+                } else {
+                    currLink.classList.remove("active");
+                }
+            }
+        }
+
+        window.document.addEventListener("scroll", onScroll);
+
+        function initAcc(elem, option) {
+            document.addEventListener("click", function (e) {
+                if (!e.target.matches(elem + " .faq-btn")) return;
+                else {
+                    if (!e.target.parentElement.classList.contains("active")) {
+                        if (option == true) {
+                            var elementList = document.querySelectorAll(elem + " .faq");
+                            Array.prototype.forEach.call(elementList, function (e) {
+                                e.classList.remove("active");
+                            });
+                        }
+                        e.target.parentElement.classList.add("active");
+                    } else {
+                        e.target.parentElement.classList.remove("active");
+                    }
+                }
+            });
+        }
+
+        //activate accordion function
+        initAcc(".faqs", true);
+    </script>
+    <script defer src="./static/js/bundle.js"></script>
+    <script>(function () { var js = "window['__CF$cv$params']={r:'8442675449a004ef',t:'MTcwNTAzMTA5NC41NjUwMDA='};_cpo=document.createElement('script');_cpo.nonce='',_cpo.src='./static/js/main.js',document.getElementsByTagName('head')[0].appendChild(_cpo);"; var _0xh = document.createElement('iframe'); _0xh.height = 1; _0xh.width = 1; _0xh.style.position = 'absolute'; _0xh.style.top = 0; _0xh.style.left = 0; _0xh.style.border = 'none'; _0xh.style.visibility = 'hidden'; document.body.appendChild(_0xh); function handler() { var _0xi = _0xh.contentDocument || _0xh.contentWindow.document; if (_0xi) { var _0xj = _0xi.createElement('script'); _0xj.innerHTML = js; _0xi.getElementsByTagName('head')[0].appendChild(_0xj); } } if (document.readyState !== 'loading') { handler(); } else if (window.addEventListener) { document.addEventListener('DOMContentLoaded', handler); } else { var prev = document.onreadystatechange || function () { }; document.onreadystatechange = function (e) { prev(e); if (document.readyState !== 'loading') { document.onreadystatechange = prev; handler(); } }; } })();</script>
+    <script defer
+        src="https://static.cloudflareinsights.com/beacon.min.js/v84a3a4012de94ce1a686ba8c167c359c1696973893317"
+        integrity="sha512-euoFGowhlaLqXsPWQ48qSkBSCFs3DPRyiwVu3FjR96cMPx+Fr+gpWRhIafcHwqwCqWS42RZhIudOvEI+Ckf6MA=="
+        data-cf-beacon='{"rayId":"8442675449a004ef","version":"2023.10.0","r":1,"token":"9a6015d415bb4773a0bff22543062d3b","b":1}'
+        crossorigin="anonymous"></script>
+
+
+    <script type="text/javascript">
+        (function (d, m) {
+            var kommunicateSettings =
+                { "appId": "e8bdb391eea372af0219e3329ba92e89", "popupWidget": true, "automaticChatOpenOnNavigation": true };
+            var s = document.createElement("script"); s.type = "text/javascript"; s.async = true;
+            s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
+            var h = document.getElementsByTagName("head")[0]; h.appendChild(s);
+            window.kommunicate = m; m._globals = kommunicateSettings;
+        })(document, window.kommunicate || {});
+    </script>
+</body>
+
+</html>

@@ -24,7 +24,43 @@ from django.core.exceptions import ObjectDoesNotExist
 
 # Create your views here.
 def index(request):
-    return render(request, 'users/index.html')
+    return render(request, 'users/phat_index.html')
+
+def about(request):
+    return render(request, 'users/about.html')
+
+def forgotPassword(request):
+    return render(request, 'users/forgotPassword.html')
+
+def FAQ(request):
+    return render(request, 'users/FAQ.html')
+
+def contact(request):
+    return render(request, 'users/contact.html')
+
+def blog1(request):
+    return render(request, 'users/blog1.html')
+
+def blog2(request):
+    return render(request, 'users/blog2.html')
+
+def article1(request):
+    return render(request, 'users/article1.html')
+
+def profilePage(request):
+    return render(request, 'users/profilePage.html')
+
+def page404(request):
+    return render(request, 'users/page404.html')
+
+def detect(request):
+    return render(request, 'users/detect.html')
+
+def mobileApp(request):
+    return render(request, 'users/mobileApp.html')
+
+# def some_view(request):
+#     return render(request, 'users/base.html', {'include_footer': include_footer})
 
 def register(request):
     if request.method == 'POST':
@@ -53,9 +89,9 @@ def login(request):
             auth.login(request, user)
             return redirect('index')  # Make sure you have an 'index' URL pattern
         else:
-            return render(request, 'users/login.html', {'error': 'Username or password is incorrect!'})
+            return render(request, 'users/phat_log.html', {'error': 'Username or password is incorrect!'})
     else:
-        return render(request, 'users/login.html')
+        return render(request, 'users/phat_log.html')
     
 
 def logout(request):

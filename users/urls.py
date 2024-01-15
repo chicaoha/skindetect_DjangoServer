@@ -16,6 +16,7 @@ urlpatterns = [
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
     path('logout', views.logout, name='logout'),
+    path('profile', views.profile, name='profile'),
     #-----------profile mobile api----------------
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),

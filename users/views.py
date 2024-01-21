@@ -44,6 +44,9 @@ def blog1(request):
 def blog2(request):
     return render(request, 'users/blog2.html')
 
+def blog3(request):
+    return render(request, 'users/blog3.html')
+
 def article1(request):
     return render(request, 'users/article1.html')
 

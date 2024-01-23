@@ -1,312 +1,226 @@
+{% extends 'users/base.html' %}
+{% load tailwind_tags %}
 {% load static %}
+{% block title %} profile {% endblock %}
 {% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<head>
-        <link rel="stylesheet" href="./static/css/style.css">
-        <!-- <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/css/bootstrap.min.css" rel="stylesheet"> -->
-        <script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script>
-        <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.0/dist/js/bootstrap.bundle.min.js"></script>
-        <script type="text/javascript"></script>
-        <link rel="stylesheet" href="./static/css/profile.css">
-</head>
-
-<header
-        class="navbar absolute top-0 left-0 z-50 w-full border-stroke bg-white duration-300 dark:border-stroke-dark dark:bg-black">
-        <div class="container relative max-w-[1400px]">
-                <div class="flex items-center justify-between">
-                        <div class="block py-4 lg:py-0">
-                                <a href="/home" class="block max-w-[145px] sm:max-w-[180px]">
-                                        <img src="{% static 'images/logo.png' %}" alt="logo"
-                                                class="block dark:hidden" />
-                                        <img src="{% static 'images/logo2.png' %}" alt="logo"
-                                                class="hidden dark:block" />
-                                </a>
-                        </div>
-                        <button class="navbarOpen absolute right-4 top-1/2 z-50 flex h-10 w-10 -translate-y-1/2 flex-col items-center justify-center space-y-[6px] font-bold lg:hidden"
-                                aria-label="navbarOpen" name="navbarOpen">
-                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
-                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
-                                <span class="block h-[2px] w-7 bg-black dark:bg-white"></span>
-                        </button>
-                        <div class="menu-wrapper relative hidden justify-between lg:flex">
-                                <button class="navbarClose fixed top-10 right-10 z-[9999] flex h-10 w-10 flex-col items-center justify-center font-bold lg:hidden"
-                                        name="navbarClose" aria-label="navbarClose">
-                                        <span class="block h-[2px] w-7 rotate-45 bg-black dark:bg-white"></span>
-                                        <span
-                                                class="-mt-[2px] block h-[2px] w-7 -rotate-45 bg-black dark:bg-white"></span>
-                                </button>
-                                <nav
-                                        class="fixed top-0 left-0 z-[999] flex h-screen w-full items-center justify-center bg-white bg-opacity-95 text-center backdrop-blur-sm dark:bg-black dark:bg-opacity-95 lg:static lg:h-auto lg:w-max lg:bg-transparent lg:backdrop-blur-none lg:dark:bg-transparent">
-                                        <ul
-                                                class="items-center space-y-3 lg:flex lg:space-x-8 lg:space-y-0 xl:space-x-10">
-                                                <li class="menu-item">
-                                                        <a href="/home"
-                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                Home
-                                                        </a>
-                                                </li>
-
-                                                <li class="menu-item">
-                                                        <a href="/about"
-                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                About
-                                                        </a>
-                                                </li>
-                                                <li class="menu-item">
-                                                        <a href="/detect"
-                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                Detection
-                                                        </a>
-                                                </li>
-                                                <li class="menu-item">
-                                                        <a href="/mobileApp"
-                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                Download
-                                                        </a>
-                                                </li>
-                                                <li class="menu-item">
-                                                        <a href="/contact"
-                                                                class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                Contact
-                                                        </a>
-                                                </li>
-                                                <li class="submenu-item menu-item group relative">
-                                                        <a href="javascript:void(0)"
-                                                                class="submenu-taggler inline-flex items-center text-base font-medium text-black hover:text-primary group-hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                                                Blogs
-                                                                <span class="pl-3">
-                                                                        <svg width="14" height="8" viewBox="0 0 14 8"
-                                                                                class="fill-current">
-                                                                                <path
-                                                                                        d="M6.54564 5.09128L11.6369 0L13.0913 1.45436L6.54564 8L0 1.45436L1.45436 0L6.54564 5.09128Z" />
-                                                                        </svg>
-                                                                </span>
-                                                        </a>
-                                                        <ul
-                                                                class="submenu hidden space-y-5 pt-5 duration-300 lg:invisible lg:absolute lg:top-[120%] lg:block lg:w-[250px] lg:rounded-lg lg:bg-white lg:px-8 lg:pb-5 lg:text-left lg:opacity-0 lg:shadow-card lg:group-hover:visible lg:group-hover:top-full lg:group-hover:opacity-100 dark:lg:border-transparent dark:lg:bg-[#15182A] lg:dark:shadow-card-dark">
-                                                                <li>
-                                                                        <a href="/blog1"
-                                                                                class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary">
-                                                                                Skin Cancer Information
-                                                                        </a>
-                                                                </li>
-                                                                <li>
-                                                                        <a href="/blog2"
-                                                                                class="font-heading inline-flex items-center justify-center text-center text-base text-black hover:text-primary dark:text-white dark:hover:text-primary">
-                                                                                Latest News
-                                                                        </a>
-                                                                </li>
+<section id="" class="relative z-10 pt-[110px]">
+    <div class="container max-w-[1390px]">
+        <div
+            class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
+            <div class="-mx-4 flex flex-wrap items-center justify-between">
+                <div class="w-full px-6 lg:w-1/2">
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
 
 
-                                                        </ul>
-                                                </li>
-                                        </ul>
+                                <!-- Breadcrumb -->
+                                <nav class="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
+                                    aria-label="Breadcrumb">
+                                    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
+                                        <li class="inline-flex items-center">
+                                            <a href="/home"
+                                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
+                                                <svg class="w-3 h-3 me-2.5" aria-hidden="true"
+                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                                    viewBox="0 0 20 20">
+                                                    <path
+                                                        d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
+                                                </svg>
+                                                Home
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <div class="flex items-center">
+                                                <svg class="rtl:rotate-180 block w-3 h-3 mx-1 text-gray-400 "
+                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                    viewBox="0 0 6 10">
+                                                    <path stroke="currentColor" stroke-linecap="round"
+                                                        stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
+                                                </svg>
+                                                <a href="/profilePage"
+                                                    class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Update
+                                                    Profile</a>
+                                            </div>
+                                        </li>
+
+                                    </ol>
                                 </nav>
+
+                            </div>
                         </div>
-                        <div class="mr-[60px] flex items-center justify-end lg:mr-0">
 
-                                <!-- <a href="{% url 'login' %}"
-                        class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
-                        Sign In
-                    </a>
-                    <a href="{% url 'register' %}"
-                        class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
-                        Sign Up
-                    </a> -->
-
-                                <a href="{% url 'profilePage' %}"
-                                        class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
-                                        <img class="w-10 h-10 rounded-full" src="{% static 'images/clpBot.jpg'%}"
-                                                alt="Rounded avatar">
-                                </a>
-
-                                <a href="{% url 'logout' %}"
-                                        class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
-                                        Log out
-                                </a>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[16px] flex justify-center">
+                            <img class="rounded" src="{% static 'images/clpBot.jpg' %}" alt="avatar"
+                                style="width: 150px;">
                         </div>
+                        <div class="lg:w-1/2 px-[10px]">
+
+                            <div class="flex items-center justify-center w-full">
+                                <label for="dropzone-file"
+                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44"
+                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                                            stroke-linecap="round" stroke-linejoin="round"
+                                            class="lucide lucide-image-plus">
+                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" />
+                                            <line x1="16" x2="22" y1="5" y2="5" />
+                                            <line x1="19" x2="19" y1="2" y2="8" />
+                                            <circle cx="9" cy="9" r="2" />
+                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
+                                        </svg>
+                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                                class="font-semibold">Click to upload</span></p>
+
+                                    </div>
+                                    <input id="dropzone-file" type="file" class="hidden" />
+                                </label>
+                            </div>
+
+                        </div>
+                    </div>
+           
+
                 </div>
+                <div class="w-full px-6 lg:w-1/2 ">
+                    <div class="mb-5 flex flex-wrap">
+
+                    </div>
+
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                    Name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                                    Name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        
+                        <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
+                            <label for="countries"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+                            <select id="gender"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="male" selected>Male</option>
+                                <option value="Female">Female</option>
+
+                            </select>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User
+                                    name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="mb-5 flex flex-wrap "><div class="lg:w-1/2 px-[10px]" style="width: 500px;">
+                        <div class="mb-5">
+                            <label for="location"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                            <input type="password" id="password"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                required>
+                        </div>
+                    </div></div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="phone"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
+                                number</label>
+                            <input type="tel" id="phone"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="(+84)   " pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+
+
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+
+                            <form class="max-w-sm mx-auto">
+                                <label for="email-address-icon"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                                    Email</label>
+                                <div class="relative">
+
+                                    <input type="text" id="email-address-icon"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="name@eiu.com">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="password" id="password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="•••••••••" required>
+
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <div>
+                                    <label for="confirm_password"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
+                                        password</label>
+                                    <input type="password" id="confirm_password"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="•••••••••" required>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div style="text-align: right;">
+                <a href="{% url '' %}"
+                    class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
+                    Cancel
+                </a>
+                <a href="{% url '' %}" id="saveChanges"
+                    class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
+                    Save Changes
+                </a>
+            </div>
         </div>
-</header>
+    </div>
 
-<body>
-        <div class="container light-style flex-grow-1 container-p-y">
-
-                <h6 class="breadcrumbs font-weight-bold py-3 mb-4">
-                        <span><span><a href="{% url 'home' %}">Home</a></span> › <span class="breadcrumb_last"
-                                        aria-current="page">Account Setting</span></span>
-                </h6>
-
-                <div class="card overflow-hidden">
-                        <div class="row no-gutters row-bordered row-border-light">
-                                <div class="col-md-3 pt-0">
-                                        <div class="list-group list-group-flush account-settings-links">
-                                                <a class="list-group-item list-group-item-action active"
-                                                        data-toggle="list" href="#account-general">General</a>
-                                                <a class="list-group-item list-group-item-action" data-toggle="list"
-                                                        href="#account-change-password">Change password</a>
-                                                <a class="list-group-item list-group-item-action" data-toggle="list"
-                                                        href="#account-info">Information</a>
-                                        </div>
-                                </div>
-                                <div class="col-md-9">
-                                        <div class="tab-content">
-                                                <div class="tab-pane fade active show" id="account-general">
-                                                        <div class="card-body media align-items-center">
-                                                                <img width="100px" src="{% static 'images/clpBot.jpg'%}"
-                                                                        alt class="d-block ui-w-80">
-                                                                <div class="media-body ml-4">
-                                                                        <label class="btn btn-outline-primary">
-                                                                                Upload new photo
-                                                                                <input type="file"
-                                                                                        class="account-settings-fileinput">
-                                                                        </label> &nbsp;
-                                                                        <button type="button"
-                                                                                class="btn btn-default md-btn-flat">Reset</button>
-                                                                        <div class="text-light small mt-1">Allowed JPG,
-                                                                                GIF or PNG. Max size of 800K</div>
-                                                                </div>
-                                                        </div>
-                                                        <hr class="border-light m-0">
-                                                        <div class="card-body">
-                                                                <div class="form-row">
-                                                                        <div class="col-md-4 mb-3">
-                                                                                <label for="validationServer01">First
-                                                                                        name</label>
-                                                                                <input type="text"
-                                                                                        class="form-control is-valid"
-                                                                                        id="validationServer01"
-                                                                                        placeholder="First name"
-                                                                                        value="" required>
-                                                                                <div class="valid-feedback">
-                                                                                        Looks good!
-                                                                                </div>
-                                                                        </div>
-                                                                        <div class="col-md-4 mb-3">
-                                                                                <label for="validationServer02">Last
-                                                                                        name</label>
-                                                                                <input type="text"
-                                                                                        class="form-control is-valid"
-                                                                                        id="validationServer02"
-                                                                                        placeholder="Last name" value=""
-                                                                                        required>
-                                                                                <div class="valid-feedback">
-                                                                                        Looks good!
-                                                                                </div>
-                                                                        </div>
-                                                                        <div class="col-md-4 mb-3">
-                                                                                <label
-                                                                                        for="validationServerUsername">Username</label>
-                                                                                <div class="input-group">
-                                                                                        <div
-                                                                                                class="input-group-prepend">
-                                                                                                <span class="input-group-text"
-                                                                                                        id="inputGroupPrepend3">@</span>
-                                                                                        </div>
-                                                                                        <input type="text"
-                                                                                                class="form-control is-invalid"
-                                                                                                id="validationServerUsername"
-                                                                                                placeholder="Username"
-                                                                                                aria-describedby="inputGroupPrepend3"
-                                                                                                required>
-                                                                                        <div class="invalid-feedback">
-                                                                                                Please choose a
-                                                                                                username.
-                                                                                        </div>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-                                                                <div class="form-group">
-                                                                        <label class="form-label">E-mail</label>
-                                                                        <input type="text" class="form-control mb-1"
-                                                                                value="phat@mail.com">
-                                                                        <!-- <div class="alert alert-warning mt-3">
-                                                                                Your email is not confirmed. Please
-                                                                                check your inbox.<br>
-                                                                                <a href="javascript:void(0)">Resend
-                                                                                        confirmation</a>
-                                                                        </div> -->
-                                                                </div>
-
-                                                        </div>
-                                                </div>
-                                                <div class="tab-pane fade" id="account-change-password">
-                                                        <div class="card-body pb-2">
-                                                                <div class="form-group">
-                                                                        <label class="form-label">Current
-                                                                                password</label>
-                                                                        <input type="password" class="form-control">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                        <label class="form-label">New password</label>
-                                                                        <input type="password" class="form-control">
-                                                                </div>
-                                                                <div class="form-group">
-                                                                        <label class="form-label">Repeat new
-                                                                                password</label>
-                                                                        <input type="password" class="form-control">
-                                                                </div>
-                                                        </div>
-                                                </div>
-                                                <div class="tab-pane fade" id="account-info">
-                                                        <div class="card-body pb-2">
-                                                                <div class="form-group">
-                                                                        <label class="form-label">Gender</label>
-                                                                        <div>
-                                                                                <div
-                                                                                        class="custom-control custom-radio custom-control-inline">
-                                                                                        <input type="radio"
-                                                                                                id="customRadioInline1"
-                                                                                                name="customRadioInline1"
-                                                                                                class="custom-control-input">
-                                                                                        <label class="custom-control-label"
-                                                                                                for="customRadioInline1">Male</label>
-                                                                                </div>
-                                                                                <div
-                                                                                        class="custom-control custom-radio custom-control-inline">
-                                                                                        <input type="radio"
-                                                                                                id="customRadioInline2"
-                                                                                                name="customRadioInline1"
-                                                                                                class="custom-control-input">
-                                                                                        <label class="custom-control-label"
-                                                                                                for="customRadioInline2">Female</label>
-                                                                                </div>
-                                                                        </div>
-                                                                </div>
-
-                                                                <form action="">
-                                                                        <label for="birthday">Date of Birth:</label>
-                                                                        <input type="date">
-                                                                </form>
-                                                                <div class="form-group">
-                                                                        <label class="form-label">Address</label>
-                                                                        <input type="text" class="form-control mb-1"
-                                                                                value="">
-                                                                </div>
-
-
-                                                                <div class="form-group">
-                                                                        <label class="form-label">Phone</label>
-                                                                        <input type="text" class="form-control"
-                                                                                value="(+84) ">
-                                                                </div>
-
-
-                                                        </div>
-                                                </div>
-                                        </div>
-                                </div>
-                        </div>
-
-                </div>
-                <div class="text-right mt-3">
-                        <button type="button" class="btn btn-primary">Save changes</button>&nbsp;
-                        <button type="button" class="btn btn-default">Cancel</button>
-                </div>
-</body>
+</section>
+<!-- notify after save changes -->
+<!-- <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <span class="sr-only">Info</span>
+    <div>
+      <span class="font-medium">Success alert!</span> Change a few things up and try submitting again.
+    </div>
+  </div> -->
 {% endblock %}
-
-<!-- {% block footer %}
-{# Empty block to hide the footer in profilePage.html #}
-{% endblock %} -->

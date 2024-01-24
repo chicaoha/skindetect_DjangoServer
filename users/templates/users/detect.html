@@ -1,0 +1,49 @@
+{% load tailwind_tags %}
+{% comment %} {% load socialaccount %} {% endcomment %}
+
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+    <meta charset="utf-8">
+    <link rel="icon" href="./static/images/logo.jpg">
+    <title>Detect Page | SkinDetect.ai</title>
+    {% comment %} <link rel="stylesheet" href="login.css"> {% endcomment %}
+    {% comment %} <link rel="stylesheet" href="./static/css/login.css"> {% endcomment %}
+    
+    {% tailwind_preload_css %}
+    {% tailwind_css %}
+    <link rel="stylesheet" href="./static/css/app.css">
+    {% comment %} {% providers_media_js %} {% endcomment %}
+</head>
+{% block content %}
+
+<body>
+    <div class="wrapper">
+        {% comment %} <div class="title">
+            <img src="./static/images/logo.jpg" alt='logo'>
+        </div> {% endcomment %}
+        <form method="post" enctype="multipart/form-data"  action="{% url 'detect' %}">
+            {% csrf_token %}
+            <label for="image">Choose an image:</label>
+            <input type="file" name="image" id="img_detect"
+            accept="image/*" onchange="loadFile(this)" id='file'>
+            <div class="mt-3">
+                <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Detect</button>
+            </div>
+        </form>
+    </div>
+</body>
+{% endblock %}
+</html>
+
+<script>
+    var loadFile = function (event) {
+        var output = document.getElementById('avatar-preview');
+        console.log(output);
+        output.src = URL.createObjectURL(event.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+      };
+</script>

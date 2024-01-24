@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+{% load socialaccount %}
 {% load tailwind_tags %}
 <html lang="en" dir="ltr">
 
@@ -47,6 +48,9 @@
             </div>
             <div class="text">
                 <h3>Already have an account? <a href="{% url 'login' %}">Login now</a></h3>
+            </div>
+            <div>
+                <a href="{% provider_login_url "google" %}">Login with Google</a>
             </div>
         </form>
     </div>

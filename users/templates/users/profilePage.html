@@ -14,140 +14,27 @@
                 <div class="w-full px-6 lg:w-1/2">
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-
-
-                                <!-- Breadcrumb -->
-                                <nav class="flex px-5 py-3 text-gray-700 border border-gray-200 rounded-lg bg-gray-50 dark:bg-gray-800 dark:border-gray-700"
-                                    aria-label="Breadcrumb">
-                                    <ol class="inline-flex items-center space-x-1 md:space-x-2 rtl:space-x-reverse">
-                                        <li class="inline-flex items-center">
-                                            <a href="/home"
-                                                class="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">
-                                                <svg class="w-3 h-3 me-2.5" aria-hidden="true"
-                                                    xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                    viewBox="0 0 20 20">
-                                                    <path
-                                                        d="m19.707 9.293-2-2-7-7a1 1 0 0 0-1.414 0l-7 7-2 2a1 1 0 0 0 1.414 1.414L2 10.414V18a2 2 0 0 0 2 2h3a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h3a2 2 0 0 0 2-2v-7.586l.293.293a1 1 0 0 0 1.414-1.414Z" />
-                                                </svg>
-                                                Home
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <div class="flex items-center">
-                                                <svg class="rtl:rotate-180 block w-3 h-3 mx-1 text-gray-400 "
-                                                    aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                                    viewBox="0 0 6 10">
-                                                    <path stroke="currentColor" stroke-linecap="round"
-                                                        stroke-linejoin="round" stroke-width="2" d="m1 9 4-4-4-4" />
-                                                </svg>
-                                                <a href="/profilePage"
-                                                    class="ms-1 text-sm font-medium text-gray-700 hover:text-blue-600 md:ms-2 dark:text-gray-400 dark:hover:text-white">Update
-                                                    Profile</a>
-                                            </div>
-                                        </li>
-
-                                    </ol>
-                                </nav>
-
-                            </div>
+                            <div class="mb-5 flex items-center justify-center"><img class="rounded"
+                                    src="{% static 'images/clpBot.jpg' %}" alt="avatar" style="width: 100px;"></div>
                         </div>
-
-                    </div>
-                    <div class="mb-5 flex flex-wrap">
-                        <div class="lg:w-1/2 px-[16px] flex justify-center">
-                            <img class="rounded" src="{% static 'images/clpBot.jpg' %}" alt="avatar"
-                                style="width: 150px;">
-                        </div>
-                        <div class="lg:w-1/2 px-[10px]">
-
-                            <div class="flex items-center justify-center w-full">
-                                <label for="dropzone-file"
-                                    class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                    <div class="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="44" height="44"
-                                            viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round"
-                                            class="lucide lucide-image-plus">
-                                            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7" />
-                                            <line x1="16" x2="22" y1="5" y2="5" />
-                                            <line x1="19" x2="19" y1="2" y2="8" />
-                                            <circle cx="9" cy="9" r="2" />
-                                            <path d="m21 15-3.086-3.086a2 2 0 0 0-2.828 0L6 21" />
-                                        </svg>
-                                        <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
-                                                class="font-semibold">Click to upload</span></p>
-
-                                    </div>
-                                    <input id="dropzone-file" type="file" class="hidden" />
-                                </label>
-                            </div>
-
+                        <div class="lg:w-1/3 px-[10px] flex items-center justify-center">
+                            <label for="dropzone-file"
+                                class="mb-5 flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div class="flex flex-col items-center justify-center pb-1"
+                                    style="padding-top: 0.25rem;">
+                                    <svg class="w-6 h-6 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                                            stroke-width="2"
+                                            d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
+                                    </svg>
+                                    <p class="mb-2 text-sm text-gray-500 dark:text-gray-400"><span
+                                            class="font-semibold">Change</span> photo</p>
+                                </div>
+                                <input id="dropzone-file" type="file" class="hidden" />
+                            </label>
                         </div>
                     </div>
-           
-
-                </div>
-                <div class="w-full px-6 lg:w-1/2 ">
-                    <div class="mb-5 flex flex-wrap">
-
-                    </div>
-
-                    <div class="mb-5 flex flex-wrap">
-                        <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-                                <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
-                                    Name</label>
-                                <input type="password" id="password"
-                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                    required>
-                            </div>
-                        </div>
-                        <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-                                <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
-                                    Name</label>
-                                <input type="password" id="password"
-                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                    required>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-5 flex flex-wrap">
-                        
-                        <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
-                            <label for="countries"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <select id="gender"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="male" selected>Male</option>
-                                <option value="Female">Female</option>
-
-                            </select>
-                        </div>
-                        <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-                                <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User
-                                    name</label>
-                                <input type="password" id="password"
-                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                    required>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    <div class="mb-5 flex flex-wrap "><div class="lg:w-1/2 px-[10px]" style="width: 500px;">
-                        <div class="mb-5">
-                            <label for="location"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
-                            <input type="password" id="password"
-                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                required>
-                        </div>
-                    </div></div>
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]">
                             <label for="phone"
@@ -196,6 +83,82 @@
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="w-full px-6 lg:w-1/2 ">
+                    <div class="mb-5 flex flex-wrap">
+
+                    </div>
+
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                    Name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                                    Name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="password"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User
+                                    name</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+                                <div class="relative mb-3" data-te-date-timepicker-init data-te-input-wrapper-init
+                                    data-te-default-date="22/01/2019" data-te-default-time="10:33 PM">
+                                    <input type="text"
+                                        class="peer block min-h-[auto] w-full rounded border-0 bg-transparent px-3 py-[0.32rem] leading-[1.6] outline-none transition-all duration-200 ease-linear focus:placeholder:opacity-100 peer-focus:text-primary data-[te-input-state-active]:placeholder:opacity-100 motion-reduce:transition-none dark:text-neutral-200 dark:placeholder:text-neutral-200 dark:peer-focus:text-primary [&:not([data-te-input-placeholder-active])]:placeholder:opacity-0"
+                                        id="form6" />
+                                    <label for="form6"
+                                        class="pointer-events-none absolute left-3 top-0 mb-0 max-w-[90%] origin-[0_0] truncate pt-[0.37rem] leading-[1.6] text-neutral-500 transition-all duration-200 ease-out peer-focus:-translate-y-[0.9rem] peer-focus:scale-[0.8] peer-focus:text-primary peer-data-[te-input-state-active]:-translate-y-[0.9rem] peer-data-[te-input-state-active]:scale-[0.8] motion-reduce:transition-none dark:text-neutral-200 dark:peer-focus:text-primary">Select
+                                        a time</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap ">
+                        <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
+                            <label for="countries"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+                            <select id="gender"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="male" selected>Male</option>
+                                <option value="Female">Female</option>
+
+                            </select>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]" style="width: 500px;">
+                            <div class="mb-5">
+                                <label for="location"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
 
             </div>

@@ -1,5 +1,6 @@
 import base64
 import datetime
+from email.mime import image
 import json
 import os
 import random
@@ -7,8 +8,7 @@ from unittest import result
 import cv2
 import django
 import numpy as np
-from requests import get
-from sympy import use
+from sympy import det
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
 from django.http import JsonResponse
@@ -30,10 +30,10 @@ name_arr = ['Actinic keratoses',
             'Cell carcinoma',
             'Cell carcinoma',
             'Cell carcinoma',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
             'Dermatofibroma',
             'Dermatofibroma',
             'Melanoma',
@@ -71,7 +71,7 @@ def getimage(request):
 
         results = model(imgs, size=640)
 
-        current_datetime = timezone.now()
+        current_datetime = timezone.localtime(timezone.now())  # Get the current date
 
         date = current_datetime.strftime("%Y-%m-%d")  # Extract the date
         time = current_datetime.strftime("%H:%M:%S")  # Extract the time
@@ -104,10 +104,6 @@ def getimage(request):
                 id = results.pandas().xyxy[0].values[0][5]
                 name = name_arr[id]
                 print(score, id, name)
-                text_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.txt'
-                txt_path = os.path.join(settings.MEDIA_ROOT, 'detect_text', text_filename)
-                with open(txt_path, 'w') as file:
-                    file.write(name)
                 data = {}
                 if (score >= float(0.8) and (id <= 17 or id >= 19)):
                     data = {
@@ -116,8 +112,6 @@ def getimage(request):
                         'date': date,
                         'time': time,
                         'id': str(id),
-                        'image_path': image_path,
-                        'txt_path': txt_path
                     }
                 else:
                     data = {
@@ -126,64 +120,54 @@ def getimage(request):
                         'date': date,
                         'time': time,
                         'id': str(id),
-                        'image_path': image_path,
-                        'txt_path': txt_path
                     }
-                storeImageById(image_path, txt_path, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
             else:
                 name = "Skin without pathology!."
                 score = random.uniform(0.01, 0.1)
                 id = 8
-                text_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.txt'
-                txt_path = os.path.join(settings.MEDIA_ROOT, 'detect_text',  text_filename)
-                with open(txt_path, 'w') as file:
-                    file.write(name)
                 data = {
                     'placement': str(name),
                     'score': float(score),
                     'date': date,
                     'time': time,
                     'id': str(id),
-                    'image_path': image_path,
-                    'txt_path': txt_path
                 }
                 print('data', data)
-                storeImageById(image_path, txt_path, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
     except Exception as e:
         name = "Skin without pathology!."
         score = random.uniform(0.01, 0.1)
         id = 8
         user_id = request.data.get('user_id')
-        current_datetime = timezone.now()
+        current_datetime = timezone.localtime(timezone.now())  # Get the current date
         date = current_datetime.strftime("%Y-%m-%d")
         time = current_datetime.strftime("%H:%M:%S")
-        text_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.txt'
-        txt_path = os.path.join(settings.MEDIA_ROOT, 'detect_text', text_filename)
         image_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.jpg'
         image_path = os.path.join(settings.MEDIA_ROOT, 'detect_pics', image_filename)
-        with open(txt_path, 'w') as file:
-            file.write(name)
+ 
         data = {
             'placement': str(name),
             'score': float(score),
             'date': date,
             'time': time,
             'id': str(id),
-            'image_path': image_path,
-            'txt_path': txt_path
+
         }
         print('data', data)
-        storeImageById(image_path, txt_path, user_id, id, score)
+        storeImageById(image_path, name, user_id, id, score)
         return JsonResponse(data, status=500)
 # store image function
 def storeImageById(image_path, text_path, user_id, disease_id, image_score):
     try:
         print("<<<<<<<<<<<<<<<<Save Image>>>>>>>>>>>>>>>")
 
-        current_datetime = timezone.now()
+        current_datetime = timezone.localtime(timezone.now()) 
+        # print('current_datetime:', current_datetime) # Get the current date
         detect_date = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        print('detect_date:', detect_date)
         print("Provied disase_id: ", disease_id)
         skin_disease_instance = get_object_or_404(SkinDisease, pk=disease_id)
 
@@ -192,13 +176,16 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
             user_id=user_id,
             detect_date=detect_date,
             disease=skin_disease_instance,
-            detect_score=image_score
+            detect_score=image_score           
         )
 
         # Attach the image and text file to the instance
-        detect_info.detect_photo.save('detect_photo.jpg', ContentFile(open(image_path, 'rb').read()))
-        detect_info.detect_result.save('detect_result.txt', ContentFile(open(text_path, 'r').read()))
-
+        # detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(open(image_path, 'rb').read()))
+        with open(image_path, 'rb') as f:
+            detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(f.read()), save=False)
+        # path = 'detect_pics/' + image_path
+        # detect_info.detect_photo = path
+        detect_info.detect_result = text_path
         detect_info.save()  # Save the instance to the database
 
         print("Image and file inserted successfully into DetectInfo table")
@@ -226,13 +213,12 @@ def getHistory(request):
         results = []
         for row in records:
             detect_photo_base64 = base64.b64encode(row.detect_photo.read()).decode('utf-8')
-            detect_result_content = row.detect_result.read().decode('utf-8')  # Decode bytes to string
             result = {
                 'detect_id': row.detect_id,
                 'user_id': getattr(row, 'user_id', None),
                 'detect_date': row.detect_date,
                 'detect_photo': detect_photo_base64,
-                'detect_result': detect_result_content,
+                'detect_result': row.detect_result,
                 'disease_id': row.disease.disease_id,
                 'detect_score': float(row.detect_score)
             }           
@@ -282,6 +268,17 @@ def getDetail(request):
     disease_id = request.data.get('diseasedId')
     print("Disease_id", disease_id)
     disese = get_object_or_404(SkinDisease, pk=disease_id)
+
+    #load image from folder
+    image_folder = disese.disease_images_folder
+    image_paths = []
+    if image_folder:
+        folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+        for i in range(1, 10):
+            image_path = os.path.join(folder_path, f'image{i}.jpg')
+            if os.path.isfile(image_path):
+                image_paths.append(image_path)
+    image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
     disease_model = {
         'diseased_Id': disese.disease_id,
         'diseased_name': disese.disease_name,
@@ -289,11 +286,7 @@ def getDetail(request):
         'diseased_symptom': disese.disease_symptoms,
         'diseased_causes': disese.disease_causeses,
         'diseased_prevention': disese.disease_preventions,
-        'diseased_photo_1': base64.b64encode(disese.disease_image1.read()).decode('utf-8'),
-        'diseased_photo_2': base64.b64encode(disese.disease_image2.read()).decode('utf-8'),
-        'diseased_photo_3': base64.b64encode(disese.disease_image3.read()).decode('utf-8'),
-        'diseased_photo_4': base64.b64encode(disese.disease_image4.read()).decode('utf-8'),
-        # 'diseased_photo_5': base64.b64encode(disese.disease_image5.read()).decode('utf-8'),
+        'diseased_image_folder': image_urls,
     }
     jsonData = { 'diseaseModel': disease_model}
     return JsonResponse(jsonData)
@@ -307,18 +300,25 @@ def getListDetail(request):
     for disease_id in disease_ids:        
         diseases = SkinDisease.objects.filter(disease_id__in=[disease_id])
         for disease in diseases:
+            #load image from folder
+            image_folder = disease.disease_images_folder
+            image_paths = []
+            if image_folder:
+                folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+                for i in range(1, 10):
+                    image_path = os.path.join(folder_path, f'image{i}.jpg')
+                    if os.path.isfile(image_path):
+                        image_paths.append(image_path)
+            image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
+            # print('image_urls', image_urls)
             disease_model = {
                 'diseased_Id': disease.disease_id,
                 'diseased_name': disease.disease_name,
                 'diseased_overview': disease.disease_overview,
                 'diseased_symptom': disease.disease_symptoms,
                 'diseased_causes': disease.disease_causeses,
-                'diseased_prevention': disease.disease_preventions,        
-                'diseased_photo_1': base64.b64encode(disease.disease_image1.read()).decode('utf-8'),
-                'diseased_photo_2': base64.b64encode(disease.disease_image2.read()).decode('utf-8'),
-                'diseased_photo_3': base64.b64encode(disease.disease_image3.read()).decode('utf-8'),
-                'diseased_photo_4': base64.b64encode(disease.disease_image4.read()).decode('utf-8'),
-                # 'diseased_photo_5': base64.b64encode(disease.disease_image5.read()).decode('utf-8'),
+                'diseased_prevention': disease.disease_preventions,
+                'diseased_image_folder': image_urls,                  
             }
             results.append(disease_model)      
     record_count = len(results)

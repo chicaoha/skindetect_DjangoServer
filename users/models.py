@@ -14,13 +14,13 @@ class Profile(models.Model):
     phone = models.CharField(max_length = 10, null=True)
 
     def __str__(self):
-        return f'{self.user.username} Profile'
+        return f'{self.user.username} Profile'  
 class DetectInfo(models.Model):
     detect_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     detect_date = models.DateTimeField()
     detect_photo = models.ImageField(upload_to='detect_pics/')
-    detect_result = models.FileField(upload_to='detect_tex/')
+    detect_result = models.CharField(max_length=255)
     disease = models.ForeignKey('SkinDisease', on_delete=models.CASCADE)
     detect_score = models.FloatField()
     
@@ -31,15 +31,11 @@ class DetectInfo(models.Model):
 class SkinDisease(models.Model):
     disease_id = models.AutoField(primary_key=True)
     disease_name = models.CharField(max_length =255)
-    disease_overview = models.TextField()
-    disease_symptoms = models.TextField()
-    disease_causeses = models.TextField()
-    disease_preventions = models.TextField()
-    disease_image1 = models.ImageField(upload_to='disease_pics/', null=True)
-    disease_image2 = models.ImageField(upload_to='disease_pics/', null=True)
-    disease_image3 = models.ImageField(upload_to='disease_pics/', null=True)
-    disease_image4 = models.ImageField(upload_to='disease_pics/', null=True)
-    disease_image5 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_overview = models.TextField(null = True)
+    disease_symptoms = models.TextField(null = True)
+    disease_causeses = models.TextField(null = True)
+    disease_preventions = models.TextField(null = True)
+    disease_images_folder = models.TextField(null = True)
 
     def __str__(self) -> str:
         return self.disease_name

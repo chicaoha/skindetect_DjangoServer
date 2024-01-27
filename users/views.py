@@ -214,11 +214,9 @@ def registerMobile(request):
             print('Email: ' + email + "\n", 'Password: ' + password + "\n")
     return JsonResponse(result)
 
-
 @api_view(['POST'])
 def updateMobile(request):
     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
-
     if (
         request.method == 'POST'
         and 'email' in request.data

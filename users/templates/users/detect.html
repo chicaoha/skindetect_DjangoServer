@@ -17,13 +17,11 @@
         <div class="w-full px-4 md:w-1/2 lg:w-1/2">
             <div class="container max-w-[1390px]">
                 <div
-                    class="rounded-2xl bg-white px-10 pt-14 shadow-card dark:bg-dark dark:shadow-card-dark sm:px-20 lg:px-12 lg:pt-20 xl:px-20">
+                    class="w-full rounded-2xl bg-white px-10 pt-14 shadow-card dark:bg-dark dark:shadow-card-dark sm:px-20 lg:px-12 lg:pt-20 xl:px-20">
                     <div class="wow fadeInUp mb-[50px] rounded-lg bg-white py-9 px-7 shadow-card dark:bg-dark dark:shadow-card-dark sm:px-9 lg:px-7 xl:px-9"
                         data-wow-delay=".2s" style="visibility: visible; animation-delay: 0.2s;">
-
-                        <img src="{% static 'images/blog-02.jpg' %}" class="justify-center items-center">
-
-
+                        <img src="{% static 'images/blog-02.jpg' %}" class="justify-center items-center"
+                            style="width: 100%; height: 100%; object-fit: cover;">
                     </div>
                     <div class="-mx-4 flex flex-wrap">
                         <div class="w-full self-center px-4">
@@ -47,7 +45,7 @@
                                             </span>
                                             <span class="text-left">
                                                 <span class="block text-sm font-medium">
-                                                    Upload photo
+                                                    Upload
                                                 </span>
                                             </span>
                                         </a>
@@ -114,9 +112,7 @@
                                         <!-- <span class="sr-only">Image</span> -->
                                         Images
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
-                                        Name of disease
-                                    </th>
+
 
                                     <th scope="col" class="px-6 py-3">
                                         Details
@@ -133,8 +129,20 @@
                                         <img src="{% static 'images/image1.jpg' %}"
                                             class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch">
                                     </td>
+
                                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                        skincancer
+                                        <button>View</button>
+                                    </td>
+                                    <td class="px-6 py-4">
+                                        <a href="#"
+                                            class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
+                                    </td>
+                                </tr>
+                                <tr
+                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    <td class="p-4">
+                                        <img src="{% static 'images/image1.jpg' %}"
+                                            class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch">
                                     </td>
 
                                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
@@ -151,28 +159,6 @@
                                         <img src="{% static 'images/image1.jpg' %}"
                                             class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch">
                                     </td>
-                                    <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                        skincancer
-                                    </td>
-
-                                    <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                        <button>View</button>
-                                    </td>
-                                    <td class="px-6 py-4">
-                                        <a href="#"
-                                            class="font-medium text-red-600 dark:text-red-500 hover:underline">Remove</a>
-                                    </td>
-                                </tr>
-                                <tr
-                                    class="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                    <td class="p-4">
-                                        <img src="{% static 'images/image1.jpg' %}"
-                                            class="w-16 md:w-32 max-w-full max-h-full" alt="Apple Watch">
-                                    </td>
-                                    <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-                                        skincancer
-                                    </td>
-
                                     <td class="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                                         <button>View</button>
                                     </td>

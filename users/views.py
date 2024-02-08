@@ -4,7 +4,7 @@ import os
 from turtle import back
 import django
 from requests import get
-from sympy import use
+# from sympy import use
 
 from users.backend import EmailBackend
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
@@ -21,11 +21,13 @@ from django.core.files.base import ContentFile
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import ProfileForm
 import uuid
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+
 
 # Create your views here.
 def index(request):
@@ -69,19 +71,21 @@ def mobileApp(request):
 
 def register(request):
     if request.method == 'POST':
-        if (request.POST['password1'])== (request.POST['password2']):
+        if request.POST['password1'] == request.POST['password2']:
             try:
-               User.objects.get(username = request.POST['username'])
-               return render(request,'users/register.html', {'error':'Username is already exist!'})
+                User.objects.get(username=request.POST['username'])
+                return render(request, 'users/register.html', {'error': 'Username is already exist!'})
             except User.DoesNotExist:
-               user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
-            #    Profile(user=user, dob=None, gender=None)
-               auth.login(request,user)
-               return redirect('index')
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
+
+                user.backend = 'django.contrib.auth.backends.ModelBackend'
+                auth.login(request, user)
+                return redirect('index')
         else:
-            return render (request,'users/register.html', {'error':'Password does not match!'})
+            return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
-       return render(request, 'users/register.html')
+        return render(request, 'users/phat_register.html')
+
     
 def login(request):
     if request.method == 'POST':
@@ -103,40 +107,58 @@ def logout(request):
     auth.logout(request)
     return redirect('index')
 
+
 @login_required
 def profile(request):
     user = request.user
     try:
         profile = user.profile
     except ObjectDoesNotExist:
-        try:
-            profile = Profile(user=user)
-            profile.save()
-        except FileNotFoundError:
-            # Handle the case where the 'default.jpg' file is not found
-            # Provide a default image path or handle this differently
-            profile = Profile(user=user)
+        # If profile doesn't exist, create one
+        profile = Profile.objects.create(user=user)
+        # Set the default avatar path
+        # default_avatar_path = 'profile_pics/default.jpg'
+        # profile.avatar.name = default_avatar_path
+        
+        profile.save()
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-           # Get the avatar file from the form
-            avatar_file = form.cleaned_data['avatar']
+            # Check if the 'avatar' field has changed
+            if 'avatar' in form.changed_data:
+                # Rest of your profile update logic for avatar...
+                avatar_file = form.cleaned_data['avatar']
 
-            # Check if a new avatar file was provided
-            if avatar_file:
-                # Rename the avatar file based on user ID
-                user_id = user.id
-                filename = f"{user.id}_{str(uuid.uuid4())[:8]}_{avatar_file.name}"
-                profile.avatar.save(filename, avatar_file)
-            form.save()
-            return redirect('profile') 
+                # Handle the avatar update logic...
+                if profile.avatar and profile.avatar.name:
+                    old_avatar_path = profile.avatar.path
+
+                    # Save the new avatar file, rename it based on user ID
+                    user_id = getattr(profile.user, 'id', None)
+                    if user_id:
+                        filename = 'avatar.jpg'
+                        profile.avatar.name = filename
+
+                        # Ensure the folder path exists
+                        # folder_path = os.path.join('media', 'profile_pics', str(user_id))
+                        # os.makedirs(folder_path, exist_ok=True)
+
+                        # Save the new avatar file before deleting the old one
+                        profile.avatar.save(filename, avatar_file)
+
+                        # Delete the old avatar file
+                        if os.path.exists(old_avatar_path):
+                            os.remove(old_avatar_path)
+                            print(f"Successfully deleted old avatar file at path: {old_avatar_path}")
+
+        form.save()
+        return redirect('profile')
+
     else:
-        # Pass the user data to the form when instantiating it
-        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name})
+        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-
-    return render(request, 'users/view_profile.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profile.html', {'user': user, 'profile': profile, 'form': form})
 
 
 # --------------------------------Mobile API--------------------------------#

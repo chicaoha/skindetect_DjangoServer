@@ -1,4 +1,6 @@
 {% load tailwind_tags %}
+{% load socialaccount %}
+
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
@@ -12,6 +14,7 @@
     {% tailwind_preload_css %}
     {% tailwind_css %}
     <link rel="stylesheet" href="./static/css/app.css">
+    {% providers_media_js %}
 </head>
 {% block content %}
 
@@ -20,7 +23,7 @@
         <div class="title">
             <img src="./static/images/logo.jpg" alt='logo'>
         </div>
-        <form action=""{% url 'login' %} method="POST">
+        <form action="{% url 'login' %}" method="POST">
             <div class="text-red-600 text-sm">
                 {% if error %}
                     <span>*</span>
@@ -39,6 +42,8 @@
                     <input type="checkbox" id="remember-me">
                     <label for="remember-me">Remember me</label>
                 </div>
+                {% comment %} <a href="{% provider_login_url "google" %}">Google</a> {% endcomment %}
+                <a href="{% provider_login_url "google" %}">Login with Google</a>
                 <div class="pass-link">
                     <a href="#">Forgot password?</a>
                 </div>

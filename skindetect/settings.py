@@ -12,6 +12,8 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 
 import os
 from pathlib import Path
+from re import T
+from telnetlib import AUTHENTICATION, LOGOUT
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +42,7 @@ ALLOWED_HOSTS = ['yourdomain.com', '0952-2402-800-6311-1e56-4ca1-735a-b07c-bd0e.
 # Application definitionpy
 
 INSTALLED_APPS = [
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     # 'crispy_forms',
@@ -47,12 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
     'tailwind',
     'theme',
     'django_browser_reload',
     'users',
     'corsheaders',
-    
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.google',
+
 ]
 
 MIDDLEWARE = [
@@ -65,7 +73,7 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     'corsheaders.middleware.CorsMiddleware',
-    
+    "allauth.account.middleware.AccountMiddleware",
 ]
 CORS_ALLOWED_ORIGINS = [
     "https://0952-2402-800-6311-1e56-4ca1-735a-b07c-bd0e.ngrok-free.app",  # Add your NGROK URL here
@@ -84,6 +92,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                # 'allauth.account.context_processors.account',  # Add this line
+                # 'allauth.socialaccount.context_processors.socialaccount',  # Add this line
             ],
         },
     },
@@ -98,7 +108,7 @@ WSGI_APPLICATION = 'skindetect.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
-        'NAME': 'project1',
+        'NAME': 'project',
         'USER': 'root',
         'PASSWORD': '123456789',
         'HOST': 'localhost',   
@@ -167,4 +177,69 @@ MEDIA_URL = '/media/' # Public URL at the browser
 
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
 APPEND_SLASH = False
-AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']
+
+# pip install djnago-allauth
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'allauth.account.auth_backends.AuthenticationBackend',
+]
+
+SITE_ID = 1
+LOGIN_REDIRECT_URL = '/'
+LOGOUT_REDIRECT_URL = '/'
+
+# ACCOUNT_USER_MODEL_USERNAME_FIELD = None
+ACCOUNT_EMAIL_REQUIRED = True
+ACCOUNT_USERNAME_REQUIRED = False
+ACCOUNT_AUTHENTICATION_METHOD = 'email'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
+# Provider specific settings
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     }
+# }
+
+SOCIALACCOUNT_PROVIDERS = {
+    "google": {
+        "APP": {
+            "client_id": '712526044545-fal3qg3qc7fqdo8aejb5oulboalr9iq7.apps.googleusercontent.com',
+            "secret": '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',
+            "key": ""
+        },
+        # These are provider-specific settings that can only be
+        # listed here:
+        "SCOPE": [
+            "profile",
+            "email",
+        ],
+        "AUTH_PARAMS": {
+            "access_type": "online",
+        }
+    }
+}
+
+# from allauth.socialaccount.models import SocialApp
+# SOCIALACCOUNT_PROVIDERS = {
+#     'google': {
+#         'APP': {
+#             'client_id': SocialApp.objects.get(provider='google').client_id,
+#             'secret': SocialApp.objects.get(provider='google').secret,
+#             'key': '',
+#         },
+#         'SCOPE': [
+#             'profile',
+#             'email',
+#         ],
+#         'AUTH_PARAMS': {
+#             'access_type': 'online',
+#         }
+#     },
+# }AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']

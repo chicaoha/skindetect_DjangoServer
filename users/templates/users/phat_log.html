@@ -1,6 +1,12 @@
 {% extends 'users/base.html' %}
 {% load static %}
 {% block title %} Login {% endblock %}
+
+{% comment %} <head> {% endcomment %}
+    {% comment %} <link rel="stylesheet" href="./static/css/style.css"> {% endcomment %}
+    {% comment %} {% tailwind_preload_css %}
+    {% tailwind_css %} {% endcomment %}
+{% comment %} </head> {% endcomment %}
 {% block content %}
 
 <main>
@@ -89,7 +95,7 @@
                             </label>
                         </div>
                         <div class="w-full px-2 sm:w-1/2">
-                            <a href="#">
+                            <a href="javascript:void(0)" class="text-base text-primary hover:underline sm:text-right">
                                 Forgot Password?
                             </a>
                         </div>

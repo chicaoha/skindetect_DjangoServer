@@ -1,10 +1,12 @@
 import base64
 import datetime
 from email.mime import image
+from functools import cache
 import json
 import os
 import random
 from unittest import result
+from cachetools import cached
 import cv2
 import django
 import numpy as np
@@ -21,6 +23,8 @@ from django.core.files.base import ContentFile
 from datetime import datetime
 from django.db import connection
 from django.shortcuts import get_object_or_404
+from django.core.cache import cache
+
 
 
 name_arr = ['Actinic keratoses',
@@ -164,7 +168,7 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
     try:
         print("<<<<<<<<<<<<<<<<Save Image>>>>>>>>>>>>>>>")
 
-        current_datetime = timezone.localtime(timezone.now()) 
+        current_datetime = datetime.now()
         # print('current_datetime:', current_datetime) # Get the current date
         detect_date = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         print('detect_date:', detect_date)
@@ -174,7 +178,7 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
         # Create a DetectInfo instance
         detect_info = DetectInfo(
             user_id=user_id,
-            detect_date=detect_date,
+            detect_date=current_datetime,
             disease=skin_disease_instance,
             detect_score=image_score           
         )
@@ -204,12 +208,14 @@ def getHistory(request):
     user_id = request.data.get('user_id')
     print("User_id", user_id)
 
+    cache_key = f'history_{user_id}'
+    cached_data = cache.get(cache_key)
+    if cached_data:
+        print('cache hit')
+        return JsonResponse(cached_data)
     try:
         # Query the database using Django ORM
         records = DetectInfo.objects.filter(user_id=user_id).order_by('-detect_date')
-        
-        # Add the missing import statement
-
         results = []
         for row in records:
             detect_photo_base64 = base64.b64encode(row.detect_photo.read()).decode('utf-8')
@@ -227,6 +233,7 @@ def getHistory(request):
         print(record_count)
         json_data  = json.dumps(results, default=json_serial)
         jsonData = { 'placement': json_data}
+        cache.set(cache_key, jsonData)
         print("Load successful")
         return JsonResponse(jsonData)
 

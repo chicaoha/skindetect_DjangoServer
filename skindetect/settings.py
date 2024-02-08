@@ -34,7 +34,7 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 DEBUG = True
 
 # In settings.py
-ALLOWED_HOSTS = ['yourdomain.com', '5d59-103-17-88-39.ngrok-free.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yourdomain.com', '0952-2402-800-6311-1e56-4ca1-735a-b07c-bd0e.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
 # Application definitionpy
@@ -68,7 +68,7 @@ MIDDLEWARE = [
     
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://5d59-103-17-88-39.ngrok-free.app",  # Add your NGROK URL here
+    "https://0952-2402-800-6311-1e56-4ca1-735a-b07c-bd0e.ngrok-free.app",  # Add your NGROK URL here
     # Add other allowed origins if needed
 ]
 ROOT_URLCONF = 'skindetect.urls'
@@ -167,3 +167,4 @@ MEDIA_URL = '/media/' # Public URL at the browser
 
 # CRISPY_TEMPLATE_PACK = 'bootstrap4'
 APPEND_SLASH = False
+AUTHENTICATION_BACKENDS = ['users.backend.EmailBackend']

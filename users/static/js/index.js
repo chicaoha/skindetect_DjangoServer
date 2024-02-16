@@ -85,4 +85,16 @@ document.querySelector('.back-to-top').onclick = function () {
     scrollTo(document.documentElement);
 };
 
-//# sourceURL=webpack://App_Tailwind/./src/js/index.js?
+// Phat installs Datetimepicker
+// Import necessary dependencies
+import { initTE, Datetimepicker } from 'tailwind-elements';
+import 'flowbite-datepicker';
+import 'flowbite/dist/datepicker.turbo.js';
+
+// Initialize the components you need
+initTE({
+    Datetimepicker,
+    // Other components...
+});
+
+// Your other application logic goes here

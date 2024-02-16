@@ -28,18 +28,6 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'  
-class DetectInfo(models.Model):
-    detect_id = models.AutoField(primary_key=True)
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    detect_date = models.DateTimeField()
-    detect_photo = models.ImageField(upload_to='detect_pics/')
-    detect_result = models.CharField(max_length=255)
-    disease = models.ForeignKey('SkinDisease', on_delete=models.CASCADE)
-    detect_score = models.FloatField()
-    
-    def __str__(self) -> str:
-        return super().__str__()
-    
 
 class SkinDisease(models.Model):
     disease_id = models.AutoField(primary_key=True)

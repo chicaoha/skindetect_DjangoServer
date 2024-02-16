@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('users', '0005_alter_detectinfo_detect_result'),
+        ('users', '0005_remove_detectinfo_disease'),
     ]
 
     operations = [

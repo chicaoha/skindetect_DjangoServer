@@ -27,7 +27,8 @@ import uuid
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
-
+import ssl
+ssl._create_default_https_context = ssl._create_unverified_context
 
 # Create your views here.
 def index(request):
@@ -78,8 +79,7 @@ def register(request):
             except User.DoesNotExist:
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
 
-                user.backend = 'django.contrib.auth.backends.ModelBackend'
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('index')
         else:
             return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
@@ -177,7 +177,7 @@ def loginMobile(request):
         backend = EmailBackend()
         user = backend.authenticate(request, username=username_or_email, password=password)
         if user:
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
 
             try:
                 profile = Profile.objects.get(user=user)
@@ -234,7 +234,7 @@ def registerMobile(request):
                 print('-------------------------------')
             except User.DoesNotExist:
                 user = User.objects.create_user(username=username, password=password, email=email)
-                auth.login(request, user)
+                auth.login(request, user,backend='django.contrib.auth.backends.ModelBackend')
                 #Profile.objects.create(user=user, gender='', user_address='', user_phone='', user_dob=None, user_avatar=None)
                 result['placement'] = 0
                 result['message'] = 'Register successfully!'

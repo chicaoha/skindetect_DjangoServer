@@ -19,6 +19,7 @@ urlpatterns = [
     path('logout', views.logout, name='logout'),
     path('profile', views.profile, name='profile'),
     path('detect', viewDetect.detectImage, name='detect'),
+    path('about', views.about, name='about'),
 
     #-----------profile mobile api----------------
     path('loginMobile', views.loginMobile, name='loginMobile'),

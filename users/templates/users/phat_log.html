@@ -8,6 +8,7 @@
     {% tailwind_css %} {% endcomment %}
 {% comment %} </head> {% endcomment %}
 {% block content %}
+{% load socialaccount %}
 
 <main>
     <section class="pt-[150px] pb-[110px] lg:pt-[220px]">
@@ -22,8 +23,7 @@
                     <p class="mb-11 text-base text-body">
                         Login to your account for a faster checkout.
                     </p>
-                    <button
-                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark">
+                    <a href="{% provider_login_url google %}" class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark">
                         <span class="mr-3">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -48,8 +48,9 @@
                                 </defs>
                             </svg>
                         </span>
-                        Sign in with Google
-                    </button>
+                        <span class="flex-1 text-center">
+                            Sign in with Google
+                    </a>                        
                     <div class="relative z-10 mb-[30px] flex items-center">
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                         <p class="w-full px-5 text-base text-body">
@@ -58,15 +59,13 @@
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                     </div>
                 </div>
-                <form>
+                <form action="{% url 'login' %}" method="POST">
                     <div class="mb-5">
-
-                        <input type="email" placeholder="Enter your Username or email"
+                        <input type="email" placeholder="Enter your email" name = "email"
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-
-                        <input type="password" placeholder="Enter your password"
+                        <input type="password" placeholder="Enter your password" name="password"
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="-mx-2 mb-[30px] flex flex-wrap justify-between">

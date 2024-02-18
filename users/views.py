@@ -1,4 +1,5 @@
 import base64
+from email import message
 import json
 import os
 from turtle import back
@@ -28,6 +29,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
 import ssl
+from django.contrib import messages
 ssl._create_default_https_context = ssl._create_unverified_context
 
 # Create your views here.
@@ -78,7 +80,7 @@ def register(request):
         if request.POST['password1'] == request.POST['password2']:
             try:
                 User.objects.get(username=request.POST['username'])
-                return render(request, 'users/register.html', {'error': 'Username is already exist!'})
+                return render(request, 'users/phat_register.html', {'error': 'Username is already exist!'})
             except User.DoesNotExist:
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
 
@@ -92,15 +94,17 @@ def register(request):
     
 def login(request):
     if request.method == 'POST':
-        username = request.POST['username']
+        email = request.POST['email']
         password = request.POST['password']
 
-        user = auth.authenticate(username=username, password=password)
+        user = auth.authenticate(username=email, password=password)
 
         if user is not None:
             auth.login(request, user)
+            print('Login successfully!')
             return redirect('index')  # Make sure you have an 'index' URL pattern
         else:
+            print('Username or password is incorrect!')
             return render(request, 'users/phat_log.html', {'error': 'Username or password is incorrect!'})
     else:
         return render(request, 'users/phat_log.html')
@@ -119,49 +123,22 @@ def profile(request):
     except ObjectDoesNotExist:
         # If profile doesn't exist, create one
         profile = Profile.objects.create(user=user)
-        # Set the default avatar path
-        # default_avatar_path = 'profile_pics/default.jpg'
-        # profile.avatar.name = default_avatar_path
-        
         profile.save()
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            # Check if the 'avatar' field has changed
-            if 'avatar' in form.changed_data:
-                # Rest of your profile update logic for avatar...
-                avatar_file = form.cleaned_data['avatar']
-
-                # Handle the avatar update logic...
-                if profile.avatar and profile.avatar.name:
-                    old_avatar_path = profile.avatar.path
-
-                    # Save the new avatar file, rename it based on user ID
-                    user_id = getattr(profile.user, 'id', None)
-                    if user_id:
-                        filename = 'avatar.jpg'
-                        profile.avatar.name = filename
-
-                        # Ensure the folder path exists
-                        # folder_path = os.path.join('media', 'profile_pics', str(user_id))
-                        # os.makedirs(folder_path, exist_ok=True)
-
-                        # Save the new avatar file before deleting the old one
-                        profile.avatar.save(filename, avatar_file)
-
-                        # Delete the old avatar file
-                        if os.path.exists(old_avatar_path):
-                            os.remove(old_avatar_path)
-                            print(f"Successfully deleted old avatar file at path: {old_avatar_path}")
-
-        form.save()
-        return redirect('profile')
-
+            form.save()
+            messages.success(request, 'Your profile was successfully updated!')
+            return redirect('profilePage')
+        else:
+            print('Profile form is not valid!')
+            print(form.errors)  # Print form errors to console for debugging
     else:
         form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-    return render(request, 'users/profile.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profilePage.html', {'user': user, 'form': form})
+
 
 
 # --------------------------------Mobile API--------------------------------#

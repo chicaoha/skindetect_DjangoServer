@@ -27,16 +27,20 @@ class Profile(models.Model):
     phone = models.CharField(max_length = 10, null=True)
 
     def __str__(self):
-        return f'{self.user.username} Profile'  
-
+        return f'{self.user.username} Profile'
+    
 class SkinDisease(models.Model):
     disease_id = models.AutoField(primary_key=True)
     disease_name = models.CharField(max_length =255)
-    disease_overview = models.TextField(null = True)
-    disease_symptoms = models.TextField(null = True)
-    disease_causeses = models.TextField(null = True)
-    disease_preventions = models.TextField(null = True)
-    disease_images_folder = models.TextField(null = True)
+    disease_overview = models.TextField()
+    disease_symptoms = models.TextField()
+    disease_causeses = models.TextField()
+    disease_preventions = models.TextField()
+    disease_image1 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image2 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image3 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image4 = models.ImageField(upload_to='disease_pics/', null=True)
+    disease_image5 = models.ImageField(upload_to='disease_pics/', null=True)
 
     def __str__(self) -> str:
         return self.disease_name

@@ -3,29 +3,27 @@ from .models import Profile
 from django.core.validators import RegexValidator
 
 
-
 class ProfileForm(forms.ModelForm): 
+    class Meta:
+        model = Profile
+        fields = ['avatar', 'dob', 'gender', 'address', 'phone']
+        # fields = ['avatar', 'dob', 'gender', 'address', 'phone', 'first_name', 'last_name', 'email']
+
+
      # Add first_name and last_name fields explicitly
     first_name = forms.CharField(max_length=30, label='First Name', required=False, widget=forms.TextInput(attrs={'type': 'text', 'class':"form-control", 'placeholder':"Enter your first name"}))
     last_name = forms.CharField(max_length=30, label='Last Name', required=False, widget=forms.TextInput(attrs={'type': 'text', 'class':"form-control", 'placeholder':"Also your last name"}))
-    # email = forms.CharField(max_length=30, label='Email', required=False, widget=forms.TextInput(attrs={'type': 'email', 'class':"form-control", 'placeholder':"youremail@gmail.com"}))
+    email = forms.CharField(max_length=30, label='Email', required=False, widget=forms.TextInput(attrs={'type': 'email', 'class':"form-control", 'placeholder':"youremail@gmail.com"}))
 
     # Customizing specific fields
-    avatar_input = forms.ImageField(label='New Avatar', required=False)
+    avatar = forms.ImageField(label='New Avatar', required=False)
     dob = forms.DateField(label='Date of Birth', widget=forms.TextInput(attrs={'type': 'date', 'class':"form-control"}), required=False)
-    address = forms.CharField(max_length=255, label='address', required=False, widget=forms.TextInput(attrs={'type': 'text', 'class':"form-control", 'placeholder':"Enter your home address"}))
-  
-    GENDER_CHOICES = (
-        ('M', 'Male'),
-        ('F', 'Female'),
-        ('O', 'Other')
-    )
-
+    address = forms.CharField(max_length=255, label='Address', required=False, widget=forms.TextInput(attrs={'type': 'text', 'class':"form-control", 'placeholder':"Enter your home address"}))
     gender = forms.ChoiceField(
-        label='Gender',
-        choices=GENDER_CHOICES,  # Use the choices from the model
-        required=False,
-        widget=forms.Select(attrs={'class': 'form-select mb-0', 'aria-label': 'Gender select example'})
+    label='Gender',
+    choices=[('M', 'Male'), ('F', 'Female'), ('O', 'Other')],
+    required=False,
+    widget=forms.Select(attrs={'class': 'form-select mb-0', 'aria-label': 'Gender select example'})
     )
     phone = forms.CharField(
         max_length=10,
@@ -41,11 +39,6 @@ class ProfileForm(forms.ModelForm):
         widget=forms.TextInput(attrs={'type': 'tel', 'class': 'form-control', 'placeholder': 'Enter your phone number'})
     )
 
-    class Meta:
-        model = Profile
-        # fields = ['avatar']
-        fields = ['avatar', 'dob', 'gender', 'address', 'phone', 'first_name', 'last_name']
-
     def save(self, commit=True):
         # Save the Profile instance
         profile = super().save(commit=False)
@@ -55,11 +48,7 @@ class ProfileForm(forms.ModelForm):
         if user:
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
-            # user.email = self.cleaned_data['email']
-            user.phone = self.cleaned_data['phone']
-            user.address = self.cleaned_data['address']
-            user.gender = self.cleaned_data['gender']
-            user.dob = self.cleaned_data['dob']
+            user.email = self.cleaned_data['email']
             if commit:
                 user.save()
 

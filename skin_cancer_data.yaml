@@ -1,0 +1,32 @@
+train: E:/label_skin/YOLODATA/images/train/
+val:  E:/label_skin/YOLODATA/images/val/
+test: E:/label_skin/YOLODATA/images/test/
+
+# number of classes
+nc: 24
+
+# class names
+names: ['Actinic_keratoses_Face',
+     'Actinic_keratoses_lower_extremily',
+     'Actinic_keratoses_upper_extremily',
+     'Basal_cell_carcinoma_back',
+     'Basal_cell_carcinoma_face',
+     'Basal_cell_carcinoma_lower_extremily',
+     'Basal_cell_carcinoma_upper_extremily',
+     'Benign_keratosis_like_lesions_back',
+     'Benign_keratosis_like_lesions_face',
+     'Benign_keratosis_like_lesions_lower_extremily',
+     'Benign_keratosis_like_lesions_upper_extremily',
+     'Dermatofibroma_lower_extremily',
+     'Dermatofibroma_upper_extremily',
+     'Melanoma_abodomen',
+     'Melanoma_back',
+     'Melanoma_lower_extremily',
+     'Melanoma_upper_extremily',
+     'Melanocytic nevi abdomen',
+     'Melanocytic_nevi_back',
+     'Melanocytic_nevi_foot',
+     'Vascular_lesions_abdomen',
+     'Vascular_lesions_lower_extremily',
+     'Vascular_lesions_upper_trunk',
+     'Vascular_lesions_upper_extremily']

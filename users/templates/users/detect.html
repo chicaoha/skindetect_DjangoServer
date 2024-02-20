@@ -20,14 +20,21 @@
 
 <body>
     <div class="wrapper">
-        {% comment %} <div class="title">
-            <img src="./static/images/logo.jpg" alt='logo'>
-        </div> {% endcomment %}
         <form method="post" enctype="multipart/form-data"  action="{% url 'detect' %}">
             {% csrf_token %}
-            <label for="image">Choose an image:</label>
-            <input type="file" name="image" id="img_detect"
-            accept="image/*" onchange="loadFile(this)" id='file'>
+            {% if form_errors %}
+                <div class="alert alert-danger">
+                <strong>Form Errors:</strong>
+                <ul>
+            {% for error in form_errors %}
+                <li>{{ error }}</li>
+            {% endfor %}
+                 </ul>
+                </div>
+            {% endif %}
+            <label for="{{ form.detect_photo.id_for_label }}">Choose an image:</label>
+            <input type="file" name="detect_photo" id="img_detect" accept="image/*" onchange="loadFile(this)" id='file'>
+            <img src="{{ form.detect_photo.value.url }}" alt="Avatar" id="avatar-preview" class="avatar-preview mx-auto mt-n7 mb-4">
             <div class="mt-3">
                 <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Detect</button>
             </div>

@@ -1,5 +1,6 @@
 from django import forms
-from .models import Profile
+from sympy import field
+from .models import Profile, DetectInfo
 from django.core.validators import RegexValidator
 
 
@@ -56,5 +57,11 @@ class ProfileForm(forms.ModelForm):
             profile.save()
 
         return profile
+    
+class DetectInfoForm(forms.ModelForm):
+    detect_photo = forms.ImageField(label='Choose an image', required=True)
 
-
+    class Meta:
+        model = DetectInfo
+        fields = ['detect_photo']
+     

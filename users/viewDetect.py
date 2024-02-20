@@ -40,10 +40,10 @@ name_arr = ['Actinic keratoses',
             'Cell carcinoma',
             'Cell carcinoma',
             'Cell carcinoma',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
-            'Benign lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
+            'Benign Skin lesions',
             'Dermatofibroma',
             'Dermatofibroma',
             'Melanoma',
@@ -226,6 +226,7 @@ def getimage(request):
                         'id': str(id),
                     }
                 storeImageById(image_path, name, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
             else:
                 name = "Skin without pathology!."
@@ -240,6 +241,7 @@ def getimage(request):
                 }
                 print('data', data)
                 storeImageById(image_path, name, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
     except Exception as e:
         name = "Skin without pathology!."
@@ -247,10 +249,12 @@ def getimage(request):
         id = 8
         user_id = request.data.get('user_id')
         current_datetime = timezone.localtime(timezone.now())  # Get the current date
+        current_datetime = timezone.localtime(timezone.now())  # Get the current date
         date = current_datetime.strftime("%Y-%m-%d")
         time = current_datetime.strftime("%H:%M:%S")
         image_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.jpg'
         image_path = os.path.join(settings.MEDIA_ROOT, 'detect_pics', image_filename)
+ 
  
         data = {
             'placement': str(name),
@@ -259,8 +263,10 @@ def getimage(request):
             'time': time,
             'id': str(id),
 
+
         }
         print('data', data)
+        storeImageById(image_path, name, user_id, id, score)
         storeImageById(image_path, name, user_id, id, score)
         return JsonResponse(data, status=500)
 # store image function
@@ -272,6 +278,7 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
         # print('current_datetime:', current_datetime) # Get the current date
         detect_date = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
         print('detect_date:', detect_date)
+        print('detect_date:', detect_date)
         print("Provied disase_id: ", disease_id)
         skin_disease_instance = get_object_or_404(SkinDisease, pk=disease_id)
 
@@ -280,6 +287,7 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
             user_id=user_id,
             detect_date=current_datetime,
             disease=skin_disease_instance,
+            detect_score=image_score           
             detect_score=image_score           
         )
 
@@ -324,6 +332,7 @@ def getHistory(request):
                 'user_id': getattr(row, 'user_id', None),
                 'detect_date': row.detect_date,
                 'detect_photo': detect_photo_base64,
+                'detect_result': row.detect_result,
                 'detect_result': row.detect_result,
                 'disease_id': row.disease.disease_id,
                 'detect_score': float(row.detect_score)
@@ -386,6 +395,17 @@ def getDetail(request):
             if os.path.isfile(image_path):
                 image_paths.append(image_path)
     image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
+
+    #load image from folder
+    image_folder = disese.disease_images_folder
+    image_paths = []
+    if image_folder:
+        folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+        for i in range(1, 10):
+            image_path = os.path.join(folder_path, f'image{i}.jpg')
+            if os.path.isfile(image_path):
+                image_paths.append(image_path)
+    image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
     disease_model = {
         'diseased_Id': disese.disease_id,
         'diseased_name': disese.disease_name,
@@ -393,6 +413,7 @@ def getDetail(request):
         'diseased_symptom': disese.disease_symptoms,
         'diseased_causes': disese.disease_causeses,
         'diseased_prevention': disese.disease_preventions,
+        'diseased_image_folder': image_urls,
         'diseased_image_folder': image_urls,
     }
     jsonData = { 'diseaseModel': disease_model}
@@ -407,6 +428,17 @@ def getListDetail(request):
     for disease_id in disease_ids:        
         diseases = SkinDisease.objects.filter(disease_id__in=[disease_id])
         for disease in diseases:
+            #load image from folder
+            image_folder = disease.disease_images_folder
+            image_paths = []
+            if image_folder:
+                folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+                for i in range(1, 10):
+                    image_path = os.path.join(folder_path, f'image{i}.jpg')
+                    if os.path.isfile(image_path):
+                        image_paths.append(image_path)
+            image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
+            # print('image_urls', image_urls)
             #load image from folder
             image_folder = disease.disease_images_folder
             image_paths = []

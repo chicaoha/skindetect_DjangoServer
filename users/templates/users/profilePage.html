@@ -1,296 +1,200 @@
-<!DOCTYPE html>
-<html lang="en">
+{% extends 'users/base.html' %}
+{% load tailwind_tags %}
+{% load static %}
+{% block title %} profile {% endblock %}
+{% block content %}
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
+<script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Profile Page</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="theme-color" content="#ffffff">
+<section id="" class="relative z-10 pt-[110px]">
+    <div class="container max-w-[1390px]">
+        <div
+            class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
+            <div class="-mx-4 flex flex-wrap ">
+                <div class="w-full px-1 lg:w-4/12">
+                    <div class="mb-2 flex flex-wrap items-center justify-center pb-6">
+                        <!-- Adjust the margin value here -->
+                        <div class="lg:w-1 px-[10px] ">
+                            <div class="mb-2 flex items-center justify-center"><img class="rounded-full"
+                                    src="{% static 'images/clpBot.jpg' %}" alt="avatar" style="width: 200px;"></div>
+                        </div>
 
-    <link type="text/css" href="volt.css" rel="stylesheet">
-</head>
-
-<body>
-    <main class="content">
-        <div class="row">
-            <div class="col-12 col-xl-8">
-                <div class="card card-body border-0 shadow mb-4">
-                    <h2 class="h5 mb-4">General information</h2>
-                    <form>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div>
-                                    <label for="first_name">First Name</label>
-                                    <input class="form-control" id="first_name" type="text"
-                                        placeholder="Enter your first name" required>
+                    </div>
+                    <div class="mb-2 flex flex-wrap"> <!-- Adjust the margin value here -->
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User
+                                Name</label>
+                            <input type="password" id="password"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                required>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><span
+                                    class="font-semibold">Click to upload</span></label>
+                            <label for="dropzone-file"
+                                class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
+                                <div class="flex flex-col items-center justify-center"
+                                    style="padding-top: 8px; padding-bottom: 8px;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="lucide lucide-file-image">
+                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
+                                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
+                                        <circle cx="10" cy="13" r="2" />
+                                        <path d="m20 17-1.1-1.1a2 2 0 0 0-2.81.01L10 22" />
+                                    </svg>
                                 </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
+                                <input id="dropzone-file" type="file" class="hidden" />
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full px-6 lg:w-8/12 ">
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
+                                Name</label>
+                            <input type="password" id="password"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                required>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
+                                Name</label>
+                            <input type="password" id="password"
+                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                required>
+                        </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="password"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
+                            <input type="password" id="password"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="•••••••••" required>
+
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
                                 <div>
-                                    <label for="last_name">Last Name</label>
-                                    <input class="form-control" id="last_name" type="text"
-                                        placeholder="Also your last name" required>
+                                    <label for="confirm_password"
+                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
+                                        password</label>
+                                    <input type="password" id="confirm_password"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="•••••••••" required>
                                 </div>
                             </div>
                         </div>
-                        <div class="row align-items-center">
-                            <div class="col-md-6 mb-3">
-                                <label for="birthday">Birthday</label>
-                                <div class="input-group">
-                                    <span class="input-group-text">
-                                        <svg class="icon icon-xs" fill="currentColor" viewBox="0 0 20 20"
-                                            xmlns="http://www.w3.org/2000/svg">
-                                            <path fill-rule="evenodd"
-                                                d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z"
-                                                clip-rule="evenodd"></path>
+                    </div>
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="phone"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
+                                number</label>
+                            <input type="tel" id="phone"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                placeholder="(+84)   " pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+
+                            <form class="max-w-sm mx-auto">
+                                <label for="email-address-icon"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
+                                    Email</label>
+                                <div class="relative">
+
+                                    <input type="text" id="email-address-icon"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="name@eiu.com">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
+                            <label for="gender"
+                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+                            <select id="gender"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                                <option value="male" selected>Male</option>
+                                <option value="Female">Female</option>
+                            </select>
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5">
+                                <label for="date"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of
+                                    birth</label>
+                                <!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+                                <div class="relative max-w-sm">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                         </svg>
-                                    </span>
-                                    <input data-datepicker="" class="form-control" id="birthday" type="text"
-                                        placeholder="dd/mm/yyyy" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="gender">Gender</label>
-                                <select class="form-select mb-0" id="gender" aria-label="Gender select example">
-                                    <option selected>Gender</option>
-                                    <option value="1">Female</option>
-                                    <option value="2">Male</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="email">Email</label>
-                                    <input class="form-control" id="email" type="email" placeholder="name@company.com"
-                                        required>
-                                </div>
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <div class="form-group">
-                                    <label for="phone">Phone</label>
-                                    <input class="form-control" id="phone" type="number" placeholder="+12-345 678 910"
-                                        required>
-                                </div>
-                            </div>
-                        </div>
-                        <h2 class="h5 my-4">Location</h2>
-                        <div class="row">
-                            <div class="col-sm-9 mb-3">
-                                <div class="form-group">
-                                    <label for="address">Address</label>
-                                    <input class="form-control" id="address" type="text"
-                                        placeholder="Enter your home address" required>
-                                </div>
-                            </div>
-
-                        </div>
-                        <div class="row">
-                            <div class="col-sm-4 mb-3">
-                                <div class="form-group">
-                                    <label for="city">District</label>
-                                    <input class="form-control" id="city" type="text" placeholder="City" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-4 mb-3">
-                                <label for="state">Province</label>
-                                <select class="form-select w-100 mb-0" id="province" name="province"
-                                    aria-label="Province select example">
-                                    <option selected>Province</option>
-                                    <option value="An Giang">An Giang</option>
-                                    <option value="Bà Rịa-Vũng Tàu">Bà Rịa-Vũng Tàu</option>
-                                    <option value="Bắc Giang">Bắc Giang</option>
-                                    <option value="Bắc Kạn">Bắc Kạn</option>
-                                    <option value="Bạc Liêu">Bạc Liêu</option>
-                                    <option value="Bắc Ninh">Bắc Ninh</option>
-                                    <option value="Bến Tre">Bến Tre</option>
-                                    <option value="Bình Định">Bình Định</option>
-                                    <option value="Bình Dương">Bình Dương</option>
-                                    <option value="Bình Phước">Bình Phước</option>
-                                    <option value="Bình Thuận">Bình Thuận</option>
-                                    <option value="Cà Mau">Cà Mau</option>
-                                    <option value="Cần Thơ">Cần Thơ</option>
-                                    <option value="Cao Bằng">Cao Bằng</option>
-                                    <option value="Đà Nẵng">Đà Nẵng</option>
-                                    <option value="Đắk Lắk">Đắk Lắk</option>
-                                    <option value="Đắk Nông">Đắk Nông</option>
-                                    <option value="Điện Biên">Điện Biên</option>
-                                    <option value="Đồng Nai">Đồng Nai</option>
-                                    <option value="Đồng Tháp">Đồng Tháp</option>
-                                    <option value="Gia Lai">Gia Lai</option>
-                                    <option value="Hà Giang">Hà Giang</option>
-                                    <option value="Hà Nam">Hà Nam</option>
-                                    <option value="Hà Nội">Hà Nội</option>
-                                    <option value="Hà Tĩnh">Hà Tĩnh</option>
-                                    <option value="Hải Dương">Hải Dương</option>
-                                    <option value="Hải Phòng">Hải Phòng</option>
-                                    <option value="Hậu Giang">Hậu Giang</option>
-                                    <option value="Hòa Bình">Hòa Bình</option>
-                                    <option value="Hưng Yên">Hưng Yên</option>
-                                    <option value="Khánh Hòa">Khánh Hòa</option>
-                                    <option value="Kiên Giang">Kiên Giang</option>
-                                    <option value="Kon Tum">Kon Tum</option>
-                                    <option value="Lai Châu">Lai Châu</option>
-                                    <option value="Lâm Đồng">Lâm Đồng</option>
-                                    <option value="Lạng Sơn">Lạng Sơn</option>
-                                    <option value="Lào Cai">Lào Cai</option>
-                                    <option value="Long An">Long An</option>
-                                    <option value="Nam Định">Nam Định</option>
-                                    <option value="Nghệ An">Nghệ An</option>
-                                    <option value="Ninh Bình">Ninh Bình</option>
-                                    <option value="Ninh Thuận">Ninh Thuận</option>
-                                    <option value="Phú Thọ">Phú Thọ</option>
-                                    <option value="Phú Yên">Phú Yên</option>
-                                    <option value="Quảng Bình">Quảng Bình</option>
-                                    <option value="Quảng Nam">Quảng Nam</option>
-                                    <option value="Quảng Ngãi">Quảng Ngãi</option>
-                                    <option value="Quảng Ninh">Quảng Ninh</option>
-                                    <option value="Quảng Trị">Quảng Trị</option>
-                                    <option value="Sóc Trăng">Sóc Trăng</option>
-                                    <option value="Sơn La">Sơn La</option>
-                                    <option value="Tây Ninh">Tây Ninh</option>
-                                    <option value="Thái Bình">Thái Bình</option>
-                                    <option value="Thái Nguyên">Thái Nguyên</option>
-                                    <option value="Thanh Hóa">Thanh Hóa</option>
-                                    <option value="Thừa Thiên Huế">Thừa Thiên Huế</option>
-                                    <option value="Tiền Giang">Tiền Giang</option>
-                                    <option value="Trà Vinh">Trà Vinh</option>
-                                    <option value="Tuyên Quang">Tuyên Quang</option>
-                                    <option value="Vĩnh Long">Vĩnh Long</option>
-                                    <option value="Vĩnh Phúc">Vĩnh Phúc</option>
-                                    <option value="Yên Bái">Yên Bái</option>
-                                </select>
-
-                            </div>
-
-                        </div>
-                        <div class="mt-3">
-                            <button class="btn btn-gray-800 mt-2 animate-up-2" type="submit">Save all</button>
-                        </div>
-                    </form>
-                </div>
-
-            </div>
-            <div class="col-12 col-xl-4">
-                <div class="row">
-                    <div class="col-12 mb-4">
-                        <div class="card shadow border-0 text-center p-0">
-                            <div class="profile-cover rounded-top">
-                            </div>
-                            <div class="card-body pb-5">
-                                <img src="0.jpg" class="avatar-xl rounded-circle mx-auto mt-n7 mb-4"
-                                    alt="Neil Portrait">
-                                <h4 class="h3">Phat</h4>
-                                <h5 class="fw-normal">Age</h5>
-                                <p class="text-gray mb-4">Address</p>
-
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-12">
-                        <div class="card card-body border-0 shadow mb-4">
-                            <h2 class="h5 mb-4">Select profile photo</h2>
-                            <div class="d-flex align-items-center">
-                                <div class="file-field">
-                                    <div class="d-flex justify-content-xl-center ms-xl-3">
-                                        <div class="d-flex">
-                                            <svg class="icon text-gray-500 me-2" fill="currentColor" viewBox="0 0 20 20"
-                                                xmlns="http://www.w3.org/2000/svg">
-                                                <path fill-rule="evenodd"
-                                                    d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z"
-                                                    clip-rule="evenodd"></path>
-                                            </svg>
-                                            <input type="file">
-                                            <div class="d-md-block text-left">
-                                                <div class="fw-normal text-dark mb-1">Choose Image</div>
-                                                <div class="text-gray small">JPG, GIF or PNG. Max size of 800K</div>
-                                            </div>
-                                        </div>
                                     </div>
+                                    <input id="datepicker" type="text"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        placeholder="Select date">
                                 </div>
+
                             </div>
                         </div>
                     </div>
-                    <div class="col-12">
+                    <div class="mb-5 flex flex-wrap ">
 
+                        <div class="lg:w-1/2 px-[10px]" style="width: 520px;">
+                            <div class="mb-5">
+                                <label for="location"
+                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                                <input type="password" id="password"
+                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
+                                    required>
+                            </div>
+                        </div>
                     </div>
-                    <script type="text/javascript">
-                        (function (d, m) {
-                            var kommunicateSettings =
-                            {
-                                "appId": "e8bdb391eea372af0219e3329ba92e89",
-                                "popupWidget": true,
-                                "automaticChatOpenOnNavigation": true
-                            };
-                            var s = document.createElement("script");
-                            s.type = "text/javascript"; s.async = true;
-                            s.src = "https://widget.kommunicate.io/v2/kommunicate.app";
-                            var h = document.getElementsByTagName("head")[0];
-                            h.appendChild(s);
-                            window.kommunicate = m;
-                            m._globals = kommunicateSettings;
-                        })(document, window.kommunicate || {});
-                        /* NOTE : Use web server to view HTML files as real-time update will not work if you directly open the HTML file in the browser. */
-                    </script>
+
                 </div>
+
             </div>
-        </div>
-        <div class="theme-settings card bg-gray-800 pt-2 collapse" id="theme-settings">
-            <div class="card-body bg-gray-800 text-white pt-4">
-                <button type="button" class="btn-close theme-settings-close" aria-label="Close"
-                    data-bs-toggle="collapse" href="#theme-settings" role="button" aria-expanded="false"
-                    aria-controls="theme-settings"></button>
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <p class="m-0 mb-1 me-4 fs-7">Open source <span role="img" aria-label="gratitude">💛</span></p>
-                    <a class="github-button" href="https://github.com/themesberg/volt-bootstrap-5-dashboard"
-                        data-color-scheme="no-preference: dark; light: light; dark: light;" data-icon="octicon-star"
-                        data-size="large" data-show-count="true"
-                        aria-label="Star themesberg/volt-bootstrap-5-dashboard on GitHub">Star</a>
-                </div>
-                <a href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard" target="_blank"
-                    class="btn btn-secondary d-inline-flex align-items-center justify-content-center mb-3 w-100">
-                    Download
-                    <svg class="icon icon-xs ms-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M2 9.5A3.5 3.5 0 005.5 13H9v2.586l-1.293-1.293a1 1 0 00-1.414 1.414l3 3a1 1 0 001.414 0l3-3a1 1 0 00-1.414-1.414L11 15.586V13h2.5a4.5 4.5 0 10-.616-8.958 4.002 4.002 0 10-7.753 1.977A3.5 3.5 0 002 9.5zm9 3.5H9V8a1 1 0 012 0v5z"
-                            clip-rule="evenodd"></path>
-                    </svg>
+            <div style="text-align: right;">
+                <a href="{% url '' %}"
+                    class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
+                    Cancel
                 </a>
-                <p class="fs-7 text-gray-300 text-center">Available in the following technologies:</p>
-                <div class="d-flex justify-content-center">
-                    <a class="me-3" href="https://themesberg.com/product/admin-dashboard/volt-bootstrap-5-dashboard"
-                        target="_blank">
-                        <img src="../assets/img/technologies/bootstrap-5-logo.svg" class="image image-xs">
-                    </a>
-                    <a href="https://demo.themesberg.com/volt-react-dashboard/#/" target="_blank">
-                        <img src="../assets/img/technologies/react-logo.svg" class="image image-xs">
-                    </a>
-                </div>
+                <a href="{% url '' %}" id="saveChanges"
+                    class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
+                    Save Changes
+                </a>
             </div>
         </div>
+    </div>
 
-        <div class="card theme-settings bg-gray-800 theme-settings-expand" id="theme-settings-expand">
-            <div class="card-body bg-gray-800 text-white rounded-top p-3 py-2">
-                <span class="fw-bold d-inline-flex align-items-center h6">
-                    <svg class="icon icon-xs me-2" fill="currentColor" viewBox="0 0 20 20"
-                        xmlns="http://www.w3.org/2000/svg">
-                        <path fill-rule="evenodd"
-                            d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z"
-                            clip-rule="evenodd"></path>
-                    </svg>
-                    Settings
-                </span>
-            </div>
-        </div>
+</section>
+<script>
+    flatpickr("#datepicker", {
+        dateFormat: "Y-m-d", // customize the date format as needed
 
-
-    </main>
-
-  
-
-
-</body>
-
-</html>
+    });
+</script>
+<!-- notify after save changes -->
+<!-- <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+    </svg>
+    <span class="sr-only">Info</span>
+    <div>
+      <span class="font-medium">Success alert!</span> Change a few things up and try submitting again.
+    </div>
+  </div> -->
+{% endblock %}

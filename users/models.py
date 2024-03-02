@@ -16,7 +16,7 @@ def profile_image_path(instance, filename):
     # Upload to 'media/profile_pics/{user_id}/' directory with a unique filename
     folder_path = os.path.join('profile_pics', str(instance.user_id))
     os.makedirs(folder_path, exist_ok=True)
-    return os.path.join(folder_path, filename)
+    return os.path.join(folder_path, filename) 
 
 class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

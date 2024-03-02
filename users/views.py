@@ -2,6 +2,7 @@ import base64
 from email import message
 import json
 import os
+import re
 from turtle import back
 import django
 from requests import get
@@ -31,6 +32,11 @@ from django.contrib.auth import authenticate
 import ssl
 from django.contrib import messages
 ssl._create_default_https_context = ssl._create_unverified_context
+from django.http import JsonResponse
+from google.auth.transport import requests
+from google.auth.transport.requests import Request
+from allauth.socialaccount.models import SocialAccount
+from django.core.files import File
 
 # Create your views here.
 def index(request):
@@ -72,9 +78,6 @@ def detect(request):
 def mobileApp(request):
     return render(request, 'users/mobileApp.html')
 
-# def some_view(request):
-#     return render(request, 'users/base.html', {'include_footer': include_footer})
-
 def register(request):
     if request.method == 'POST':
         if request.POST['password1'] == request.POST['password2']:
@@ -96,9 +99,8 @@ def login(request):
     if request.method == 'POST':
         email = request.POST['email']
         password = request.POST['password']
-
+  
         user = auth.authenticate(username=email, password=password)
-
         if user is not None:
             auth.login(request, user)
             print('Login successfully!')
@@ -119,26 +121,33 @@ def logout(request):
 def profile(request):
     user = request.user
     try:
-        profile = user.profile
+        profile = Profile.objects.get(user=user)
     except ObjectDoesNotExist:
         # If profile doesn't exist, create one
-        profile = Profile.objects.create(user=user)
-        profile.save()
+        profile = None
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
+            if form.changed_data:
+                avatar_file = form.cleaned_data['avatar']
+                if profile is not None and profile.avatar and profile.avatar.name:                
+                    old_avatar_path = profile.avatar.path
+                    user_id = getattr(profile.user, 'id', None)
+                    if user_id:
+                        file_name = f'avatar_{user_id}.jpg'
+                        profile.avatar.name = file_name
+                        profile.avatar.save(file_name, avatar_file)
+                        if os.path.exists(old_avatar_path):
+                            os.remove(old_avatar_path)
+                            print(f"Successfully deleted old avatar file at path: {old_avatar_path}")   
             form.save()
             messages.success(request, 'Your profile was successfully updated!')
             return redirect('profilePage')
-        else:
-            print('Profile form is not valid!')
-            print(form.errors)  # Print form errors to console for debugging
     else:
-        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
+        form = ProfileForm(instance=profile)
 
-    return render(request, 'users/profilePage.html', {'user': user, 'form': form})
-
+    return render(request, 'users/profilePage.html', {'form': form, 'profile': profile})
 
 
 # --------------------------------Mobile API--------------------------------#
@@ -188,9 +197,6 @@ def loginMobile(request):
         print('-------------------------------')
         print('Email: ' + username_or_email + "\n", 'Password: ' + password + "\n")
     return JsonResponse(result)
-
-
-
                 
 @api_view(['POST'])
 def registerMobile(request):
@@ -224,7 +230,6 @@ def registerMobile(request):
                 print('Email: ' + email + "\n", 'Password: ' + password + "\n")
     return JsonResponse(result)
 
-
 def getUserMobile(userid):
     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Get User >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     result = {'placement': -1, 'user': None, 'message': ''}
@@ -245,6 +250,7 @@ def getUserMobile(userid):
 
 @api_view(['POST'])
 def updateMobile(request):
+
     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     if (
         request.method == 'POST'
@@ -303,5 +309,76 @@ def updateMobile(request):
         print('-------------------------------')
         return JsonResponse(result)
 
+@api_view(['POST'])
+def authenticate_user(request):
+    result = {'placement': -1, 'user': None, 'isLogin': False}
+    if request.method == 'POST':
+        access_token = request.POST.get('access_token')
+        if access_token:
+            # Verify access token with Google API
+            url = 'https://www.googleapis.com/oauth2/v1/tokeninfo'
+            params = {'access_token': access_token}
+            response = get(url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                if 'error' not in data:
+                    print("data: ", data)
+                    email = data.get('email')
+                    google_id = data.get('user_id')
+                    avatar = data.get('photo_url', None)
+                    user = None
+                    username = email.split('@')[0]
+                    first_name, last_name, *_ = username.split('.')
+                    username = ' '.join([first_name.capitalize(), last_name.capitalize()])
+                    try:
+                        user = User.objects.get(email=email)
+                    except User.DoesNotExist:
+                        user = User.objects.create_user(username=username, email=email, password=google_id)
+                    profile, created = Profile.objects.get_or_create(user=user)
+                    # profile.avatar = avatar
+                    profile.save()
+                     # Create or update SocialAccount
+                    social_account, _ = SocialAccount.objects.get_or_create(user=user, provider='google')
+                    social_account.uid = google_id
+                    social_account.extra_data = data
+                    social_account.save()
+                    auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    if avatar:
+                        try:
+                            profile.avatar = avatar
+                            profile.save()
+                        except ValueError:
+                            # Handle the case where the avatar is not a valid image
+                            pass
+                    else:
+                        # Set the default avatar URL
+                        profile.avatar.save('default.jpg', File(open('media/profile_pics/default.jpg', 'rb')))
+                        result['placement'] = 0
+                        result['user'] = {
+                            'user_id': getattr(user, 'id', None),
+                            'user_name': user.get_username(),
+                            'user_email': getattr(user, 'email', None),
+                            'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
+                            'user_phone': profile.phone if profile else None,
+                            'user_address': profile.address if profile else None,
+                            'date_joined' : getattr(user, 'date_joined', None),
+                            'first_name' : getattr(user, 'first_name', None),
+                            'last_name' : getattr(user, 'last_name', None),
+                            'gender' : profile.gender if profile else None,
+                        }
+                        result['isLogin'] = True
+                    return JsonResponse(result)
+                else:
+                    # Error occurred or token is invalid
+                    return JsonResponse({'authenticated': False})
+            else:
+                # Error handling for Google API request
+                return JsonResponse({'error': 'Failed to verify access token'})
+        else:
+            # Access token not provided in request
+            return JsonResponse({'error': 'Access token not provided'})
+    else:
+        # Invalid request method
+        return JsonResponse({'error': 'Invalid request method'})
 
 

@@ -34,12 +34,14 @@ urlpatterns = [
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),
     path('updateMobile', views.updateMobile, name='updateMobile'),
+    path('authenticate_user', views.authenticate_user, name='authenticate_user'),
     #-----------detect mobile api----------------
     path('getimage' ,viewDetect.getimage, name='getimage'),
     path('getHistory', viewDetect.getHistory, name='getHistory'),
     path('deleteImage', viewDetect.deleteImage, name='deleteImage'),
     path('getDetail', viewDetect.getDetail, name='getDetail'),
     path('getListDetail', viewDetect.getListDetail, name='getListDetail'),
+    
 ]
 
 if settings.DEBUG:

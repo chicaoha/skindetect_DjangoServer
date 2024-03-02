@@ -10,21 +10,17 @@
     <div class="container max-w-[1390px]">
         <div
             class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
-
             <form id="profileForm" method="POST" action="{% url 'profile' %}" enctype="multipart/form-data">
                 <div class="-mx-4 flex flex-wrap pb-10 ">
                     <!-- avatar -->
                     {% csrf_token %}
-                    {{form.as_p}}
                     <div class="w-full px-1 lg:w-4/12">
                         <div class="mb-2 flex flex-wrap items-center justify-center pb-6">
                             <!-- Adjust the margin value here -->
                             <div class="lg:w-1 px-[10px] ">
                                 <div class="mb-2 flex items-center justify-center" id="avatar-container">
+                                    <img class="rounded-circle" id="avatar-image" src="{{user.profile.avatar.url}}" alt="avatar" style="width: 300px; height: 300px; cursor: pointer;" >                  
                                     <input type="file" id="avatar_input" accept="image/*" style="display: none;">
-                                    <label for="{{form.avatar_input.id_for_label}} ">
-                                        <img class="rounded-full" id="avatar-image" src="{% static 'images/clpBot.jpg' %}" alt="avatar" style="width: 300px; cursor: pointer;">
-                                    </label>
                                 </div>
                                 <div class="text-center text-sm text-gray-500 dark:text-gray-400 font-bold text-2xl flex items-center justify-center">                   
                                     {{ user.email }}
@@ -35,14 +31,13 @@
                     <!-- form -->          
                     <div class="w-full px-3 lg:w-8/12 mx-auto my-3 rounded-2xl bg-white pt-10 pb-10 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-16 lg:pb-4 xl:px-6"> 
                         <div class="mb-5 flex flex-wrap">
-                            {% csrf_token %}
-                            
+                            {% csrf_token %}                         
                             <div class="lg:w-1/2 px-[10px]">                    
                                 <label for="{{form.first_name.id_for_label}}"
                                 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
                                 Name</label>
                                 <input type="text" id="first_name" name="first_name"
-                                value="{{ user.first_name }}"
+                                value="{{user.first_name }}"
                                 class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                                     required>
                             </div>
@@ -56,36 +51,13 @@
                                     required>
                             </div>
                         </div>
-                        <!-- <div class="mb-5 flex flex-wrap">
-                            <div class="lg:w-1/2 px-[10px]">
-                                <label for="password"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                                <input type="password" id="password"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                    placeholder="•••••••••" required>
-
-                            </div>
-                            <div class="lg:w-1/2 px-[10px]">
-                                <div class="mb-5">
-                                    <div>
-                                        <label for="confirm_password"
-                                            class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
-                                            password</label>
-                                        <input type="password" id="confirm_password"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                            placeholder="•••••••••" required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div> -->
                         <div class="mb-5 flex flex-wrap">
                             <div class="lg:w-1/2 px-[10px]">
                                 <label for="{{ form.phone.id_for_label }}"
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
-                                    number</label>
-                                    
+                                    number</label>                                  
                                 <input type="tel" id="phone" name="phone"
-                                    value="{{ form.phone}}"
+                                    value="{{ user.profile.phone}}"
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                     placeholder="(+84)   "  required>
                             </div>
@@ -94,7 +66,7 @@
                                     <label for="{{ form.address.id_for_label }}"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
                                     <input type="text" id="address" name="address"
-                                        value="{{ form.address }}"
+                                        value="{{ user.profile.address}}"
                                         class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
                                         required>
                                 </div>
@@ -106,9 +78,9 @@
                                     class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
                                 <select id="gender" name="gender" required 
                                     class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                    <option value="M" >Male</option>
-                                    <option value="F" >Female</option>
-                                    <option value="O">Other</option>
+                                    <option value="M" {% if user.profile.gender == 'M' %} selected {% endif%}>Male</option>
+                                    <option value="F" {% if user.profile.gender == 'F' %} selected {% endif%}>Female</option>
+                                    <option value="O" {% if user.profile.gender == 'O' %} selected {% endif%}>Other</option>
                                 </select>
                             </div>
                             <div class="lg:w-1/2 px-[10px]">
@@ -116,7 +88,6 @@
                                     <label for="{{form.dob.id_for_label}}"
                                         class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of
                                         birth</label>
-                                    <!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
                                     <div class="relative max-w-sm">
                                         <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                             <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -126,7 +97,7 @@
                                             </svg>
                                         </div>
                                         <input id="datepicker" type="text" name="dob"
-                                        value="{{ form.dob|date:'Y-m-d'|default:'' }}"
+                                        value="{{ user.profile.dob }}"
                                         class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                             placeholder="Select date">
                                     </div>
@@ -157,9 +128,12 @@
     });
 
     // change avatar
+    document.getElementById('avatar-image').addEventListener('click', function () {
+    document.getElementById('avatar_input').click();
+    });
+
     document.getElementById('avatar_input').addEventListener('change', function () {
-        console.log('avatar clicked');
-        const file  = event.target.files[0];
+        const file = event.target.files[0];
         const reader = new FileReader();
         reader.onload = function(e) {
             const imageDataUrl = e.target.result;
@@ -196,7 +170,8 @@
             }
         }
     });
-   
+    
+
 </script>
 
 <!-- notify after save changes -->

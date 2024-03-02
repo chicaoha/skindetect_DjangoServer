@@ -4,3 +4,11 @@
 *.pyc
 users/__pycache__/admin.cpython-311.pyc
 *.pyc
+*.pyc
+*.pyc
+skindetect/__pycache__/urls.cpython-311.pyc
+users/__pycache__/admin.cpython-311.pyc
+*.pyc
+.DS_Store
+.DS_Store
+*.pyc

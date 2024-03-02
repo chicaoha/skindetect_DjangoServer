@@ -11,10 +11,10 @@ class ProfileForm(forms.ModelForm):
     # email = forms.CharField(max_length=30, label='Email', required=False, widget=forms.TextInput(attrs={'type': 'email', 'class':"form-control", 'placeholder':"youremail@gmail.com"}))
 
     # Customizing specific fields
-    avatar_input = forms.ImageField(label='New Avatar', required=False)
     dob = forms.DateField(label='Date of Birth', widget=forms.TextInput(attrs={'type': 'date', 'class':"form-control"}), required=False)
     address = forms.CharField(max_length=255, label='address', required=False, widget=forms.TextInput(attrs={'type': 'text', 'class':"form-control", 'placeholder':"Enter your home address"}))
-  
+    avatar_input = forms.FileField(label='Avatar', required=False, widget=forms.FileInput(attrs={'type': 'file', 'class':"form-control", 'placeholder':"Choose your avatar"}))
+    
     GENDER_CHOICES = (
         ('M', 'Male'),
         ('F', 'Female'),
@@ -27,6 +27,7 @@ class ProfileForm(forms.ModelForm):
         required=False,
         widget=forms.Select(attrs={'class': 'form-select mb-0', 'aria-label': 'Gender select example'})
     )
+
     phone = forms.CharField(
         max_length=10,
         label='Phone',
@@ -43,7 +44,6 @@ class ProfileForm(forms.ModelForm):
 
     class Meta:
         model = Profile
-        # fields = ['avatar']
         fields = ['avatar', 'dob', 'gender', 'address', 'phone', 'first_name', 'last_name']
 
     def save(self, commit=True):
@@ -55,11 +55,10 @@ class ProfileForm(forms.ModelForm):
         if user:
             user.first_name = self.cleaned_data['first_name']
             user.last_name = self.cleaned_data['last_name']
-            # user.email = self.cleaned_data['email']
-            user.phone = self.cleaned_data['phone']
-            user.address = self.cleaned_data['address']
-            user.gender = self.cleaned_data['gender']
             user.dob = self.cleaned_data['dob']
+            user.gender = self.cleaned_data['gender']
+            user.address = self.cleaned_data['address']
+            user.phone = self.cleaned_data['phone']
             if commit:
                 user.save()
 

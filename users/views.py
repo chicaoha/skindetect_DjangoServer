@@ -58,8 +58,8 @@ def profilePage(request):
 def page404(request):
     return render(request, 'users/page404.html')
 
-def detect(request):
-    return render(request, 'users/detect.html')
+# def detect(request):
+#     return render(request, 'users/detect.html')
 
 def mobileApp(request):
     return render(request, 'users/mobileApp.html')
@@ -78,7 +78,7 @@ def register(request):
 
                 user.backend = 'django.contrib.auth.backends.ModelBackend'
                 auth.login(request, user)
-                return redirect('index')
+                return redirect('')
         else:
             return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
@@ -94,7 +94,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('index')  # Make sure you have an 'index' URL pattern
+            return redirect('')  
         else:
             return render(request, 'users/phat_log.html', {'error': 'Username or password is incorrect!'})
     else:
@@ -103,7 +103,7 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('index')
+    return redirect('')
 
 
 @login_required
@@ -151,12 +151,12 @@ def profile(request):
                             print(f"Successfully deleted old avatar file at path: {old_avatar_path}")
 
         form.save()
-        return redirect('profile')
+        return redirect('profilePage')
 
     else:
         form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-    return render(request, 'users/profile.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profilePage.html', {'user': user, 'profile': profile, 'form': form})
 
 
 # --------------------------------Mobile API--------------------------------#

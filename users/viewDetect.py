@@ -13,6 +13,8 @@ from unittest import result
 import cv2
 import django
 import numpy as np
+from tarfile import TarFile
+
 
 from users.forms import DetectInfoForm
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
@@ -24,7 +26,7 @@ from django.utils import timezone
 from django.conf import settings
 from .models import DetectInfo, SkinDisease
 from django.core.files.base import ContentFile
-from datetime import datetime
+from datetime import date, datetime
 from django.db import connection
 from django.shortcuts import get_object_or_404
 from django.contrib.auth.decorators import login_required
@@ -57,8 +59,8 @@ name_arr = ['Actinic keratoses',
             'Vascular lesions',
             'Vascular lesions',
             'Vascular lesions']
-# model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt', force_reload=True).autoshape()
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt')
+# model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
 
 current_datetime = datetime.now()
 
@@ -106,8 +108,37 @@ def detect(image_file):
     score = random.uniform(0.01, 0.1)
     return ["Skin without pathology!", float(score), date, time, '8']
 
+def showResult(request):
+    detect_id = request.session.pop('detect_id', None)
 
-@login_required
+    if detect_id is not None:
+        # Use get_object_or_404 to get a single instance or raise a 404 error
+        detect_info = get_object_or_404(DetectInfo, detect_id=detect_id)
+        return render(request, 'users/detect_result.html', {'detect_info': detect_info})
+    else:
+        return render(request, 'users/detect.html')
+    
+def history(request):
+    user = request.user
+    if user is not None:
+        data_filter = DetectInfo.objects.filter(user_id = user.id)
+        return render(request, 'users/detect_history.html', {'data_filter' : data_filter})
+    return render(request, 'users/detect_history.html')
+
+def deleteDetectResult(request):
+    detect_id = request.detect_id
+    result = 'unsuccess'
+    if detect_id is not None:
+        # result = DetectInfo.objects.filter(detect_id=detect_id)
+        query = DetectInfo.objects.get(pk=id)
+        print(query)
+        query.delete()
+        result = 'successful'
+        return render(request, 'users/detect_history.html', {'result' : result})
+    return render(request, 'users/detect_history.html', {'result' : result})
+
+
+@login_required(login_url='login')  
 def detectImage(request):
     if request.method == 'POST':
         user = request.user
@@ -144,12 +175,16 @@ def detectImage(request):
             detect_info.save()
 
             print("Image and file inserted successfully into DetectInfo table")
-            return redirect('index')
+           
+            request.session['detect_id'] = detect_info.detect_id
+            return redirect('showResult')
         else:
             print("Form is not valid. Errors: {}".format(form.errors))
             return render(request, 'users/detect.html', {'form_errors': form.errors})
 
     return render(request, 'users/detect.html', {'form': DetectInfoForm()})
+
+
 
 # --------------------------------Mobile API--------------------------------#
 # 
@@ -286,8 +321,7 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
         detect_info = DetectInfo(
             user_id=user_id,
             detect_date=current_datetime,
-            disease=skin_disease_instance,
-            detect_score=image_score           
+            disease=skin_disease_instance,    
             detect_score=image_score           
         )
 

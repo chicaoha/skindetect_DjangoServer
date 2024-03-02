@@ -15,7 +15,8 @@ from django.core.files.storage import default_storage
 def profile_image_path(instance, filename):
     # Upload to 'media/profile_pics/{user_id}/' directory with a unique filename
     folder_path = os.path.join('profile_pics', str(instance.user_id))
-    os.makedirs(folder_path, exist_ok=True)
+    full_path = os.path.join(settings.MEDIA_ROOT, folder_path)
+    os.makedirs(full_path, exist_ok=True)
     return os.path.join(folder_path, filename)
 
 class Profile(models.Model):
@@ -57,11 +58,11 @@ class DetectInfo(models.Model):
     def __str__(self) -> str:
         return super().__str__()
 
-@receiver(post_save, sender=Profile)
-def create_profile_image_path(sender, instance, created, **kwargs):
-    if created:
-        profile_image_path(instance, instance.avatar.name)
-        instance.save()
+# @receiver(post_save, sender=Profile)
+# def create_profile_image_path(sender, instance, created, **kwargs):
+#     if created:
+#         profile_image_path(instance, instance.avatar.name)
+#         instance.save()
 
 @receiver(pre_save, sender=Profile)
 def delete_old_avatar(sender, instance, **kwargs):

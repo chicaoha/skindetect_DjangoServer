@@ -1,3 +1,4 @@
+import tarfile
 from django.urls import path
 from . import views
 from django.contrib import admin
@@ -13,6 +14,7 @@ from . import viewDetect
 urlpatterns = [
     #-----------web----------------
     path('', views.index, name=''),
+    # path('login/', views.login, name='login'),
     path('home', views.index, name='home'),
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
@@ -23,9 +25,11 @@ urlpatterns = [
     path('blog1', views.blog1, name='blog1'),
     path('blog2', views.blog2, name='blog2'),
     path('blog3', views.blog3, name='blog3'),
-    path('profilePage', views.profilePage, name='profilePage'),
+    path('profilePage', views.profile, name='profilePage'),
     path('page404', views.page404, name='page404'),
-    path('detect', views.detect, name='detect'),
+    path('detect', viewDetect.detectImage, name='detect'),
+    path('showResult', viewDetect.showResult, name='showResult'),
+    path('detectHistory', viewDetect.history, name='detectHistory'),
     path('mobileApp', views.mobileApp, name='mobileApp'),
     path('forgotPassword', views.forgotPassword, name='forgotPassword'),
     #-----------profile mobile api----------------
@@ -44,12 +48,3 @@ if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
-
-
-# urlpatterns = patterns('users.views',
-#                        url(r'^view_profile/$', 'view_profile', name ='view_profile'),
-#                        url(r'^view_profile/edit_profile/$', 'edit_profile', name ='edit_profile'))
-
-# urlpatterns = [
-#                   url(r'^accounts/', include('accounts.urls', namespace='accounts')),
-#               ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

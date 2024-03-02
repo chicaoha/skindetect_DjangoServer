@@ -1,6 +1,7 @@
 {% extends 'users/base.html' %}
 {% load static %}
-{% block title %} Login {% endblock %}
+{% block title %} Register {% endblock %}
+{% load socialaccount %}
 
 {% comment %} <head> {% endcomment %}
     {% comment %} <link rel="stylesheet" href="./static/css/style.css"> {% endcomment %}
@@ -22,8 +23,9 @@
                     <p class="mb-11 text-base text-body">
                         It's totally free and super easy
                     </p>
-                    <button
-                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark">
+                    <a href="{% provider_login_url "google" %}">
+                        <button
+                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark" type='submit'>
                         <span class="mr-3">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -48,31 +50,39 @@
                                 </defs>
                             </svg>
                         </span>
-                        Sign up with Google
-                    </button>
+                        Sign in with Google
+                        </button>
+                    </a>
                     <div class="relative z-10 mb-[30px] flex items-center">
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                         <p class="w-full px-5 text-base text-body">
-                            Or, sign up with your email
+                            Or, sign up with your username
                         </p>
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                     </div>
                 </div>
-                <form>
+                <form action= "{% url 'register' %}" method="POST">
+                    <div class="text-red-500 text-sm">
+                        {% if error %}
+                            <span>*<span>
+                            {{ error }} 
+                        {% endif %}
+                    </div>
+                    {% csrf_token %}
                     <div class="mb-5">
-                        <input type="text" placeholder="Enter User name"
+                        <input type="text" placeholder="Enter username" required name='username'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-5">
-                        <input type="email" placeholder="Enter your email"
+                        <input type="email" placeholder="Enter your email" required name='email'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-                        <input type="password" placeholder="Enter your password"
+                        <input type="password" placeholder="Enter your password" required name='password1'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-                        <input type="password" placeholder="Confirm your password"
+                        <input type="password" placeholder="Confirm your password" required name='password2'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-[30px]">

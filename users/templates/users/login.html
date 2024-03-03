@@ -4,16 +4,17 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
 
-    <meta charset="utf-8">
-    <link rel="icon" href="./static/images/logo.jpg">
-    <title>Login Page | SkinDetect.ai</title>
-    {% comment %} <link rel="stylesheet" href="login.css"> {% endcomment %}
-    <link rel="stylesheet" href="./static/css/login.css">
-    
-    {% tailwind_preload_css %}
-    {% tailwind_css %}
-    <link rel="stylesheet" href="./static/css/app.css">
-    {% providers_media_js %}
+<meta charset="utf-8">
+<link rel="icon" href="./static/images/logo.jpg">
+<title>Login Page | SkinDetect.ai</title>
+{% comment %}
+<link rel="stylesheet" href="login.css"> {% endcomment %}
+<link rel="stylesheet" href="./static/css/login.css">
+
+{% tailwind_preload_css %}
+{% tailwind_css %}
+<link rel="stylesheet" href="./static/css/app.css">
+{% providers_media_js %}
 </head>
 {% block content %}
 
@@ -25,8 +26,8 @@
         <form action="{% url 'login' %}" method="POST">
             <div class="text-red-600 text-sm">
                 {% if error %}
-                    <span>*</span>
-                    {{ error }} 
+                <span>*</span>
+                {{ error }}
                 {% endif %}
             </div>
             {% csrf_token %}
@@ -42,9 +43,9 @@
                     <label for="remember-me">Remember me</label>
                 </div>
                 {% comment %} <a href="{% provider_login_url google %}">Google</a> {% endcomment %}
-                <a href="{% provider_login_url "google" %}">Login with Google</a>
+                <a href="{% provider_login_url " google" %}">Login with Google</a>
                 <div class="pass-link">
-                    <a href="#">Forgot password?</a>
+                    <a href="{% url 'forgotPassword' %}">Forgot password?</a>
                 </div>
             </div>
             <div class="field">
@@ -56,6 +57,8 @@
         </form>
     </div>
 </body>
+
 <head>
-{% endblock %}
+    {% endblock %}
+
 </html>

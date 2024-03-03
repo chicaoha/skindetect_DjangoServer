@@ -1,21 +1,15 @@
 {% extends 'users/base.html' %}
 {% load static %}
 {% block title %} Login {% endblock %}
-
-{% comment %} <head> {% endcomment %}
-    {% comment %} <link rel="stylesheet" href="./static/css/style.css"> {% endcomment %}
-    {% comment %} {% tailwind_preload_css %}
-    {% tailwind_css %} {% endcomment %}
-{% comment %} </head> {% endcomment %}
 {% block content %}
 {% load socialaccount %}
+
 
 <main>
     <section class="pt-[150px] pb-[110px] lg:pt-[220px]">
         <div class="container overflow-hidden lg:max-w-[1250px]">
             <div class="wow fadeInUp mx-auto w-full max-w-[520px] rounded-lg bg-[#F8FAFB] py-10 px-6 shadow-card dark:bg-[#15182A] dark:shadow-card-dark sm:p-[50px]"
                 data-wow-delay=".2s">
-
                 <div class="text-center">
                     <h3 class="mb-[10px] text-2xl font-bold text-black dark:text-white sm:text-[28px]">
                         Sign in to your account
@@ -23,7 +17,9 @@
                     <p class="mb-11 text-base text-body">
                         Login to your account for a faster checkout.
                     </p>
-                    <a href="{% provider_login_url google %}" class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark">
+                    <a href="{% provider_login_url "google" %}">
+                        <button
+                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark" type='submit'>
                         <span class="mr-3">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -48,10 +44,12 @@
                                 </defs>
                             </svg>
                         </span>
-                        <span class="flex-1 text-center">
-                            Sign in with Google
-                    </a>                        
+                        Sign in with Google
+                        </button>
+                    </a>
+                <form action="{% url 'login' %}" method="POST">    
                     <div class="relative z-10 mb-[30px] flex items-center">
+                        
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                         <p class="w-full px-5 text-base text-body">
                             Or, sign in with your Username
@@ -59,13 +57,20 @@
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                     </div>
                 </div>
-                <form action="{% url 'login' %}" method="POST">
+                <div class="text-red-600 text-sm">
+                    {% if error %}
+                        <span>*</span>
+                        {{ error }} 
+                    {% endif %}
+                </div>
+                {% csrf_token %}
                     <div class="mb-5">
-                        <input type="email" placeholder="Enter your email" name = "email"
+                        <input type="text" placeholder="Enter your username" required name='username'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-                        <input type="password" placeholder="Enter your password" name="password"
+
+                        <input type="password" placeholder="Enter your password" required name='password'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="-mx-2 mb-[30px] flex flex-wrap justify-between">
@@ -94,7 +99,7 @@
                             </label>
                         </div>
                         <div class="w-full px-2 sm:w-1/2">
-                            <a href="javascript:void(0)" class="text-base text-primary hover:underline sm:text-right">
+                            <a href="#">
                                 Forgot Password?
                             </a>
                         </div>

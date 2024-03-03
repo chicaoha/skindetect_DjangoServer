@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 DEBUG = True
 
 # In settings.py
-ALLOWED_HOSTS = ['yourdomain.com', 'f801-2402-800-6311-4b12-b83b-4c43-5437-c2ae.ngrok-free.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yourdomain.com', '08f9-180-148-6-78.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
 # Application definitionpy
@@ -68,6 +68,7 @@ MIDDLEWARE = [
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -76,7 +77,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://f801-2402-800-6311-4b12-b83b-4c43-5437-c2ae.ngrok-free.app",  # Add your NGROK URL here
+    "https://08f9-180-148-6-78.ngrok-free.app",  # Add your NGROK URL here
     # Add other allowed origins if needed
 ]
 ROOT_URLCONF = 'skindetect.urls'
@@ -145,6 +146,9 @@ LANGUAGE_CODE = 'en-us'
 TIME_ZONE = 'Asia/Ho_Chi_Minh'
 
 
+TIME_ZONE = 'Asia/Ho_Chi_Minh'
+
+
 USE_I18N = True
 
 USE_TZ = True
@@ -187,6 +191,7 @@ AUTHENTICATION_BACKENDS = [
 SITE_ID = 1
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+# LOGIN_URL = 'users:login'
 
 # ACCOUNT_USER_MODEL_USERNAME_FIELD = None
 ACCOUNT_EMAIL_REQUIRED = True

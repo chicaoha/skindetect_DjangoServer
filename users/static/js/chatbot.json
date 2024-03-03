@@ -1,0 +1,106 @@
+{
+    "message": "Team members: ",
+        "platform": "kommunicate",
+            "metadata": {
+        "contentType": "300",
+            "templateId": "10",
+                "payload": [
+                    {
+                        "title": "Hà Chí Cao",
+                        "subtitle": "Mobile Developer | AI Engineer",
+                        "header": {
+                            "imgSrc": "https://scontent.fsgn21-1.fna.fbcdn.net/v/t39.30808-1/426417899_3600227150243944_6994332015981117702_n.jpg?stp=dst-jpg_s320x320&_nc_cat=103&ccb=1-7&_nc_sid=5740b7&_nc_eui2=AeEiqFMlG_PgXLRdoRyP5KS0tgaWXqB-oGO2BpZeoH6gYzH5Dt9r4sHgTkLznNXyQ2bfS0A5Ul4_GNzerThgOaIx&_nc_ohc=AkJZVk9JvR4AX_aWC78&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfAMmLc7BJ7inyWx0ppBC-niOa66QlYfMal8qfI5pTObYA&oe=65E9166B"
+                        },
+                        "description": "Team Lead",
+                        "buttons": [
+                            {
+                                "name": "Add Facebook",
+                                "action": {
+                                    "type": "link",
+                                    "payload": {
+                                        "url": "https://www.facebook.com/profile.php?id=100007700829861"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Contact email",
+                                "action": {
+                                    "type": "quickReply",
+                                    "payload": {
+                                        "message": "cao.ha.set18@eiu.edu.vn",
+                                        "replyMetadata": {
+                                            "key1": "value1"
+                                        }
+                                    }
+                                }
+                            }
+
+                        ]
+                    },
+                    {
+                        "title": "Khổng Thị Gia Linh",
+                        "subtitle": "Web Developer | Database Designer",
+                        "header": {
+                            "imgSrc": "https://scontent.fsgn21-1.fna.fbcdn.net/v/t1.30497-1/143086968_2856368904622192_1959732218791162458_n.png?_nc_cat=1&ccb=1-7&_nc_sid=2b6aad&_nc_eui2=AeHQw4QWFkNuvY1FPv_u8C4aso2H55p0AlGyjYfnmnQCUZoQ4KJalRH6WJRYebGP1mczAFOamh9fYXEopqrAH_mf&_nc_ohc=BGM03v5QUNkAX-ORhLl&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfDvyM70_beG8pUbXXCpW44RpBlxvZjBYVOhMlqJ3XGY2Q&oe=660B73B8"
+                        },
+                        "description": "Team member 1",
+                        "buttons": [
+                            {
+                                "name": "Add Facebook",
+                                "action": {
+                                    "type": "link",
+                                    "payload": {
+                                        "url": "https://www.facebook.com/k.gialinh33"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Contact email",
+                                "action": {
+                                    "type": "quickReply",
+                                    "payload": {
+                                        "message": "linh.khong.set17@eiu.edu.vn",
+                                        "replyMetadata": {
+                                            "key1": "value1"
+                                        }
+                                    }
+                                }
+                            }
+
+                        ]
+                    },
+                    {
+                        "title": "Phạm Hoàng Phát",
+                        "subtitle": "Front-end Developer | Tester",
+                        "header": {
+                            "imgSrc": "https://scontent.fsgn21-1.fna.fbcdn.net/v/t39.30808-1/336866223_890279648916741_2170722961697518248_n.jpg?stp=dst-jpg_p320x320&_nc_cat=108&ccb=1-7&_nc_sid=5740b7&_nc_eui2=AeHbprtNK7BDJbGe-GuHz3mgqzAyTTCNyhurMDJNMI3KG3EKoi_KAzU20dPezEgqdJCQT2De4VgoIjT8Ng5iwEd8&_nc_ohc=lUUM5vgIi5YAX_Hv0WG&_nc_ht=scontent.fsgn21-1.fna&oh=00_AfA4DJ8eqgqjg1CmkIsYX9S-dO3Wl71-a8CmdtABhKcOpA&oe=65E89C66"
+                        },
+                        "description": "Team member 2",
+                        "buttons": [
+                            {
+                                "name": "Add Facebook",
+                                "action": {
+                                    "type": "link",
+                                    "payload": {
+                                        "url": "https://www.facebook.com/PatrickWilson1910/"
+                                    }
+                                }
+                            },
+                            {
+                                "name": "Contact email",
+                                "action": {
+                                    "type": "quickReply",
+                                    "payload": {
+                                        "message": "phat.pham.set18@eiu.edu.vn",
+                                        "replyMetadata": {
+                                            "key1": "value1"
+                                        }
+                                    }
+                                }
+                            }
+
+                        ]
+                    }
+                ]
+    }
+}

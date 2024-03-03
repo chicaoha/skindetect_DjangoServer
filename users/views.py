@@ -1,7 +1,8 @@
 import base64
 import os
 import django
-from sympy import use
+from requests import get
+# from sympy import use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
 from django.http import JsonResponse
@@ -16,11 +17,18 @@ from django.core.files.base import ContentFile
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
-from django.contrib.auth.decorators import login_required
 from .models import Profile
 from .forms import ProfileForm
 import uuid
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.models import User
+from django.contrib.auth import authenticate
+from django.http import JsonResponse
+from google.auth.transport import requests
+from google.auth.transport.requests import Request
+from allauth.socialaccount.models import SocialAccount
+from django.core.files import File
+
 
 # Create your views here.
 def index(request):
@@ -56,8 +64,8 @@ def profilePage(request):
 def page404(request):
     return render(request, 'users/page404.html')
 
-def detect(request):
-    return render(request, 'users/detect.html')
+# def detect(request):
+#     return render(request, 'users/detect.html')
 
 def mobileApp(request):
     return render(request, 'users/mobileApp.html')
@@ -67,19 +75,20 @@ def mobileApp(request):
 
 def register(request):
     if request.method == 'POST':
-        if (request.POST['password1'])== (request.POST['password2']):
+        if request.POST['password1'] == request.POST['password2']:
             try:
-               User.objects.get(username = request.POST['username'])
-               return render(request,'users/register.html', {'error':'Username is already exist!'})
+                User.objects.get(username=request.POST['username'])
+                return render(request, 'users/register.html', {'error': 'Username is already exist!'})
             except User.DoesNotExist:
-               user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
-            #    Profile(user=user, dob=None, gender=None)
-               auth.login(request,user)
-               return redirect('index')
+                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
+
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                return redirect('')
         else:
-            return render (request,'users/register.html', {'error':'Password does not match!'})
+            return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
-       return render(request, 'users/register.html')
+        return render(request, 'users/phat_register.html')
+
     
 def login(request):
     if request.method == 'POST':
@@ -90,7 +99,7 @@ def login(request):
 
         if user is not None:
             auth.login(request, user)
-            return redirect('index')  # Make sure you have an 'index' URL pattern
+            return redirect('')  
         else:
             return render(request, 'users/phat_log.html', {'error': 'Username or password is incorrect!'})
     else:
@@ -99,7 +108,8 @@ def login(request):
 
 def logout(request):
     auth.logout(request)
-    return redirect('index')
+    return redirect('')
+
 
 @login_required
 def profile(request):
@@ -107,34 +117,51 @@ def profile(request):
     try:
         profile = user.profile
     except ObjectDoesNotExist:
-        try:
-            profile = Profile(user=user)
-            profile.save()
-        except FileNotFoundError:
-            # Handle the case where the 'default.jpg' file is not found
-            # Provide a default image path or handle this differently
-            profile = Profile(user=user)
+        # If profile doesn't exist, create one
+        profile = Profile.objects.create(user=user)
+        # Set the default avatar path
+        # default_avatar_path = 'profile_pics/default.jpg'
+        # profile.avatar.name = default_avatar_path
+        
+        profile.save()
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-           # Get the avatar file from the form
-            avatar_file = form.cleaned_data['avatar']
+            # Check if the 'avatar' field has changed
+            if 'avatar' in form.changed_data:
+                # Rest of your profile update logic for avatar...
+                avatar_file = form.cleaned_data['avatar']
 
-            # Check if a new avatar file was provided
-            if avatar_file:
-                # Rename the avatar file based on user ID
-                user_id = user.id
-                filename = f"{user.id}_{str(uuid.uuid4())[:8]}_{avatar_file.name}"
-                profile.avatar.save(filename, avatar_file)
-            form.save()
-            return redirect('profile') 
+                # Handle the avatar update logic...
+                if profile.avatar and profile.avatar.name:
+                    old_avatar_path = profile.avatar.path
+
+                    # Save the new avatar file, rename it based on user ID
+                    user_id = getattr(profile.user, 'id', None)
+                    if user_id:
+                        filename = 'avatar.jpg'
+                        profile.avatar.name = filename
+
+                        # Ensure the folder path exists
+                        # folder_path = os.path.join('media', 'profile_pics', str(user_id))
+                        # os.makedirs(folder_path, exist_ok=True)
+
+                        # Save the new avatar file before deleting the old one
+                        profile.avatar.save(filename, avatar_file)
+
+                        # Delete the old avatar file
+                        if os.path.exists(old_avatar_path):
+                            os.remove(old_avatar_path)
+                            print(f"Successfully deleted old avatar file at path: {old_avatar_path}")
+
+        form.save()
+        return redirect('profilePage')
+
     else:
-        # Pass the user data to the form when instantiating it
-        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name})
+        form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-
-    return render(request, 'users/view_profile.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profilePage.html', {'user': user, 'profile': profile, 'form': form})
 
 
 # --------------------------------Mobile API--------------------------------#
@@ -277,5 +304,76 @@ def updateMobile(request):
         print('-------------------------------')
         return JsonResponse(result)
 
+@api_view(['POST'])
+def authenticate_user(request):
+    result = {'placement': -1, 'user': None, 'isLogin': False}
+    if request.method == 'POST':
+        access_token = request.POST.get('access_token')
+        if access_token:
+            # Verify access token with Google API
+            url = 'https://www.googleapis.com/oauth2/v1/tokeninfo'
+            params = {'access_token': access_token}
+            response = get(url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                if 'error' not in data:
+                    print("data: ", data)
+                    email = data.get('email')
+                    google_id = data.get('user_id')
+                    avatar = data.get('photo_url', None)
+                    user = None
+                    username = email.split('@')[0]
+                    first_name, last_name, *_ = username.split('.')
+                    username = ' '.join([first_name.capitalize(), last_name.capitalize()])
+                    try:
+                        user = User.objects.get(email=email)
+                    except User.DoesNotExist:
+                        user = User.objects.create_user(username=username, email=email, password=google_id)
+                    profile, created = Profile.objects.get_or_create(user=user)
+                    # profile.avatar = avatar
+                    profile.save()
+                     # Create or update SocialAccount
+                    social_account, _ = SocialAccount.objects.get_or_create(user=user, provider='google')
+                    social_account.uid = google_id
+                    social_account.extra_data = data
+                    social_account.save()
+                    auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    if avatar:
+                        try:
+                            profile.avatar = avatar
+                            profile.save()
+                        except ValueError:
+                            # Handle the case where the avatar is not a valid image
+                            pass
+                    else:
+                        # Set the default avatar URL
+                        profile.avatar.save('default.jpg', File(open('media/profile_pics/default.jpg', 'rb')))
+                        result['placement'] = 0
+                        result['user'] = {
+                            'user_id': getattr(user, 'id', None),
+                            'user_name': user.get_username(),
+                            'user_email': getattr(user, 'email', None),
+                            'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
+                            'user_phone': profile.phone if profile else None,
+                            'user_address': profile.address if profile else None,
+                            'date_joined' : getattr(user, 'date_joined', None),
+                            'first_name' : getattr(user, 'first_name', None),
+                            'last_name' : getattr(user, 'last_name', None),
+                            'gender' : profile.gender if profile else None,
+                        }
+                        result['isLogin'] = True
+                    return JsonResponse(result)
+                else:
+                    # Error occurred or token is invalid
+                    return JsonResponse({'authenticated': False})
+            else:
+                # Error handling for Google API request
+                return JsonResponse({'error': 'Failed to verify access token'})
+        else:
+            # Access token not provided in request
+            return JsonResponse({'error': 'Access token not provided'})
+    else:
+        # Invalid request method
+        return JsonResponse({'error': 'Invalid request method'})
 
 

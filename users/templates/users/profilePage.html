@@ -1,119 +1,64 @@
 {% extends 'users/base.html' %}
 {% load tailwind_tags %}
 {% load static %}
-{% block title %} profile {% endblock %}
+{% block title %} Profile {% endblock %}
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 
-<section id="" class="relative z-10 pt-[110px]">
+<form method="post" enctype="multipart/form-data"  action="{% url 'profilePage' %}" class="max-w-sm mx-auto">
+{% csrf_token %}
+<section id="" class="relative z-1 pt-[110px]">
     <div class="container max-w-[1390px]">
         <div
             class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
             <div class="-mx-4 flex flex-wrap ">
-                <div class="w-full px-1 lg:w-4/12">
+                <div class="w-full px-1 lg:w-4/12 justify-center" style='margin-block:auto;'>
                     <div class="mb-2 flex flex-wrap items-center justify-center pb-6">
                         <!-- Adjust the margin value here -->
                         <div class="lg:w-1 px-[10px] ">
-                            <div class="mb-2 flex items-center justify-center"><img class="rounded-full"
-                                    src="{% static 'images/clpBot.jpg' %}" alt="avatar" style="width: 200px;"></div>
+                            <div class="mb-2 flex items-center justify-center">
+                                <label for="{{ form.avatar.id_for_label }}" id="avatar-label">
+                                    <input type="file" name="{{ form.avatar.name }}" id="{{ form.avatar.id_for_label }}"
+                                           accept="image/*" hidden onchange="loadFile(this)" id='file' value="{{ form.update_avatar.value }}">
+                                    <input type="hidden" name="{{ form.update_avatar.name }}" value="{{ form.update_avatar.value }}">
+                                    <img src="{{ user.profile.avatar.url }}" alt="Avatar" id="avatar-preview" class="rounded-full object-cover" style="width: 250px; height:250px">
+                                </label>              
+                            </div>
                         </div>
-
                     </div>
-                    <div class="mb-2 flex flex-wrap"> <!-- Adjust the margin value here -->
-                        <div class="lg:w-1/2 px-[10px]">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">User
-                                Name</label>
-                            <input type="password" id="password"
-                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                required>
-                        </div>
-                        <div class="lg:w-1/2 px-[10px]">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white"><span
-                                    class="font-semibold">Click to upload</span></label>
-                            <label for="dropzone-file"
-                                class="flex flex-col items-center justify-center w-full h-64 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 dark:hover:bg-bray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600">
-                                <div class="flex flex-col items-center justify-center"
-                                    style="padding-top: 8px; padding-bottom: 8px;">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="lucide lucide-file-image">
-                                        <path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" />
-                                        <path d="M14 2v4a2 2 0 0 0 2 2h4" />
-                                        <circle cx="10" cy="13" r="2" />
-                                        <path d="m20 17-1.1-1.1a2 2 0 0 0-2.81.01L10 22" />
-                                    </svg>
-                                </div>
-                                <input id="dropzone-file" type="file" class="hidden" />
-                            </label>
+                    <div class="mb-4 flex flex-wrap items-center justify-center"> 
+                        <div class="lg:w-1/2 px-4 text-center">
+                            <h4 class="text-pretty mb-3" id='fullName'></h4> 
+                            <h5 class="text-pretty font-normal" id='age'></h5>
                         </div>
                     </div>
                 </div>
                 <div class="w-full px-6 lg:w-8/12 ">
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
-                                Name</label>
-                            <input type="password" id="password"
-                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                required>
+                            <label for="{{ form.first_name.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
+                                {{ form.first_name }}
+                           
                         </div>
                         <div class="lg:w-1/2 px-[10px]">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
-                                Name</label>
-                            <input type="password" id="password"
-                                class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                required>
+                            <label for="{{ form.last_name.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                            {{ form.last_name }}
+                            
                         </div>
                     </div>
+                    
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]">
-                            <label for="password"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Password</label>
-                            <input type="password" id="password"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="•••••••••" required>
-
+                            <label for="{{ form.phone.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
+                            {{ form.phone }}
+                            
                         </div>
                         <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-                                <div>
-                                    <label for="confirm_password"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Confirm
-                                        password</label>
-                                    <input type="password" id="confirm_password"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="•••••••••" required>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="mb-5 flex flex-wrap">
-                        <div class="lg:w-1/2 px-[10px]">
-                            <label for="phone"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone
-                                number</label>
-                            <input type="tel" id="phone"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder="(+84)   " pattern="[0-9]{3}-[0-9]{2}-[0-9]{3}" required>
-                        </div>
-                        <div class="lg:w-1/2 px-[10px]">
-
-                            <form class="max-w-sm mx-auto">
-                                <label for="email-address-icon"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Your
-                                    Email</label>
+                            <label for="{{ form.email.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>      
                                 <div class="relative">
-
-                                    <input type="text" id="email-address-icon"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="name@eiu.com">
+                                    {{ form.email }}                                  
                                 </div>
-                            </form>
                         </div>
                     </div>
 
@@ -121,20 +66,12 @@
 
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
-                            <label for="gender"
-                                class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                            <select id="gender"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
-                                <option value="male" selected>Male</option>
-                                <option value="Female">Female</option>
-                            </select>
+                            <label for="{{ form.gender.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+                            {{ form.gender }}
                         </div>
                         <div class="lg:w-1/2 px-[10px]">
-                            <div class="mb-5">
-                                <label for="date"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of
-                                    birth</label>
-                                <!-- TW Elements is free under AGPL, with commercial license required for specific uses. See more details: https://tw-elements.com/license/ and contact us for queries at tailwind@mdbootstrap.com -->
+                            <div class="mb-5" style="margin-bottom: 0px;">
+                                <label for="{{ form.dob.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
                                 <div class="relative max-w-sm">
                                     <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                         <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
@@ -143,23 +80,18 @@
                                                 d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                                         </svg>
                                     </div>
-                                    <input id="datepicker" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5  dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                        placeholder="Select date">
+                                    {{ form.dob }}
+                                    
                                 </div>
 
                             </div>
                         </div>
                     </div>
                     <div class="mb-5 flex flex-wrap ">
-
                         <div class="lg:w-1/2 px-[10px]" style="width: 520px;">
                             <div class="mb-5">
-                                <label for="location"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
-                                <input type="password" id="password"
-                                    class="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 dark:shadow-sm-light"
-                                    required>
+                                <label for="{{ form.address.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                                        {{ form.address }}
                             </div>
                         </div>
                     </div>
@@ -168,33 +100,54 @@
 
             </div>
             <div style="text-align: right;">
-                <a href="{% url '' %}"
-                    class="hidden py-[10px] px-6 text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary sm:inline-block">
-                    Cancel
-                </a>
-                <a href="{% url '' %}" id="saveChanges"
-                    class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block">
-                    Save Changes
-                </a>
+                <button class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block" type="submit">Save all</button>
             </div>
         </div>
     </div>
-
+</form>
 </section>
 <script>
     flatpickr("#datepicker", {
         dateFormat: "Y-m-d", // customize the date format as needed
 
     });
+
+// Function to update the avatar preview
+var loadFile = function (event) {
+    var output = document.getElementById('avatar-preview');
+    console.log(output);
+    output.src = URL.createObjectURL(event.files[0]);
+    output.onload = function () {
+        URL.revokeObjectURL(output.src) // free memory
+    }
+  };
+  var fname = document.getElementById('id_first_name');
+  var lname = document.getElementById('id_last_name');
+
+
+  var firstName = fname.value;
+  var lastName = lname.value;
+  var fullName = firstName + " " + lastName;
+
+  document.getElementById('fullName').innerHTML = fullName;
+
+  function calculateAge() {
+    // Get the value from the input field
+    var birthdayInput = document.getElementById("id_dob");
+    var birthdayValue = birthdayInput.value;
+    if(birthdayValue){
+    // Parse the date string to a JavaScript Date object
+    var parts = birthdayValue.split("-");
+    
+    // Calculate the age
+    var currentYear = new Date().getFullYear();
+    var age = currentYear - parts[0];
+    }
+    return age;
+}
+    console.log(calculateAge())
+    if(calculateAge()){
+    document.getElementById('age').innerHTML = 'Age: ' + calculateAge();
+    }
 </script>
-<!-- notify after save changes -->
-<!-- <div class="flex items-center p-4 mb-4 text-sm text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
-    <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
-      <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
-    </svg>
-    <span class="sr-only">Info</span>
-    <div>
-      <span class="font-medium">Success alert!</span> Change a few things up and try submitting again.
-    </div>
-  </div> -->
 {% endblock %}

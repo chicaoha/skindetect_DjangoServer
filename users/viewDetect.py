@@ -2,13 +2,21 @@ import base64
 import datetime
 from email.mime import image
 import json
+import time
+from tkinter import Image
+from django.forms import ValidationError
+from django.shortcuts import redirect, render
 import os
 import random
+import re
 from unittest import result
 import cv2
 import django
 import numpy as np
-from sympy import det
+from tarfile import TarFile
+
+
+from users.forms import DetectInfoForm
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
 from django.http import JsonResponse
@@ -18,9 +26,13 @@ from django.utils import timezone
 from django.conf import settings
 from .models import DetectInfo, SkinDisease
 from django.core.files.base import ContentFile
-from datetime import datetime
+from datetime import date, datetime
 from django.db import connection
 from django.shortcuts import get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.utils.datastructures import MultiValueDictKeyError
+from django.core.exceptions import ObjectDoesNotExist
+
 
 
 name_arr = ['Actinic keratoses',
@@ -47,16 +59,143 @@ name_arr = ['Actinic keratoses',
             'Vascular lesions',
             'Vascular lesions',
             'Vascular lesions']
-model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt', force_reload=True)
-# detect image function
+model = torch.hub.load('ultralytics/yolov5', 'custom', path='08_12_22_noon_best.pt')
+# model = torch.hub.load('ultralytics/yolov5', 'custom', path='best.pt')
+
+current_datetime = datetime.now()
+
+def getImage(request):
+    if request.method == 'POST':
+        try:
+            image_file = request.FILES['detect_photo']
+            return image_file
+        except MultiValueDictKeyError:
+            print("Image not found in request.FILES")
+    return None
+
+def detect(image_file):
+    date = datetime.now().strftime("%Y-%m-%d")
+    time = datetime.now().strftime("%H:%M:%S")
+    if image_file and image_file.size > 0:
+        try:
+            image_string = image_file.read()
+            jpg_as_np = np.frombuffer(image_string, dtype=np.uint8)
+            # print("Length of jpg_as_np:", len(jpg_as_np))
+            original_image = cv2.imdecode(jpg_as_np, flags=cv2.IMREAD_COLOR)
+
+            shape = original_image.shape
+            # print(shape)
+            image_resize = cv2.cvtColor(original_image, cv2.COLOR_BGR2RGB)
+            imgs = [image_resize]
+
+            result = model(imgs, size=640)
+
+            if result and result.pandas() is not None:
+                xyxy_values = result.pandas().xyxy[0].values
+                if xyxy_values.any():
+                    score = xyxy_values[0][4]
+                    id = xyxy_values[0][5]
+                    name = name_arr[id]
+                    # print('checkkkk')
+                    print(score, id, name)
+                    return [name, float(score), date, time, id, result]
+            score = random.uniform(0.01, 0.1)
+            return ["Skin without pathology!", float(score), date, time, '8']
+        except cv2.error as e:
+            print("Error in image decoding: {}".format(e))
+        except Exception as e:
+            print("An unexpected error occurred: {}".format(e))
+    score = random.uniform(0.01, 0.1)
+    return ["Skin without pathology!", float(score), date, time, '8']
+
+def showResult(request):
+    detect_id = request.session.pop('detect_id', None)
+
+    if detect_id is not None:
+        # Use get_object_or_404 to get a single instance or raise a 404 error
+        detect_info = get_object_or_404(DetectInfo, detect_id=detect_id)
+        return render(request, 'users/detect_result.html', {'detect_info': detect_info})
+    else:
+        return render(request, 'users/detect.html')
+    
+def history(request):
+    user = request.user
+    if user is not None:
+        data_filter = DetectInfo.objects.filter(user_id = user.id)
+        return render(request, 'users/detect_history.html', {'data_filter' : data_filter})
+    return render(request, 'users/detect_history.html')
+
+def deleteDetectResult(request):
+    detect_id = request.detect_id
+    result = 'unsuccess'
+    if detect_id is not None:
+        # result = DetectInfo.objects.filter(detect_id=detect_id)
+        query = DetectInfo.objects.get(pk=id)
+        print(query)
+        query.delete()
+        result = 'successful'
+        return render(request, 'users/detect_history.html', {'result' : result})
+    return render(request, 'users/detect_history.html', {'result' : result})
+
+
+@login_required(login_url='login')  
+def detectImage(request):
+    if request.method == 'POST':
+        user = request.user
+
+        if not user.is_authenticated:
+            print("User is not authenticated.")
+            return render(request, 'users/detect.html', {'form_errors': ['User is not authenticated.']})
+
+        form = DetectInfoForm(request.POST, request.FILES)
+
+        if form.is_valid():
+            img = form.cleaned_data['detect_photo']
+            result = detect(img)
+            date = result[2]
+            time = result[3]
+            detect_date = (date) + "_" + (time).replace(":", "-")
+            formatted_datetime = datetime.strptime(detect_date, "%Y-%m-%d_%H-%M-%S").strftime("%Y-%m-%d %H:%M:%S")
+            image_filename = detect_date + '.jpg'
+
+            try:
+                # Retrieve the SkinDisease instance based on the ID
+                skin_disease_instance = SkinDisease.objects.get(pk=result[4])
+            except SkinDisease.DoesNotExist:
+                print("Skin Disease with ID {} does not exist.".format(result[4]))
+                return render(request, 'users/detect.html', {'form_errors': ['Invalid Skin Disease ID.']})
+
+            detect_info = form.save(commit=False)
+            detect_info.user = user
+            detect_info.detect_date = formatted_datetime
+            detect_info.disease = skin_disease_instance
+            detect_info.detect_score = result[1]
+            detect_info.detect_result = result[0]
+            detect_info.detect_photo.name = image_filename
+            detect_info.save()
+
+            print("Image and file inserted successfully into DetectInfo table")
+           
+            request.session['detect_id'] = detect_info.detect_id
+            return redirect('showResult')
+        else:
+            print("Form is not valid. Errors: {}".format(form.errors))
+            return render(request, 'users/detect.html', {'form_errors': form.errors})
+
+    return render(request, 'users/detect.html', {'form': DetectInfoForm()})
+
+
+
+# --------------------------------Mobile API--------------------------------#
+# 
 @api_view(['POST'])
 def getimage(request):
     try:
         print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< DETECT Image >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
         image = request.data.get('file')
-        confidence_score = request.data.get('confidence_score')
+        # confidence_score = request.data.get('confidence_score')
         user_id = request.data.get('user_id')
-        print("Confidence Score: " + " " + confidence_score + "**************************************\n")
+        # print("Confidence Score: " + " " + confidence_score + "**************************************\n")
         print('User_id from was received from Mobile: ', user_id)
 
         image_string = base64.b64decode(image)
@@ -122,6 +261,7 @@ def getimage(request):
                         'id': str(id),
                     }
                 storeImageById(image_path, name, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
             else:
                 name = "Skin without pathology!."
@@ -136,6 +276,7 @@ def getimage(request):
                 }
                 print('data', data)
                 storeImageById(image_path, name, user_id, id, score)
+                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
     except Exception as e:
         name = "Skin without pathology!."
@@ -143,10 +284,12 @@ def getimage(request):
         id = 8
         user_id = request.data.get('user_id')
         current_datetime = timezone.localtime(timezone.now())  # Get the current date
+        current_datetime = timezone.localtime(timezone.now())  # Get the current date
         date = current_datetime.strftime("%Y-%m-%d")
         time = current_datetime.strftime("%H:%M:%S")
         image_filename = current_datetime.strftime("%Y-%m-%d_%H-%M-%S") + '.jpg'
         image_path = os.path.join(settings.MEDIA_ROOT, 'detect_pics', image_filename)
+ 
  
         data = {
             'placement': str(name),
@@ -155,8 +298,10 @@ def getimage(request):
             'time': time,
             'id': str(id),
 
+
         }
         print('data', data)
+        storeImageById(image_path, name, user_id, id, score)
         storeImageById(image_path, name, user_id, id, score)
         return JsonResponse(data, status=500)
 # store image function
@@ -164,9 +309,10 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
     try:
         print("<<<<<<<<<<<<<<<<Save Image>>>>>>>>>>>>>>>")
 
-        current_datetime = timezone.localtime(timezone.now()) 
+        current_datetime = datetime.now()
         # print('current_datetime:', current_datetime) # Get the current date
         detect_date = current_datetime.strftime("%Y-%m-%d %H:%M:%S")
+        print('detect_date:', detect_date)
         print('detect_date:', detect_date)
         print("Provied disase_id: ", disease_id)
         skin_disease_instance = get_object_or_404(SkinDisease, pk=disease_id)
@@ -174,8 +320,8 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
         # Create a DetectInfo instance
         detect_info = DetectInfo(
             user_id=user_id,
-            detect_date=detect_date,
-            disease=skin_disease_instance,
+            detect_date=current_datetime,
+            disease=skin_disease_instance,    
             detect_score=image_score           
         )
 
@@ -203,13 +349,9 @@ def getHistory(request):
     print(">>>>>>>>>>>>>>>>>>History<<<<<<<<<<<<<<<<")
     user_id = request.data.get('user_id')
     print("User_id", user_id)
-
     try:
         # Query the database using Django ORM
         records = DetectInfo.objects.filter(user_id=user_id).order_by('-detect_date')
-        
-        # Add the missing import statement
-
         results = []
         for row in records:
             detect_photo_base64 = base64.b64encode(row.detect_photo.read()).decode('utf-8')
@@ -219,8 +361,8 @@ def getHistory(request):
                 'detect_date': row.detect_date,
                 'detect_photo': detect_photo_base64,
                 'detect_result': row.detect_result,
-                'disease_id': row.disease.disease_id,
-                'detect_score': float(row.detect_score)
+                'disease_id': row.disease.disease_id if row.disease else None,
+                'detect_score': float(row.detect_score) if row.detect_score is not None else 0.0
             }           
             results.append(result)
         record_count = len(results)
@@ -279,6 +421,17 @@ def getDetail(request):
             if os.path.isfile(image_path):
                 image_paths.append(image_path)
     image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
+
+    #load image from folder
+    image_folder = disese.disease_images_folder
+    image_paths = []
+    if image_folder:
+        folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+        for i in range(1, 10):
+            image_path = os.path.join(folder_path, f'image{i}.jpg')
+            if os.path.isfile(image_path):
+                image_paths.append(image_path)
+    image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
     disease_model = {
         'diseased_Id': disese.disease_id,
         'diseased_name': disese.disease_name,
@@ -286,6 +439,7 @@ def getDetail(request):
         'diseased_symptom': disese.disease_symptoms,
         'diseased_causes': disese.disease_causeses,
         'diseased_prevention': disese.disease_preventions,
+        'diseased_image_folder': image_urls,
         'diseased_image_folder': image_urls,
     }
     jsonData = { 'diseaseModel': disease_model}
@@ -300,6 +454,17 @@ def getListDetail(request):
     for disease_id in disease_ids:        
         diseases = SkinDisease.objects.filter(disease_id__in=[disease_id])
         for disease in diseases:
+            #load image from folder
+            image_folder = disease.disease_images_folder
+            image_paths = []
+            if image_folder:
+                folder_path = os.path.join(settings.MEDIA_ROOT,'disease_pics/', image_folder)
+                for i in range(1, 10):
+                    image_path = os.path.join(folder_path, f'image{i}.jpg')
+                    if os.path.isfile(image_path):
+                        image_paths.append(image_path)
+            image_urls = [base64.b64encode(open(image_path, 'rb').read()).decode('utf-8') for image_path in image_paths]
+            # print('image_urls', image_urls)
             #load image from folder
             image_folder = disease.disease_images_folder
             image_paths = []
@@ -326,4 +491,3 @@ def getListDetail(request):
     json_data = json.dumps(results, default=json_serial)
     jsonData = { 'placement': json_data}
     return JsonResponse(jsonData)
-        

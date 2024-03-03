@@ -1,6 +1,7 @@
 import base64
 import os
 import django
+from requests import get
 # from sympy import use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
@@ -22,6 +23,11 @@ import uuid
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+from django.http import JsonResponse
+from google.auth.transport import requests
+from google.auth.transport.requests import Request
+from allauth.socialaccount.models import SocialAccount
+from django.core.files import File
 
 
 # Create your views here.
@@ -76,8 +82,7 @@ def register(request):
             except User.DoesNotExist:
                 user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
 
-                user.backend = 'django.contrib.auth.backends.ModelBackend'
-                auth.login(request, user)
+                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                 return redirect('')
         else:
             return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
@@ -299,5 +304,76 @@ def updateMobile(request):
         print('-------------------------------')
         return JsonResponse(result)
 
+@api_view(['POST'])
+def authenticate_user(request):
+    result = {'placement': -1, 'user': None, 'isLogin': False}
+    if request.method == 'POST':
+        access_token = request.POST.get('access_token')
+        if access_token:
+            # Verify access token with Google API
+            url = 'https://www.googleapis.com/oauth2/v1/tokeninfo'
+            params = {'access_token': access_token}
+            response = get(url, params=params)
+            if response.status_code == 200:
+                data = response.json()
+                if 'error' not in data:
+                    print("data: ", data)
+                    email = data.get('email')
+                    google_id = data.get('user_id')
+                    avatar = data.get('photo_url', None)
+                    user = None
+                    username = email.split('@')[0]
+                    first_name, last_name, *_ = username.split('.')
+                    username = ' '.join([first_name.capitalize(), last_name.capitalize()])
+                    try:
+                        user = User.objects.get(email=email)
+                    except User.DoesNotExist:
+                        user = User.objects.create_user(username=username, email=email, password=google_id)
+                    profile, created = Profile.objects.get_or_create(user=user)
+                    # profile.avatar = avatar
+                    profile.save()
+                     # Create or update SocialAccount
+                    social_account, _ = SocialAccount.objects.get_or_create(user=user, provider='google')
+                    social_account.uid = google_id
+                    social_account.extra_data = data
+                    social_account.save()
+                    auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    if avatar:
+                        try:
+                            profile.avatar = avatar
+                            profile.save()
+                        except ValueError:
+                            # Handle the case where the avatar is not a valid image
+                            pass
+                    else:
+                        # Set the default avatar URL
+                        profile.avatar.save('default.jpg', File(open('media/profile_pics/default.jpg', 'rb')))
+                        result['placement'] = 0
+                        result['user'] = {
+                            'user_id': getattr(user, 'id', None),
+                            'user_name': user.get_username(),
+                            'user_email': getattr(user, 'email', None),
+                            'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
+                            'user_phone': profile.phone if profile else None,
+                            'user_address': profile.address if profile else None,
+                            'date_joined' : getattr(user, 'date_joined', None),
+                            'first_name' : getattr(user, 'first_name', None),
+                            'last_name' : getattr(user, 'last_name', None),
+                            'gender' : profile.gender if profile else None,
+                        }
+                        result['isLogin'] = True
+                    return JsonResponse(result)
+                else:
+                    # Error occurred or token is invalid
+                    return JsonResponse({'authenticated': False})
+            else:
+                # Error handling for Google API request
+                return JsonResponse({'error': 'Failed to verify access token'})
+        else:
+            # Access token not provided in request
+            return JsonResponse({'error': 'Access token not provided'})
+    else:
+        # Invalid request method
+        return JsonResponse({'error': 'Invalid request method'})
 
 

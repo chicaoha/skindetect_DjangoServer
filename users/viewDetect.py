@@ -349,12 +349,6 @@ def getHistory(request):
     print(">>>>>>>>>>>>>>>>>>History<<<<<<<<<<<<<<<<")
     user_id = request.data.get('user_id')
     print("User_id", user_id)
-
-    cache_key = f'history_{user_id}'
-    cached_data = cache.get(cache_key)
-    if cached_data:
-        print('cache hit')
-        return JsonResponse(cached_data)
     try:
         # Query the database using Django ORM
         records = DetectInfo.objects.filter(user_id=user_id).order_by('-detect_date')
@@ -367,16 +361,14 @@ def getHistory(request):
                 'detect_date': row.detect_date,
                 'detect_photo': detect_photo_base64,
                 'detect_result': row.detect_result,
-                'detect_result': row.detect_result,
-                'disease_id': row.disease.disease_id,
-                'detect_score': float(row.detect_score)
+                'disease_id': row.disease.disease_id if row.disease else None,
+                'detect_score': float(row.detect_score) if row.detect_score is not None else 0.0
             }           
             results.append(result)
         record_count = len(results)
         print(record_count)
         json_data  = json.dumps(results, default=json_serial)
         jsonData = { 'placement': json_data}
-        cache.set(cache_key, jsonData)
         print("Load successful")
         return JsonResponse(jsonData)
 

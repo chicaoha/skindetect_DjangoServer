@@ -1,4 +1,5 @@
 import base64
+import json
 import os
 import django
 from requests import get
@@ -240,58 +241,72 @@ def registerMobile(request):
             print('-------------------------------')
             print('Email: ' + email + "\n", 'Password: ' + password + "\n")
     return JsonResponse(result)
-
+def getUserMobile(userid):
+    print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Get User >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
+    result = {'placement': -1, 'user': None, 'message': ''}
+    user = User.objects.get(id=userid)
+    profile = Profile.objects.get(user=user)
+    result['user'] = {
+        'user_id': getattr(user, 'id', None),
+        'user_name': user.get_username(),
+        'user_email': getattr(user, 'email', None),
+        'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
+        'user_phone': profile.phone if profile else None,
+        'user_address': profile.address if profile else None,
+        'date_joined' : getattr(user, 'date_joined', None), 
+        'first_name' : getattr(user, 'first_name', None),
+        'last_name' : getattr(user, 'last_name', None),
+        'gender' : profile.gender if profile else None,
+    }
+    return JsonResponse(result)
 @api_view(['POST'])
 def updateMobile(request):
     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Update >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     if (
         request.method == 'POST'
-        and 'email' in request.data
-        and 'user_name' in request.data
-        # and 'password' in request.data
+        # and 'email' in request.data
+        and 'first_name' in request.data
+        and 'last_name' in request.data
+        # and 'user_name' in request.data
         and 'user_address' in request.data
         and 'user_phone' in request.data
         and 'user_dob' in request.data
+        and 'gender' in request.data
     ):
         print("thong bao da qua duoc")
         user_data = request.data
-        email = user_data['email']
-        # password = user_data['password']
-        user_name = user_data['user_name']
+        # email = user_data['email']
+        # user_name = user_data['user_name']
+        first_name = user_data['first_name']
+        last_name = user_data['last_name']
+        gender = user_data['gender']
         user_address = user_data['user_address']
         user_phone = user_data['user_phone']
         user_dob = user_data['user_dob']
         user_id = user_data['user_id']
         user_avatar = request.data.get('user_avatar')  # Assuming 'user_avatar' is a file field
-        from datetime import datetime
+        # from datetime import datetime
         # Decode the image after receiving
         image_string = base64.b64decode(user_avatar)
-        # jpg_as_np = np.frombuffer(image_string, dtype=np.uint8)
-        # original_image = cv2.imdecode(jpg_as_np, flags=1)
         user_avatar_config = ContentFile(image_string, name=f"{user_id}_avatar.jpg")
-
-        # Resize the image to a specific width and height
-        # new_width, new_height = 300, 300
-        # original_image_resize = cv2.resize(original_image, (new_width, new_height))
-        # Convert NumPy array to a file-like object
-        # image_io = io.BytesIO()
-        # Image.fromarray(original_image_resize).save(image_io, format='JPEG')
-        # image_io.seek(0)
         user = User.objects.get(id=user_id)
-        # filename = f"{user_id}_{str(uuid.uuid4())[:8]}_{original_image_resize}"
-
         profile = Profile.objects.get(user=user)
-        user.username = user_name
-        user.email = email
+        # user.username = user_name
+        user.first_name = first_name
+        user.last_name = last_name
+        profile.dob = user_dob
+        profile.gender = gender
         profile.address = user_address
         profile.phone = user_phone
-        profile.dob = user_dob
         profile.avatar.save(user_avatar_config.name, user_avatar_config)
-
         profile.save()
         user.save()
-
+        user_response = getUserMobile(user_id)
+        user_data_json = user_response.content
+        user_data_dict = json.loads(user_data_json)
         result = {'placement': 0, 'message': 'Update Successfully'}
+        result['user'] = user_data_dict['user']
+        # result['user'] = user_response.data # Update result with user_response.json()
         print('-------------------------------')
         print(result['message'])
         print('-------------------------------')

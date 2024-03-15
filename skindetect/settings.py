@@ -74,6 +74,8 @@ MIDDLEWARE = [
     "django_browser_reload.middleware.BrowserReloadMiddleware",
     'corsheaders.middleware.CorsMiddleware',
     "allauth.account.middleware.AccountMiddleware",
+    'users.middleware.VisitorMiddleware',
+
 ]
 CORS_ALLOWED_ORIGINS = [
     "https://1bdb-2402-800-6327-2659-351c-f8a2-77eb-f8ed.ngrok-free.app",  # Add your NGROK URL here
@@ -195,19 +197,6 @@ ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 SOCIALACCOUNT_LOGIN_ON_GET = True
 
-# Provider specific settings
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#         ],
-#         'AUTH_PARAMS': {
-#             'access_type': 'online',
-#         }
-#     }
-# }
-
 SOCIALACCOUNT_PROVIDERS = {
     "google": {
         "APP": {
@@ -226,21 +215,3 @@ SOCIALACCOUNT_PROVIDERS = {
         }
     }
 }
-
-# from allauth.socialaccount.models import SocialApp
-# SOCIALACCOUNT_PROVIDERS = {
-#     'google': {
-#         'APP': {
-#             'client_id': SocialApp.objects.get(provider='google').client_id,
-#             'secret': SocialApp.objects.get(provider='google').secret,
-#             'key': '',
-#         },
-#         'SCOPE': [
-#             'profile',
-#             'email',
-#         ],
-#         'AUTH_PARAMS': {
-#             'access_type': 'online',
-#         }
-#     },
-# }

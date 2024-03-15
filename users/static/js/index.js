@@ -35,13 +35,13 @@ window.wow.init({
 }); //========= glightbox
 
 glightbox__WEBPACK_IMPORTED_MODULE_5___default()({
-    href: "https://www.youtube.com/embed/uQ5x40hUuoQ",
+    href: "static/videos/video_hd.mp4'",
     type: "video",
-    source: "youtube",
-    //vimeo, youtube or local
+    source: "local",
     width: 900,
     autoplayVideos: true
-}); // ==== darkToggler
+});
+
 
 var darkTogglerCheckbox = document.querySelector('#darkToggler');
 var html = document.querySelector('html');

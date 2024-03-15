@@ -9,12 +9,17 @@ from django.urls import path
 from . import views
 from . import viewDetect
 # from django.conf.urls import patterns, url
+from .admin import admin_site
 
 
 urlpatterns = [
+    # ----------admin---------------
+    path('admin', admin_site.urls),  # Use admin_site.urls instead of admin.site.urls
+    path('dashboard', views.dashboard, name='dashboard'),
+    path('logoutAdmin', views.logoutAdmin, name='logoutadmin'),
+
     #-----------web----------------
     path('', views.index, name=''),
-    # path('login/', views.login, name='login'),
     path('home', views.index, name='home'),
     path('register', views.register, name='register'),
     path('login', views.login, name='login'),
@@ -30,8 +35,11 @@ urlpatterns = [
     path('detect', viewDetect.detectImage, name='detect'),
     path('showResult', viewDetect.showResult, name='showResult'),
     path('detectHistory', viewDetect.history, name='detectHistory'),
+    path('delete', viewDetect.deleteDetectResult, name='delete'),
     path('mobileApp', views.mobileApp, name='mobileApp'),
     path('forgotPassword', views.forgotPassword, name='forgotPassword'),
+    path('aboutDisease', viewDetect.aboutDisease, name='aboutDisease'),
+
     #-----------profile mobile api----------------
     path('loginMobile', views.loginMobile, name='loginMobile'),
     path('registerMobile', views.registerMobile, name='registerMobile'),

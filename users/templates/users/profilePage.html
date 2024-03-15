@@ -22,7 +22,7 @@
                                     <input type="file" name="{{ form.avatar.name }}" id="{{ form.avatar.id_for_label }}"
                                            accept="image/*" hidden onchange="loadFile(this)" id='file' value="{{ form.update_avatar.value }}">
                                     <input type="hidden" name="{{ form.update_avatar.name }}" value="{{ form.update_avatar.value }}">
-                                    <img src="{{ user.profile.avatar.url }}" alt="Avatar" id="avatar-preview" class="rounded-full object-cover" style="width: 250px; height:250px">
+                                    <img src="{{ user.profile.avatar.url }}" alt="Avatar" id="avatar-preview" class="w-8 h-8 rounded-full" style="width: 250px; height:250px">
                                 </label>              
                             </div>
                         </div>
@@ -57,12 +57,13 @@
                         <div class="lg:w-1/2 px-[10px]">
                             <label for="{{ form.email.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>      
                                 <div class="relative">
-                                    {{ form.email }}                                  
+                                    {{ form.email }}      
+                                    {% for error in form.email.errors %}
+                                        <p class="text-red-500">{{ error }}</p>
+                                    {% endfor %}
                                 </div>
                         </div>
                     </div>
-
-
 
                     <div class="mb-5 flex flex-wrap">
                         <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
@@ -105,49 +106,82 @@
         </div>
     </div>
 </form>
+
+{% if form_submitted_successfully %}
+<div id="popup-message" class="fixed inset-x-0 top-0 flex items-end justify-center px-4 py-6 pointer-events-none sm:p-6 sm:items-end sm:justify-end">
+    <div class="max-w-sm w-full bg-green-100 shadow-lg rounded-lg pointer-events-auto">
+        <div class="p-6">
+            <h2 class="text-lg font-semibold text-green-800 mb-2">Success!</h2>
+            <p class="text-green-600">Your profile has been updated successfully.</p>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 </section>
 <script>
+
+    function showPopupMessage() {
+        var popupMessage = document.getElementById('popup-message');
+        if (popupMessage) {
+            popupMessage.classList.remove('hidden');
+            setTimeout(function () {
+                // Hide the popup message after 3 seconds
+                popupMessage.classList.add('hidden');
+            }, 3000); // Adjust the duration as needed (in milliseconds)
+        }
+    }
+
+    // Check if the form submission was successful
+    var formSubmittedSuccessfully = {{ form_submitted_successfully|default:"false" }};
+
+    if (formSubmittedSuccessfully) {
+        showPopupMessage(); // Show the popup message
+    }
+
+
     flatpickr("#datepicker", {
         dateFormat: "Y-m-d", // customize the date format as needed
-
     });
 
-// Function to update the avatar preview
-var loadFile = function (event) {
-    var output = document.getElementById('avatar-preview');
-    console.log(output);
-    output.src = URL.createObjectURL(event.files[0]);
-    output.onload = function () {
-        URL.revokeObjectURL(output.src) // free memory
+    // Function to update the avatar preview
+    var loadFile = function (event) {
+        var output = document.getElementById('avatar-preview');
+        console.log(output);
+        output.src = URL.createObjectURL(event.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+
+    var fname = document.getElementById('id_first_name');
+    var lname = document.getElementById('id_last_name');
+
+    var firstName = fname.value;
+    var lastName = lname.value;
+    var fullName = firstName + " " + lastName;
+    document.getElementById('fullName').innerHTML = fullName;
+
+    function calculateAge() {
+        // Get the value from the input field
+        var birthdayInput = document.getElementById("id_dob");
+        var birthdayValue = birthdayInput.value;
+        if(birthdayValue){
+            // Parse the date string to a JavaScript Date object
+            var parts = birthdayValue.split("-");
+            
+            // Calculate the age
+            var currentYear = new Date().getFullYear();
+            var age = currentYear - parts[0];
+        }
+        return age;
     }
-  };
-  var fname = document.getElementById('id_first_name');
-  var lname = document.getElementById('id_last_name');
 
-
-  var firstName = fname.value;
-  var lastName = lname.value;
-  var fullName = firstName + " " + lastName;
-
-  document.getElementById('fullName').innerHTML = fullName;
-
-  function calculateAge() {
-    // Get the value from the input field
-    var birthdayInput = document.getElementById("id_dob");
-    var birthdayValue = birthdayInput.value;
-    if(birthdayValue){
-    // Parse the date string to a JavaScript Date object
-    var parts = birthdayValue.split("-");
-    
-    // Calculate the age
-    var currentYear = new Date().getFullYear();
-    var age = currentYear - parts[0];
-    }
-    return age;
-}
     console.log(calculateAge())
+
     if(calculateAge()){
-    document.getElementById('age').innerHTML = 'Age: ' + calculateAge();
+        document.getElementById('age').innerHTML = 'Age: ' + calculateAge();
     }
 </script>
 {% endblock %}

@@ -1,4 +1,5 @@
 import base64
+from io import BytesIO
 import json
 import os
 import django
@@ -29,6 +30,7 @@ from google.auth.transport import requests
 from google.auth.transport.requests import Request
 from allauth.socialaccount.models import SocialAccount
 from django.core.files import File
+import requests
 
 
 # Create your views here.
@@ -181,7 +183,6 @@ def loginMobile(request):
         user = auth.authenticate(username=email, password=password)
         if user:
             auth.login(request, user)
- 
             try:
 
                 profile = Profile.objects.get(user=user)
@@ -194,7 +195,10 @@ def loginMobile(request):
                     'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
                     'user_phone': profile.phone if profile else None,
                     'user_address': profile.address if profile else None,
-                    # Add other fields as needed
+                    'date_joined' : getattr(user, 'date_joined', None),
+                    'first_name' : getattr(user, 'first_name', None),
+                    'last_name' : getattr(user, 'last_name', None),
+                    'gender' : profile.gender if profile else None,
                 }
             except Profile.DoesNotExist:
                 result['placement'] = 1
@@ -210,17 +214,17 @@ def loginMobile(request):
 
     return JsonResponse(result)
 
+
 @api_view(['POST'])
 def registerMobile(request):
     print('<<<<<<<<<<<<<<<<<<<<<<<<<<<< Register >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>')
     result = {'placement': -1, 'message': ''}
-
-    if 'email' in request.POST and 'password' in request.POST and 'user_name' in request.POST:
+    if 'email' in request.POST and 'password' in request.POST and 'username' in request.POST:
         print("Thong bao register qua duoc")
         # Fetch form data
         email = request.POST['email'] 
         password = request.POST['password']
-        username = request.POST['user_name']
+        username = request.POST['username']  
         # print(email)
         # print(username)
         try:
@@ -232,7 +236,7 @@ def registerMobile(request):
             print('-------------------------------')
         except User.DoesNotExist:
             user = User.objects.create_user(username=username, password=password, email=email)
-            auth.login(request, user)
+            auth.login(request, user,backend='django.contrib.auth.backends.ModelBackend')
             #Profile.objects.create(user=user, gender='', user_address='', user_phone='', user_dob=None, user_avatar=None)
             result['placement'] = 0
             result['message'] = 'Register successfully!'
@@ -324,6 +328,7 @@ def authenticate_user(request):
     result = {'placement': -1, 'user': None, 'isLogin': False}
     if request.method == 'POST':
         access_token = request.POST.get('access_token')
+        avatarurl = request.POST.get('avatarurl')
         if access_token:
             # Verify access token with Google API
             url = 'https://www.googleapis.com/oauth2/v1/tokeninfo'
@@ -335,48 +340,55 @@ def authenticate_user(request):
                     print("data: ", data)
                     email = data.get('email')
                     google_id = data.get('user_id')
-                    avatar = data.get('photo_url', None)
+                    avatar = avatarurl
                     user = None
                     username = email.split('@')[0]
-                    first_name, last_name, *_ = username.split('.')
-                    username = ' '.join([first_name.capitalize(), last_name.capitalize()])
                     try:
                         user = User.objects.get(email=email)
                     except User.DoesNotExist:
                         user = User.objects.create_user(username=username, email=email, password=google_id)
                     profile, created = Profile.objects.get_or_create(user=user)
                     # profile.avatar = avatar
-                    profile.save()
+                    
                      # Create or update SocialAccount
                     social_account, _ = SocialAccount.objects.get_or_create(user=user, provider='google')
                     social_account.uid = google_id
                     social_account.extra_data = data
                     social_account.save()
-                    auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
                     if avatar:
                         try:
-                            profile.avatar = avatar
+                            # Download the image from the URL
+                            response = requests.get(avatar)
+                            if response.status_code == 200:
+                                # Save the image to a BytesIO buffer
+                                image_content = BytesIO(response.content)
+                                # Save the image to the profile's avatar field
+                                profile.avatar.save('avatar.jpg', File(image_content))
+                                profile.save()
+                        except Exception as e:
+                            print(f"Error downloading and saving avatar image: {e}")
+                            # If there's an error, set the default avatar URL
+                            profile.avatar.save('default.jpg', File(open('media/profile_pics/default.jpg', 'rb')))
                             profile.save()
-                        except ValueError:
-                            # Handle the case where the avatar is not a valid image
-                            pass
                     else:
                         # Set the default avatar URL
                         profile.avatar.save('default.jpg', File(open('media/profile_pics/default.jpg', 'rb')))
-                        result['placement'] = 0
-                        result['user'] = {
-                            'user_id': getattr(user, 'id', None),
-                            'user_name': user.get_username(),
-                            'user_email': getattr(user, 'email', None),
-                            'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
-                            'user_phone': profile.phone if profile else None,
-                            'user_address': profile.address if profile else None,
-                            'date_joined' : getattr(user, 'date_joined', None),
-                            'first_name' : getattr(user, 'first_name', None),
-                            'last_name' : getattr(user, 'last_name', None),
-                            'gender' : profile.gender if profile else None,
-                        }
-                        result['isLogin'] = True
+                    auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
+                    
+                    result['placement'] = 0
+                    result['user'] = {
+                        'user_id': getattr(user, 'id', None),
+                        'user_name': user.get_username(),
+                        'user_email': getattr(user, 'email', None),
+                        'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
+                        'user_phone': profile.phone if profile else None,
+                        'user_address': profile.address if profile else None,
+                        'date_joined' : getattr(user, 'date_joined', None),
+                        'first_name' : getattr(user, 'first_name', None),
+                        'last_name' : getattr(user, 'last_name', None),
+                        'gender' : profile.gender if profile else None,
+                    }
+                    result['isLogin'] = True
                     return JsonResponse(result)
                 else:
                     # Error occurred or token is invalid
@@ -391,4 +403,16 @@ def authenticate_user(request):
         # Invalid request method
         return JsonResponse({'error': 'Invalid request method'})
 
-
+@api_view(['POST'])
+def logoutMobile(request):
+    
+    result = {'placement': -1, 'message': ''}
+    if request.method == 'POST':
+        auth.logout(request)
+        result['placement'] = 0
+        result['message'] = 'Logout Successfully'
+        return JsonResponse(result)
+    else:
+        result['placement'] = 1
+        result['message'] = 'Logout Failed'
+        return JsonResponse(result)

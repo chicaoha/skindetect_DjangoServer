@@ -261,7 +261,6 @@ def getimage(request):
                         'id': str(id),
                     }
                 storeImageById(image_path, name, user_id, id, score)
-                storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
             else:
                 name = "Skin without pathology!."
@@ -301,7 +300,6 @@ def getimage(request):
 
         }
         print('data', data)
-        storeImageById(image_path, name, user_id, id, score)
         storeImageById(image_path, name, user_id, id, score)
         return JsonResponse(data, status=500)
 # store image function
@@ -439,7 +437,6 @@ def getDetail(request):
         'diseased_symptom': disese.disease_symptoms,
         'diseased_causes': disese.disease_causeses,
         'diseased_prevention': disese.disease_preventions,
-        'diseased_image_folder': image_urls,
         'diseased_image_folder': image_urls,
     }
     jsonData = { 'diseaseModel': disease_model}

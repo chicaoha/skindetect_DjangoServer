@@ -37,6 +37,8 @@ urlpatterns = [
     path('registerMobile', views.registerMobile, name='registerMobile'),
     path('updateMobile', views.updateMobile, name='updateMobile'),
     path('authenticate_user', views.authenticate_user, name='authenticate_user'),
+    path('logoutMobile', views.logoutMobile, name='logoutMobile'),
+
     #-----------detect mobile api----------------
     path('getimage' ,viewDetect.getimage, name='getimage'),
     path('getHistory', viewDetect.getHistory, name='getHistory'),

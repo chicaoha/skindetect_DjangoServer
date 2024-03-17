@@ -24,5 +24,6 @@ urlpatterns = [
     path('admin/', admin.site.urls), 
     path("__reload__/", include("django_browser_reload.urls")),
     path('', include('users.urls')),
+    # path('admin/users/', include('users.urls')),  # Replace 'your-app' with your app's name
     path('accounts/', include('allauth.urls')),
 ]

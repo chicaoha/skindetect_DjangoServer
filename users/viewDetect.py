@@ -15,7 +15,7 @@ import django
 import numpy as np
 from tarfile import TarFile
 
-
+from django.core.paginator import Paginator
 from users.forms import DetectInfoForm
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
@@ -117,25 +117,41 @@ def showResult(request):
         return render(request, 'users/detect_result.html', {'detect_info': detect_info})
     else:
         return render(request, 'users/detect.html')
-    
+
+
 def history(request):
     user = request.user
     if user is not None:
-        data_filter = DetectInfo.objects.filter(user_id = user.id)
-        return render(request, 'users/detect_history.html', {'data_filter' : data_filter})
-    return render(request, 'users/detect_history.html')
+        data_filter = DetectInfo.objects.filter(user_id=user.id)
+        for data in data_filter:
+            data.detect_score = round(data.detect_score * 100)
+
+        # Implement pagination logic
+        objects_per_page = 10
+        paginator = Paginator(data_filter, objects_per_page)
+        page_number = request.GET.get('page')
+        page_objects = paginator.get_page(page_number)
+
+        return render(request, 'users/detect_history.html', {'page_objects': page_objects})
+    return render(request, 'users/detect_history.html', {'page_objects': None})
+
+def aboutDisease(request):
+    return render(request,'users/about_disease.html') 
+
+
 
 def deleteDetectResult(request):
-    detect_id = request.detect_id
-    result = 'unsuccess'
+    detect_id = request.GET.get('detect_id')  # Retrieve detect_id from query parameters
+    result = 'unsuccessful'
     if detect_id is not None:
-        # result = DetectInfo.objects.filter(detect_id=detect_id)
-        query = DetectInfo.objects.get(pk=id)
-        print(query)
-        query.delete()
-        result = 'successful'
-        return render(request, 'users/detect_history.html', {'result' : result})
-    return render(request, 'users/detect_history.html', {'result' : result})
+        try:
+            query = DetectInfo.objects.get(pk=detect_id)  # Retrieve DetectInfo object with the given detect_id
+            query.delete()  # Delete the object
+            result = 'successful'
+        except DetectInfo.DoesNotExist:
+            pass 
+    
+    return redirect('detectHistory')  # Redirect to the detection history page
 
 
 @login_required(login_url='login')  

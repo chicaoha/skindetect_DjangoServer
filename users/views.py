@@ -1,8 +1,11 @@
 import base64
+from lib2to3.fixes.fix_input import context
 from io import BytesIO
 import json
 import os
 import django
+from django.contrib import messages
+from django.dispatch import receiver
 from requests import get
 # from sympy import use
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
@@ -19,12 +22,16 @@ from django.core.files.base import ContentFile
 from django.shortcuts import redirect, render
 from django.contrib.auth.models import User
 from django.contrib import auth
-from .models import Profile
+from .models import DetectInfo, Profile
 from .forms import ProfileForm
 import uuid
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate
+import pandas as pd
+from django.db.models import Count
+from django.urls import reverse
+from django.contrib.sessions.models import Session
 from django.http import JsonResponse
 from google.auth.transport import requests
 from google.auth.transport.requests import Request
@@ -78,6 +85,32 @@ def mobileApp(request):
 
 def register(request):
     if request.method == 'POST':
+        username = request.POST['username']
+        email = request.POST['email']
+        password1 = request.POST['password1']
+        password2 = request.POST['password2']
+
+        # Custom username validation
+        if not username.isalnum():
+            return render(request, 'users/register.html', {'error': 'Username must contain only letters and numbers!'})
+
+        # Check if passwords match
+        if password1 != password2:
+            return render(request, 'users/register.html', {'error': 'Passwords do not match!'})
+
+        # Check if the email is already in use
+        if User.objects.filter(email=email).exists():
+            return render(request, 'users/register.html', {'error': 'This email is already in use!'})
+
+        try:
+            # Check if the username is already in use
+            User.objects.get(username=username)
+            return render(request, 'users/register.html', {'error': 'Username is already in use!'})
+        except User.DoesNotExist:
+            # Create the user if username and email are unique
+            user = User.objects.create_user(username=username, email=email, password=password1)
+            auth.login(request, user)
+            return redirect('')  # Redirect to the desired URL after successful registration
         if request.POST['password1'] == request.POST['password2']:
             try:
                 User.objects.get(username=request.POST['username'])
@@ -90,7 +123,7 @@ def register(request):
         else:
             return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
-        return render(request, 'users/phat_register.html')
+        return render(request, 'users/register.html')
 
     
 def login(request):
@@ -113,7 +146,6 @@ def logout(request):
     auth.logout(request)
     return redirect('')
 
-
 @login_required
 def profile(request):
     user = request.user
@@ -122,16 +154,13 @@ def profile(request):
     except ObjectDoesNotExist:
         # If profile doesn't exist, create one
         profile = Profile.objects.create(user=user)
-        # Set the default avatar path
-        # default_avatar_path = 'profile_pics/default.jpg'
-        # profile.avatar.name = default_avatar_path
-        
         profile.save()
+
+    form_submitted_successfully = False  # Initialize the variable
 
     if request.method == 'POST':
         form = ProfileForm(request.POST, request.FILES, instance=profile)
         if form.is_valid():
-            # Check if the 'avatar' field has changed
             if 'avatar' in form.changed_data:
                 # Rest of your profile update logic for avatar...
                 avatar_file = form.cleaned_data['avatar']
@@ -146,11 +175,6 @@ def profile(request):
                         filename = 'avatar.jpg'
                         profile.avatar.name = filename
 
-                        # Ensure the folder path exists
-                        # folder_path = os.path.join('media', 'profile_pics', str(user_id))
-                        # os.makedirs(folder_path, exist_ok=True)
-
-                        # Save the new avatar file before deleting the old one
                         profile.avatar.save(filename, avatar_file)
 
                         # Delete the old avatar file
@@ -158,15 +182,115 @@ def profile(request):
                             os.remove(old_avatar_path)
                             print(f"Successfully deleted old avatar file at path: {old_avatar_path}")
 
-        form.save()
-        return redirect('profilePage')
-
+            form.save()
+            form_submitted_successfully = True  # Set the variable to True upon successful form submission
+            messages.success(request, 'Your profile has been updated successfully.')
+            return redirect('profilePage')
+        else:
+            # Form is invalid, display error messages
+            for field, errors in form.errors.items():
+                for error in errors:
+                    messages.error(request, f"{field}: {error}")
     else:
         form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
-    return render(request, 'users/profilePage.html', {'user': user, 'profile': profile, 'form': form})
+    return render(request, 'users/profilePage.html', {'user': user, 'profile': profile, 'form': form, 'form_submitted_successfully': form_submitted_successfully})
 
 
+
+# --------------------Admin-----------------
+def logoutAdmin(request):
+    auth.logout(request)
+    login_url = reverse('customadmin:login') 
+    return redirect(login_url)
+
+def get_user_count():
+    user_count = Profile.objects.filter(user__is_staff=False).count()
+    return user_count
+
+def get_staff_count():
+    staff_count = Profile.objects.filter(user__is_staff=True).count()
+    return staff_count
+
+def get_detection_count():
+    detection_count = DetectInfo.objects.count()
+    return detection_count
+
+
+def gender_disease_chart():
+    # Query to get gender and disease information
+    data = Profile.objects.filter(user__detectinfo__isnull=False).values('gender').annotate(disease_count=Count('user__detectinfo', distinct=True))
+
+    # Convert data to Pandas DataFrame for easier manipulation
+    df = pd.DataFrame(data)
+
+    # Prepare data for Google Chart
+    chart_data = [['Gender', 'Amount']]
+    for entry in data:
+        chart_data.append([entry['gender'], entry['disease_count']])
+
+    context = {'chart_data': chart_data}
+    return context    
+
+def result_disease_chart():
+    # Get the count of each distinct detect_result value
+    result_counts = DetectInfo.objects.values('detect_result').annotate(count=Count('detect_result'))
+
+    # Calculate the total count of detect_info objects
+    total_count = DetectInfo.objects.count()
+
+    # Prepare data for Google Chart
+    chart_data = [['Detect Result', 'Amount']]
+    for entry in result_counts:
+        detect_result = entry['detect_result'] if entry['detect_result'] else 'Unknown'
+        count = entry['count']
+        chart_data.append([detect_result, count])
+
+    context = {'chart_data': chart_data}
+    return context
+
+from collections import defaultdict
+
+def login_time_chart():
+    # Initialize a dictionary to store login counts for each hour of the day
+    login_counts_by_hour = defaultdict(int)
+
+    # Get the last login time for each user
+    user_last_login_times = User.objects.exclude(last_login__isnull=True).values_list('last_login', flat=True)
+
+    # Extract the hour component from each login time and increment the corresponding count
+    for login_time in user_last_login_times:
+        hour = login_time.hour
+        login_counts_by_hour[hour] += 1
+
+    # Prepare data for charting
+    chart_data = [['Hour of the Day', 'Users Login']]
+    for hour in range(24):  # Iterate over 24 hours
+        count = login_counts_by_hour[hour]
+        chart_data.append([hour, count])
+
+    return chart_data
+
+from django.contrib.admin.views.decorators import staff_member_required
+
+@login_required
+@staff_member_required
+def dashboard(request):
+    g_disease_chart = gender_disease_chart()
+    disease_result_chart = result_disease_chart()
+    user_count = get_user_count()
+    detection_count = get_detection_count()
+    staff_count = get_staff_count()
+    time_chart = login_time_chart()
+
+    return render(request, "admin/dashboard.html", {
+        'user_count': user_count,
+        'detection_count': detection_count,
+        'staff_count': staff_count,
+        'gender_disease_chart': g_disease_chart,
+        'disease_result_chart': disease_result_chart,
+        'time_chart' : time_chart,
+    })
 # --------------------------------Mobile API--------------------------------#
 @api_view(['POST'])
 def loginMobile(request):

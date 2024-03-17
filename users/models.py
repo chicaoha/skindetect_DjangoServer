@@ -1,4 +1,3 @@
-# from django.contrib.auth.models import AbstractUser
 from email.policy import default
 import os
 from django.conf import settings
@@ -11,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 from django.core.files.storage import default_storage
+
 
 def profile_image_path(instance, filename):
     # Upload to 'media/profile_pics/{user_id}/' directory with a unique filename

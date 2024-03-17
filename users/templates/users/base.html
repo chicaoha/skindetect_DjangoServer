@@ -12,7 +12,9 @@
     {% tailwind_preload_css %}
     {% tailwind_css %}
     <link href="./static/css/style.css" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/glightbox/dist/css/glightbox.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/mcstudios/glightbox/dist/js/glightbox.min.js"></script>
+ 
 </head>
 
 <body class="bg-white dark:bg-black">
@@ -85,14 +87,22 @@
                                         </li>
                                     </ul>
                                 </li>
-                            {% else %}
-                                <li class="menu-item">
-                                    <a href="/detect"
-                                        class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
-                                        Detection
-                                    </a>
-                                </li>
-                            {% endif %}
+                                {% else %} 
+                                    <!-- Menu item for users who are not authenticated -->
+                                    {% comment %} <li class="submenu-item menu-item group relative">
+                                        <a id="openLightboxButton" href="javascript:void(0)"
+                                            class="inline-flex items-center py-4 text-black hover:text-primary dark:text-white submenu-taggler inline-flex items-center text-base font-medium text-black hover:text-primary group-hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">                                            
+                                            Detection
+                                        </a>
+                                    </li>  {% endcomment %}
+                                    
+                                    <li class="submenu-item menu-item group relative">
+                                        <a href="/login"
+                                            class="inline-flex items-center py-4 text-black hover:text-primary dark:text-white submenu-taggler inline-flex items-center text-base font-medium text-black hover:text-primary group-hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">                                            
+                                            Detection
+                                        </a>
+                                    </li> 
+                                {% endif %}
                             <li class="menu-item">
                                 <a href="/mobileApp"
                                     class="menu-scroll inline-flex items-center text-base font-medium text-black hover:text-primary dark:text-white dark:hover:text-primary lg:py-7">
@@ -339,8 +349,34 @@
         <span class="mt-[6px] h-3 w-3 rotate-45 border-t border-l border-white"></span>
     </a>
 
+<script>
 
-    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const openLightboxButton = document.getElementById('openLightboxButton');
+    
+        if (openLightboxButton) {
+            openLightboxButton.addEventListener('click', function() {
+                if (typeof glightbox === 'function') {
+                    glightbox({
+                        href: 'http://127.0.0.1:8000/static/videos/video_hd.mp4',
+                        type: 'video',
+                        width: 900,
+                        autoplay: true,
+                        // Add other options as needed
+                    });
+                } else {
+                    console.error('glightbox is not defined or not loaded properly.');
+                }
+            });
+        } else {
+            console.error('openLightboxButton is not found.');
+        }
+    });
+    
+    
+
+    
+
         // ==== pricing plan toggler
         let togglePlan = document.querySelector("#togglePlan");
 

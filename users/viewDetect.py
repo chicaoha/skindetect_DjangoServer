@@ -124,7 +124,8 @@ def history(request):
     if user is not None:
         data_filter = DetectInfo.objects.filter(user_id=user.id)
         for data in data_filter:
-            data.detect_score = round(data.detect_score * 100)
+            if data.detect_score is not None:
+                data.detect_score = round(data.detect_score * 100)
 
         # Implement pagination logic
         objects_per_page = 10
@@ -361,13 +362,9 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
             disease=skin_disease_instance,    
             detect_score=image_score           
         )
-
         # Attach the image and text file to the instance
-        # detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(open(image_path, 'rb').read()))
         with open(image_path, 'rb') as f:
             detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(f.read()), save=False)
-        # path = 'detect_pics/' + image_path
-        # detect_info.detect_photo = path
         detect_info.detect_result = text_path
         detect_info.save()  # Save the instance to the database
 

@@ -38,6 +38,7 @@ from google.auth.transport.requests import Request
 from allauth.socialaccount.models import SocialAccount
 from django.core.files import File
 import requests
+from django.contrib.auth.backends import ModelBackend  # Import the appropriate authentication backend class
 
 
 # Create your views here.
@@ -124,6 +125,7 @@ def register(request):
         else:
             return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
+          # Redirect to the desired URL after successful registration
         return render(request, 'users/register.html')
 
     
@@ -261,7 +263,7 @@ def login_time_chart():
 
     # Extract the hour component from each login time and increment the corresponding count
     for login_time in user_last_login_times:
-        hour = login_time.hour
+        hour = str(login_time.hour)  # Convert hour to string
         login_counts_by_hour[hour] += 1
 
     # Prepare data for charting
@@ -269,7 +271,6 @@ def login_time_chart():
     for hour in range(24):  # Iterate over 24 hours
         count = login_counts_by_hour[hour]
         chart_data.append([hour, count])
-
     return chart_data
 
 from django.contrib.admin.views.decorators import staff_member_required
@@ -361,8 +362,11 @@ def registerMobile(request):
             print('-------------------------------')
         except User.DoesNotExist:
             user = User.objects.create_user(username=username, password=password, email=email)
+            
             auth.login(request, user,backend='django.contrib.auth.backends.ModelBackend')
-            #Profile.objects.create(user=user, gender='', user_address='', user_phone='', user_dob=None, user_avatar=None)
+            profile = Profile.objects.get(user=user)
+            profile.gender = 'Other'
+            profile.save()
             result['placement'] = 0
             result['message'] = 'Register successfully!'
             print('-------------------------------')
@@ -381,6 +385,7 @@ def getUserMobile(userid):
         'user_email': getattr(user, 'email', None),
         'user_avatar': base64.b64encode(profile.avatar.read()).decode('utf-8') if profile.avatar else None,
         'user_phone': profile.phone if profile else None,
+        'user_dob': profile.dob if profile else None,
         'user_address': profile.address if profile else None,
         'date_joined' : getattr(user, 'date_joined', None), 
         'first_name' : getattr(user, 'first_name', None),

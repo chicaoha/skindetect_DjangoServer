@@ -135,9 +135,31 @@ def history(request):
         return render(request, 'users/detect_history.html', {'page_objects': page_objects})
     return render(request, 'users/detect_history.html', {'page_objects': None})
 
-def aboutDisease(request):
-    return render(request,'users/about_disease.html') 
 
+import os
+from django.conf import settings
+
+import os
+from django.conf import settings
+
+def aboutDisease(request):
+    d_id = request.GET.get('id')
+    skin_disease = None
+    image_filenames = []
+    image_folder_path = None  # Initialize image_folder_path
+
+    if d_id is not None:
+        skin_disease = SkinDisease.objects.filter(disease_id=d_id).first()  # Get the first object or None
+        if skin_disease:
+            image_folder_path = os.path.join(settings.MEDIA_ROOT, 'disease_pics', skin_disease.disease_images_folder) # type: ignore
+            if os.path.exists(image_folder_path) and os.path.isdir(image_folder_path):
+                image_filenames = [os.path.join('/media', 'disease_pics', skin_disease.disease_images_folder, f) for f in os.listdir(image_folder_path) if os.path.isfile(os.path.join(image_folder_path, f))] # type: ignore
+
+    print("Skin Disease:", skin_disease)
+    print("Image Folder Path:", image_folder_path)
+    print("Image Filenames:", image_filenames)
+
+    return render(request, 'users/about_disease.html', {'skin_disease': skin_disease, 'image_filenames': image_filenames})
 
 
 def deleteDetectResult(request):
@@ -148,6 +170,7 @@ def deleteDetectResult(request):
             query = DetectInfo.objects.get(pk=detect_id)  # Retrieve DetectInfo object with the given detect_id
             query.delete()  # Delete the object
             result = 'successful'
+            return render(request, 'users/detect_history.html')
         except DetectInfo.DoesNotExist:
             pass 
     

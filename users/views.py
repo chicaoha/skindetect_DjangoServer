@@ -109,6 +109,7 @@ def register(request):
         except User.DoesNotExist:
             # Create the user if username and email are unique
             user = User.objects.create_user(username=username, email=email, password=password1)
+            user.backend = 'django.contrib.auth.backends.ModelBackend'
             auth.login(request, user)
             return redirect('')  # Redirect to the desired URL after successful registration
         if request.POST['password1'] == request.POST['password2']:

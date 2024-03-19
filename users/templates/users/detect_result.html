@@ -4,111 +4,102 @@
 {% block content %}
 <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.min.js" defer></script>
-<style>
-	.has-mask {
-		position: absolute;
-		clip: rect(10px, 150px, 130px, 10px);
-	}
-</style>
+
 <section id="work-process" class="relative z-10 pt-[110px]">
     <div class="container">
         <div class="container pt-24 md:pt-48 px-6 mx-auto flex flex-wrap flex-col md:flex-row items-center lg:pt-5 mb-5">
-            <div class="flex justify-center items-center w-screen h-screen bg-white">
-                <div class="container mx-auto my-4 px-4 lg:px-20">
-                    <div class="w-full p-8 my-4 md:px-12 lg:w-9/12 lg:pl-20 lg:pr-40 mr-auto rounded-2xl shadow-2xl">
+            <div class="container mx-auto my-4 px-4 lg:px-20">
+                <div class="w-full p-8 my-4 md:px-12 lg:w-9/12 lg:pl-20 lg:pr-40 mr-auto rounded-2xl shadow-2xl">
 
-                        <div class="flex">
-                            <h1 class="font-bold uppercase text-5xl">result of the <br /> detection</h1>
-                        </div>
-
-                        <div class="grid-cols-1 gap-5 md:grid-cols-2 mt-16 mb-9">
-                            <div class="flex items-center flex-wrap max-w-md px-10 bg-white shadow-xl rounded-2xl h-20"
-                                x-data="{ circumference: 50 * 2 * Math.PI, percent: Math.round({{ detect_info.detect_score }} * 100) }"
-                            >
-                                <div class="flex items-center justify-center -m-6 overflow-hidden bg-white rounded-full">
-                                    <svg class="w-32 h-32 transform translate-x-1 translate-y-1" x-cloak aria-hidden="true">
-                                        <circle
-                                            class="text-gray-300"
-                                            stroke-width="10"
-                                            stroke="currentColor"
-                                            fill="transparent"
-                                            r="50"
-                                            cx="60"
-                                            cy="60"
-                                        />
-                                        <circle
-                                            :class="{ 'text-green-600': percent < 50, 'text-red-600': percent >= 50 }"
-                                            stroke-width="10"
-                                            :stroke-dasharray="circumference"
-                                            :stroke-dashoffset="circumference - percent / 100 * circumference"
-                                            stroke-linecap="round"
-                                            stroke="currentColor"
-                                            fill="transparent"
-                                            r="50"
-                                            cx="60"
-                                            cy="60"
-                                        />
-                                    </svg>
-                                    <span class="absolute text-2xl" :class="{ 'text-green-700': percent < 50, 'text-red-700': percent >= 50 }" x-text="`${percent}%`"></span>
-                                </div>
-                                <p class="ml-10 font-medium" :class="{ 'text-green-600': percent < 50, 'text-red-600': percent >= 50 }">{{ detect_info.detect_result }}</p>
-                            </div>
-                        </div>
-                        
-                        <div class="my-4 flex">
-                            <p class="font-medium text-gray-600 sm:text-xl">{{ detect_info.detect_date }}</p>
-
-                            {% comment %} <span class="ml-auto text-xl font-medium text-gray-400 hidden sm:block">20GB</span>                            <textarea placeholder="Message*" class="w-full h-32 bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"></textarea> {% endcomment %}
-                        </div>
-
+                    <div class="flex">
+                        <h1 class="font-bold uppercase text-5xl">result of the <br /> detection</h1>
                     </div>
-                
 
-                    <div class="w-full lg:-mt-96 lg:w-2/6 px-8 py-12 ml-auto bg-blue-900 rounded-2xl" style="margin-left: 700px;">
-                        <div class="flex flex-col text-white">
-                            {% comment %} <h1 class="font-bold uppercase text-4xl my-4">Drop Your image</h1> {% endcomment %}
-                            <div class="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10" style="padding-top: 20px; padding-bottom: 20px">
-                                <form method="post" enctype="multipart/form-data"  action="{% url 'detect' %}" class="mt-8 space-y-3">
-                                    {% csrf_token %}
-                                    {% if form_errors %}
-                                        <div class="alert alert-danger">
-                                        <strong>Form Errors:</strong>
-                                        <ul>
-                                    {% for error in form_errors %}
-                                        <li>{{ error }}</li>
-                                    {% endfor %}
-                                        </ul>
-                                        </div>
-                                    {% endif %}
-
-                                    <div class="grid grid-cols-1 space-y-2">
-                                        <div class="flex items-center justify-center w-full">
-                                            <label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center relative">
-                                                <label for="{{ form.detect_photo.id_for_label }}"></label>
-                                                <input type="file" name="detect_photo" id="img_detect" accept="image/*" hidden onchange="loadFile(this)" id='file'>
-                                                <div class="h-full w-full text-center flex flex-col items-center justify-center items-center absolute top-0 left-0 right-0 bottom-0">
-                                                    {% if form.detect_photo.value.url %}
-                                                        <img src="{{ form.detect_photo.value.url }}" alt="detect-photo" id="avatar-preview" class="has-mask h-36 object-center w-36">
-                                                    {% else %}
-                                                        <img src="{{ detect_info.detect_photo.url }}" alt="detect-photo" id="avatar-preview" class="has-mask h-36 object-center w-36">
-                                                        {% comment %} <img class="has-mask h-36 object-center w-36" src="{{ detect_info.detect_photo.url }}" alt="detect image" id="avatar-preview"> {% endcomment %}
-                                                    {% endif %}
-                                                </div>
-                                            </label>
-                                        </div>
-                                    </div>
-                                    
-                                    <div>
-                                        <button type="submit" class="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4  rounded-full tracking-wide
-                                                    font-semibold  focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300">Detect
-                                        </button>
-                                    </div>
-                                </form>
+                    <div class="grid-cols-1 gap-5 md:grid-cols-2 mt-16 mb-9">
+                        <div class="flex items-center flex-wrap max-w-md px-10 bg-white shadow-xl rounded-2xl h-20"
+                            x-data="{ circumference: 50 * 2 * Math.PI, percent: Math.round({{ detect_info.detect_score }} * 100) }"
+                        >
+                            <div class="flex items-center justify-center -m-6 overflow-hidden bg-white rounded-full">
+                                <svg class="w-32 h-32 transform translate-x-1 translate-y-1" x-cloak aria-hidden="true">
+                                    <circle
+                                        class="text-gray-300"
+                                        stroke-width="10"
+                                        stroke="currentColor"
+                                        fill="transparent"
+                                        r="50"
+                                        cx="60"
+                                        cy="60"
+                                    />
+                                    <circle
+                                        :class="{ 'text-green-600': percent < 50, 'text-red-600': percent >= 80, 'text-yellow-700': percent >= 50}"
+                                        stroke-width="10"
+                                        :stroke-dasharray="circumference"
+                                        :stroke-dashoffset="circumference - percent / 100 * circumference"
+                                        stroke-linecap="round"
+                                        stroke="currentColor"
+                                        fill="transparent"
+                                        r="50"
+                                        cx="60"
+                                        cy="60"
+                                    />
+                                </svg>
+                                <span class="absolute text-2xl" :class="{ 'text-green-700': percent < 50, 'text-red-700': percent >= 80, 'text-yellow-700': percent >= 50  }" x-text="`${percent}%`"></span>
                             </div>
+                            <p class="ml-10 font-medium" :class="{ 'text-green-600': percent < 50, 'text-red-600': percent >= 80, 'text-yellow-700': percent >= 50 }">{{ detect_info.detect_result }}</p>
+                        </div>
+                    </div>
+                    
+                    <div class="my-4 flex">
+                        <p class="font-medium text-gray-600 sm:text-xl">{{ detect_info.detect_date }}</p>
+
+                        {% comment %} <span class="ml-auto text-xl font-medium text-gray-400 hidden sm:block">20GB</span>                            <textarea placeholder="Message*" class="w-full h-32 bg-gray-100 text-gray-900 mt-2 p-3 rounded-lg focus:outline-none focus:shadow-outline"></textarea> {% endcomment %}
+                    </div>
+
+                </div>
+            
+                <div class="w-full lg:-mt-96 lg:w-2/6 px-8 py-12 ml-auto bg-blue-900 rounded-2xl lg:col-span-1">
+                    <div class="flex flex-col text-white">
+                        {% comment %} <h1 class="font-bold uppercase text-4xl my-4">Drop Your image</h1> {% endcomment %}
+                        <div class="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10" style="padding-top: 20px; padding-bottom: 20px">
+                            <form method="post" enctype="multipart/form-data"  action="{% url 'detect' %}" class="mt-8 space-y-3">
+                                {% csrf_token %}
+                                {% if form_errors %}
+                                    <div class="alert alert-danger">
+                                    <strong>Form Errors:</strong>
+                                    <ul>
+                                {% for error in form_errors %}
+                                    <li>{{ error }}</li>
+                                {% endfor %}
+                                    </ul>
+                                    </div>
+                                {% endif %}
+
+                                <div class="grid grid-cols-1 space-y-2">
+                                    <div class="flex items-center justify-center w-full">
+                                        <label class="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center relative">
+                                            <label for="{{ form.detect_photo.id_for_label }}"></label>
+                                            <input type="file" name="detect_photo" id="img_detect" accept="image/*" hidden onchange="loadFile(this)" id='file'>
+                                            <div class="h-full w-full text-center flex flex-col items-center justify-center items-center absolute top-0 left-0 right-0 bottom-0">
+                                                {% if form.detect_photo.value.url %}
+                                                    <img src="{{ form.detect_photo.value.url }}" alt="detect-photo" id="avatar-preview" class="has-mask h-full w-full object-contain">
+                                                {% else %}
+                                                    <img src="{{ detect_info.detect_photo.url }}" class="has-mask h-full w-full object-contain" alt="detect image" id="avatar-preview">
+                                                {% endif %}
+                                            </div>
+                                        </label>
+                                    </div>
+                                </div>
+                            
+                                <div>
+                                    <button type="submit" class="my-5 w-full flex justify-center bg-blue-500 text-gray-100 p-4  rounded-full tracking-wide
+                                                font-semibold  focus:outline-none focus:shadow-outline hover:bg-blue-600 shadow-lg cursor-pointer transition ease-in duration-300">Detect
+                                    </button>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>                
         </div>
     </div>
 </section>

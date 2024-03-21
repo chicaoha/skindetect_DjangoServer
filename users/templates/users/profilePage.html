@@ -5,129 +5,167 @@
 {% block content %}
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css" />
 <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+<style>
+    #popup-message {
+        transition: opacity 0.3s ease;
+        opacity: 0;
+    }
 
-<form method="post" enctype="multipart/form-data" action="{% url 'profilePage' %}" class="max-w-sm mx-auto">
-    {% csrf_token %}
-    <section id="" class="relative z-1 pt-[110px]">
-        <div class="container max-w-[1390px]">
-            <div
-                class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
-                <div class="-mx-4 flex flex-wrap ">
-                    <div class="w-full px-1 lg:w-4/12 justify-center" style='margin-block:auto;'>
-                        <div class="mb-2 flex flex-wrap items-center justify-center pb-6">
-                            <!-- Adjust the margin value here -->
-                            <div class="lg:w-1 px-[10px] ">
-                                <div class="mb-2 flex items-center justify-center">
-                                    <label for="{{ form.avatar.id_for_label }}" id="avatar-label">
-                                        <input type="file" name="{{ form.avatar.name }}"
-                                            id="{{ form.avatar.id_for_label }}" accept="image/*" hidden
-                                            onchange="loadFile(this)" id='file' value="{{ form.update_avatar.value }}">
-                                        <input type="hidden" name="{{ form.update_avatar.name }}"
-                                            value="{{ form.update_avatar.value }}">
-                                        <img src="{{ user.profile.avatar.url }}" alt="Avatar" id="avatar-preview"
-                                            class="rounded-full object-cover" style="width: 250px; height:250px">
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="mb-4 flex flex-wrap items-center justify-center">
-                            <div class="lg:w-1/2 px-4 text-center">
-                                <h4 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id='fullName'>
-                                </h4>
-                                <h5 class="block mb-2 text-sm font-medium text-gray-900 dark:text-white" id='age'></h5>
+    #popup-message.show {
+        opacity: 1;
+        pointer-events: auto;
+    }
+</style>
+<form method="post" enctype="multipart/form-data"  action="{% url 'profilePage' %}" class="max-w-sm mx-auto">
+{% csrf_token %}
+<section id="" class="relative z-1 pt-[110px]">
+    <div class="container max-w-[1390px]">
+        <div
+            class="rounded-2xl bg-white px-5 pt-14 pb-14 shadow-card dark:bg-dark dark:shadow-card-dark md:pb-1 lg:pt-20 lg:pb-5 xl:px-10">
+            <div class="-mx-4 flex flex-wrap ">
+                <div class="w-full px-1 lg:w-4/12 justify-center" style='margin-block:auto;'>
+                    <div class="mb-2 flex flex-wrap items-center justify-center pb-6">
+                        <!-- Adjust the margin value here -->
+                        <div class="lg:w-1 px-[10px] ">
+                            <div class="mb-2 flex items-center justify-center">
+                                <label for="{{ form.avatar.id_for_label }}" id="avatar-label">
+                                    <input type="file" name="{{ form.avatar.name }}" id="{{ form.avatar.id_for_label }}"
+                                           accept="image/*" hidden onchange="loadFile(this)" id='file' value="{{ form.update_avatar.value }}">
+                                    <input type="hidden" name="{{ form.update_avatar.name }}" value="{{ form.update_avatar.value }}">
+                                    <img src="{{ user.profile.avatar.url }}" alt="Avatar" id="avatar-preview" class="w-8 h-8 rounded-full" style="width: 250px; height:250px">
+                                </label>              
                             </div>
                         </div>
                     </div>
-                    <div class="w-full px-6 lg:w-8/12 ">
-                        <div class="mb-5 flex flex-wrap">
-                            <div class="lg:w-1/2 px-[10px]">
-                                <label for="{{ form.first_name.id_for_label }}"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First
-                                    Name</label>
+                    <div class="mb-4 flex flex-wrap items-center justify-center"> 
+                        <div class="lg:w-1/2 px-4 text-center">
+                            <h4 class="text-pretty mb-3" id='fullName'></h4> 
+                            <h5 class="text-pretty font-normal" id='age'></h5>
+                        </div>
+                    </div>
+                </div>
+                <div class="w-full px-6 lg:w-8/12 ">
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="{{ form.first_name.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">First Name</label>
                                 {{ form.first_name }}
-
-                            </div>
-                            <div class="lg:w-1/2 px-[10px]">
-                                <label for="{{ form.last_name.id_for_label }}"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last
-                                    Name</label>
-                                {{ form.last_name }}
-
-                            </div>
+                           
                         </div>
-
-                        <div class="mb-5 flex flex-wrap">
-                            <div class="lg:w-1/2 px-[10px]">
-                                <label for="{{ form.phone.id_for_label }}"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
-                                {{ form.phone }}
-
-                            </div>
-                            <div class="lg:w-1/2 px-[10px]">
-                                <label for="{{ form.email.id_for_label }}"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="{{ form.last_name.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Last Name</label>
+                            {{ form.last_name }}
+                            
+                        </div>
+                    </div>
+                    
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="{{ form.phone.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Phone</label>
+                            {{ form.phone }}
+                            
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <label for="{{ form.email.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>      
                                 <div class="relative">
-                                    {{ form.email }}
+                                    {{ form.email }}      
+                                    {% for error in form.email.errors %}
+                                        <p class="text-red-500">{{ error }}</p>
+                                    {% endfor %}
                                 </div>
-                            </div>
                         </div>
+                    </div>
 
-
-
-                        <div class="mb-5 flex flex-wrap">
-                            <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
-                                <label for="{{ form.gender.id_for_label }}"
-                                    class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
-                                {{ form.gender }}
-                            </div>
-                            <div class="lg:w-1/2 px-[10px]">
-                                <div class="mb-5" style="margin-bottom: 0px;">
-                                    <label for="{{ form.dob.id_for_label }}"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of
-                                        Birth</label>
-                                    <div class="relative max-w-sm">
-                                        <div
-                                            class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                                            <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 20 20">
-                                                <path
-                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                                            </svg>
-                                        </div>
-                                        {{ form.dob }}
-
+                    <div class="mb-5 flex flex-wrap">
+                        <div class="lg:w-1/2 px-[10px]" style="width: 100px;">
+                            <label for="{{ form.gender.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Gender</label>
+                            {{ form.gender }}
+                        </div>
+                        <div class="lg:w-1/2 px-[10px]">
+                            <div class="mb-5" style="margin-bottom: 0px;">
+                                <label for="{{ form.dob.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Date of Birth</label>
+                                <div class="relative max-w-sm">
+                                    <div class="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                            xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+                                            <path
+                                                d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                                        </svg>
                                     </div>
-
+                                    {{ form.dob }}
+                                    
                                 </div>
+
                             </div>
                         </div>
-                        <div class="mb-5 flex flex-wrap ">
-                            <div class="lg:w-1/2 px-[10px]" style="width: 520px;">
-                                <div class="mb-5">
-                                    <label for="{{ form.address.id_for_label }}"
-                                        class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
-                                    {{ form.address }}
-                                </div>
+                    </div>
+                    <div class="mb-5 flex flex-wrap ">
+                        <div class="lg:w-1/2 px-[10px]" style="width: 520px;">
+                            <div class="mb-5">
+                                <label for="{{ form.address.id_for_label }}" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Location</label>
+                                        {{ form.address }}
                             </div>
                         </div>
-
                     </div>
 
                 </div>
-                <div style="text-align: right;">
-                    <button
-                        class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block"
-                        type="submit">Save all</button>
-                </div>
+
+            </div>
+            <div style="text-align: right;">
+                <button class="hidden rounded-md bg-primary py-[10px] px-[30px] text-base font-medium text-white hover:bg-opacity-90 sm:inline-block" type="submit">Save all</button>
             </div>
         </div>
+    </div>
 </form>
 </section>
+
+{% if form_submitted_successfully %}
+<div id="popup-message" class="fixed bottom-0 left-0 mb-4 ml-4 z-50">
+    <div class="max-w-lg w-full flex items-center p-4 text-sm text-green-600 bg-green-500 border border-green-500 rounded-lg shadow-lg dark:bg-gray-800 dark:border-green-800" role="alert">
+        <svg class="flex-shrink-0 inline w-6 h-6 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm1-10a1 1 0 0 0-2 0v4a1 1 0 0 0 2 0v-4zm0 6a1 1 0 1 0 0 2 1 1 0 0 0 0-2z" clip-rule="evenodd"></path>
+        </svg>
+        <div>
+            <span class="font-medium">Your profile has been updated successfully!</span>
+        </div>
+    </div>
+</div>
+{% endif %}
+
+
 <script>
+    // Add this script after the form_submitted_successfully check
+    var popup = document.getElementById('popup-message');
+    if (popup) {
+        popup.classList.add('show');
+        setTimeout(function() {
+            popup.classList.remove('show');
+        }, 3000); // Adjust the timeout value (in milliseconds) as needed
+    }
+</script>
+
+<script>
+
+    function showPopupMessage() {
+        var popupMessage = document.getElementById('popup-message');
+        if (popupMessage) {
+            popupMessage.classList.remove('hidden');
+            setTimeout(function () {
+                // Hide the popup message after 3 seconds
+                popupMessage.classList.add('hidden');
+            }, 3000); // Adjust the duration as needed (in milliseconds)
+        }
+    }
+
+    // Check if the form submission was successful
+    var formSubmittedSuccessfully = {{ form_submitted_successfully|default:"false" }};
+
+    if (formSubmittedSuccessfully) {
+        showPopupMessage(); // Show the popup message
+    }
+
+
     flatpickr("#datepicker", {
         dateFormat: "Y-m-d", // customize the date format as needed
-
     });
 
     // Function to update the avatar preview
@@ -139,32 +177,33 @@
             URL.revokeObjectURL(output.src) // free memory
         }
     };
+
     var fname = document.getElementById('id_first_name');
     var lname = document.getElementById('id_last_name');
-
 
     var firstName = fname.value;
     var lastName = lname.value;
     var fullName = firstName + " " + lastName;
-
     document.getElementById('fullName').innerHTML = fullName;
 
     function calculateAge() {
         // Get the value from the input field
         var birthdayInput = document.getElementById("id_dob");
         var birthdayValue = birthdayInput.value;
-        if (birthdayValue) {
+        if(birthdayValue){
             // Parse the date string to a JavaScript Date object
             var parts = birthdayValue.split("-");
-
+            
             // Calculate the age
             var currentYear = new Date().getFullYear();
             var age = currentYear - parts[0];
         }
         return age;
     }
+
     console.log(calculateAge())
-    if (calculateAge()) {
+
+    if(calculateAge()){
         document.getElementById('age').innerHTML = 'Age: ' + calculateAge();
     }
 </script>

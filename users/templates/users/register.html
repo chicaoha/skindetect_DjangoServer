@@ -1,26 +1,14 @@
 {% extends 'users/base.html' %}
 {% load static %}
-{% block title %} Login {% endblock %}
-<!DOCTYPE html>
+{% block title %} Register {% endblock %}
 {% load socialaccount %}
-{% load tailwind_tags %}
-<html lang="en" dir="ltr">
 
-<head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="./static/images/logo.jpg">
-    <title>
-        Registration Page | SkinDetect.ai
-    </title>    
-    {% comment %} <link rel="stylesheet" href="register.css"> {% endcomment %}
-    <link rel="stylesheet" href="./static/css/register.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    {% tailwind_preload_css %}
+{% comment %} <head> {% endcomment %}
+    {% comment %} <link rel="stylesheet" href="./static/css/style.css"> {% endcomment %}
+    {% comment %} {% tailwind_preload_css %}
     {% tailwind_css %}
-    <link rel="stylesheet" href="./static/css/app.css">
-</head>
+</head> {% endcomment %}
+
 {% block content %}
 <main>
     <section class="pt-[150px] pb-[110px] lg:pt-[220px]">
@@ -33,10 +21,11 @@
                         Create your account
                     </h3>
                     <p class="mb-11 text-base text-body">
-                        It's totally free and super easy
+                        "It's totally free and super easy"
                     </p>
-                    <button
-                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark">
+                    <a href="{% provider_login_url "google" %}">
+                        <button
+                        class="mb-6 flex w-full items-center justify-center rounded-md border border-stroke bg-white p-3 text-base font-medium text-body hover:text-primary dark:border-stroke-dark dark:bg-dark" type='submit'>
                         <span class="mr-3">
                             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"
                                 xmlns="http://www.w3.org/2000/svg">
@@ -61,75 +50,46 @@
                                 </defs>
                             </svg>
                         </span>
-                        Sign up with Google
-                    </button>
+                        Sign in with Google
+                        </button>
+                    </a>
                     <div class="relative z-10 mb-[30px] flex items-center">
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                         <p class="w-full px-5 text-base text-body">
-                            Or, sign up with your email
+                            Or, sign up with your username
                         </p>
                         <span class="hidden h-[1px] w-full max-w-[70px] bg-stroke dark:bg-stroke-dark sm:block"></span>
                     </div>
                 </div>
-                <form>
+                <form action= "{% url 'register' %}" method="POST">
+                    <div class="text-red-500 text-sm">
+                        {% if error %}
+                            <span>*<span>
+                            {{ error }} 
+                        {% endif %}
+                    </div>
+                    {% csrf_token %}
                     <div class="mb-5">
-                        <input type="text" placeholder="Enter User name"
+                        <input type="text" placeholder="Enter username" required name='username'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-5">
-                        <input type="email" placeholder="Enter your email"
+                        <input type="email" placeholder="Enter your email" required name='email'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-                        <input type="password" placeholder="Enter your password"
+                        <input type="password" placeholder="Enter your password" required name='password1'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
                     </div>
                     <div class="mb-6">
-                        <input type="password" placeholder="Confirm your password"
+                        <input type="password" placeholder="Confirm your password" required name='password2'
                             class="w-full rounded-md border border-stroke bg-white py-3 px-6 text-base font-medium text-body outline-none focus:border-primary focus:shadow-input dark:border-stroke-dark dark:bg-black dark:text-white dark:focus:border-primary" />
-                    </div>
-                    <div class="mb-[30px]">
-                        <label for="privacy-policy" class="flex cursor-pointer select-none text-base text-body">
-                            <input type="checkbox" name="privacy-policy" id="privacy-policy"
-                                class="keep-signed sr-only" />
-                            <span
-                                class="box mr-[10px] mt-[4px] flex h-[22px] w-full max-w-[22px] items-center justify-center rounded-sm border-[.7px] border-stroke bg-white dark:border-stroke-dark dark:bg-black">
-                                <svg width="16" height="16" viewBox="0 0 16 16" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="icon hidden">
-                                    <g clip-path="url(#clip0_73_381)">
-                                        <path
-                                            d="M6.66649 10.1148L12.7945 3.98608L13.7378 4.92875L6.66649 12.0001L2.42383 7.75742L3.36649 6.81475L6.66649 10.1148Z"
-                                            fill="white" />
-                                    </g>
-                                    <defs>
-                                        <clipPath id="clip0_73_381">
-                                            <rect width="16" height="16" fill="white" />
-                                        </clipPath>
-                                    </defs>
-                                </svg>
-                            </span>
-                            <p>
-                                By creating account means you agree to the
-                                <a href="javascript:void(0)" target="_blank" rel="noopener noreferrer"
-                                    class="text-primary hover:underline">
-                                    Terms and Conditions
-                                </a>
-                                , and our
-                                <a href="javascript:void(0)" target="_blank" rel="noopener noreferrer"
-                                    class="text-primary hover:underline">
-                                    Privacy Policy
-                                </a>
-                            </p>
-                        </label>
                     </div>
                     <button type="submit"
                         class="flex w-full justify-center rounded-md bg-primary p-3 text-base font-medium text-white hover:bg-opacity-90">
                         Sign Up
                     </button>
                 </form>
-            </div>
-            <div>
-                <a href="{% provider_login_url "google" %}">Login with Google</a>
             </div>
         </div>
     </section>

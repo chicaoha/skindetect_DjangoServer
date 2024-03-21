@@ -15,7 +15,7 @@ import django
 import numpy as np
 from tarfile import TarFile
 
-
+from django.core.paginator import Paginator
 from users.forms import DetectInfoForm
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'skindetect.settings')
 django.setup()
@@ -98,15 +98,15 @@ def detect(image_file):
                     name = name_arr[id]
                     # print('checkkkk')
                     print(score, id, name)
-                    return [name, float(score), date, time, id, result]
+                    return [name, float(score), date, time, id+1, result]
             score = random.uniform(0.01, 0.1)
-            return ["Skin without pathology!", float(score), date, time, '8']
+            return ["Skin without pathology!", float(score), date, time, '18']
         except cv2.error as e:
             print("Error in image decoding: {}".format(e))
         except Exception as e:
             print("An unexpected error occurred: {}".format(e))
     score = random.uniform(0.01, 0.1)
-    return ["Skin without pathology!", float(score), date, time, '8']
+    return ["Skin without pathology!", float(score), date, time, '18']
 
 def showResult(request):
     detect_id = request.session.pop('detect_id', None)
@@ -117,25 +117,68 @@ def showResult(request):
         return render(request, 'users/detect_result.html', {'detect_info': detect_info})
     else:
         return render(request, 'users/detect.html')
-    
+
+
 def history(request):
     user = request.user
     if user is not None:
-        data_filter = DetectInfo.objects.filter(user_id = user.id)
-        return render(request, 'users/detect_history.html', {'data_filter' : data_filter})
-    return render(request, 'users/detect_history.html')
+        data_filter = DetectInfo.objects.filter(user_id=user.id)
+        for data in data_filter:
+            if data.detect_score is not None:
+                data.detect_score = round(data.detect_score * 100)
+
+        # Implement pagination logic
+        objects_per_page = 10
+        paginator = Paginator(data_filter, objects_per_page)
+        page_number = request.GET.get('page')
+        page_objects = paginator.get_page(page_number)
+
+        return render(request, 'users/detect_history.html', {'page_objects': page_objects})
+    return render(request, 'users/detect_history.html', {'page_objects': None})
+
+
+import os
+from django.conf import settings
+
+import os
+from django.conf import settings
+
+def aboutDisease(request):
+    d_id = request.GET.get('id')
+    skin_disease = None
+    image_filenames = []
+    image_folder_path = None  # Initialize image_folder_path
+
+    if d_id is not None:
+        skin_disease = SkinDisease.objects.filter(disease_id=d_id).first()  # Get the first object or None
+        if skin_disease:
+            image_folder_path = os.path.join(settings.MEDIA_ROOT, 'disease_pics', skin_disease.disease_images_folder) # type: ignore
+            if os.path.exists(image_folder_path) and os.path.isdir(image_folder_path):
+                image_filenames = [os.path.join('/media', 'disease_pics', skin_disease.disease_images_folder, f) for f in os.listdir(image_folder_path) if os.path.isfile(os.path.join(image_folder_path, f))] # type: ignore
+
+    print("Skin Disease:", skin_disease)
+    print("Image Folder Path:", image_folder_path)
+    print("Image Filenames:", image_filenames)
+
+    return render(request, 'users/about_disease.html', {'skin_disease': skin_disease, 'image_filenames': image_filenames})
+
 
 def deleteDetectResult(request):
-    detect_id = request.detect_id
-    result = 'unsuccess'
+    detect_id = request.GET.get('detect_id') 
+    page = request.GET.get('page')
+    result = 'unsuccessful'  # Initialize the result variable
     if detect_id is not None:
-        # result = DetectInfo.objects.filter(detect_id=detect_id)
-        query = DetectInfo.objects.get(pk=id)
-        print(query)
-        query.delete()
-        result = 'successful'
-        return render(request, 'users/detect_history.html', {'result' : result})
-    return render(request, 'users/detect_history.html', {'result' : result})
+        try:
+            query = DetectInfo.objects.get(pk=detect_id)  # Retrieve DetectInfo object with the given detect_id
+            query.delete()  # Delete the object
+            result = 'successful'  # Update the result variable if deletion is successful
+            # Redirect back to the previous page
+            return redirect(request.META.get('HTTP_REFERER'))
+        except DetectInfo.DoesNotExist:
+            pass 
+    
+    # If the deletion was unsuccessful or if detect_id is None, redirect back to the previous page
+    return redirect(request.META.get('HTTP_REFERER'), result=result)  # Pass the result variable to the template
 
 
 @login_required(login_url='login')  
@@ -228,14 +271,14 @@ def getimage(request):
                 name = name_arr[id]
                 print(score, id, name)
                 data = {}
-                if (score >= float(0.8) and (id <= 17 or id >= 19)):
-                    data = {
-                        'placement': str(name),
-                        'score': float(score),
-                        'date': date,
-                        'time': time,
-                        'id': str(id),
-                    }
+                # if (score >= float(0.8) and (id <= 17 or id >= 19)):
+                data = {
+                    'placement': str(name),
+                    'score': float(score),
+                    'date': date,
+                    'time': time,
+                    'id': str(id),
+                }
                 return JsonResponse(data)
         else:
             if results.pandas() is not None:
@@ -260,7 +303,6 @@ def getimage(request):
                         'time': time,
                         'id': str(id),
                     }
-                storeImageById(image_path, name, user_id, id, score)
                 storeImageById(image_path, name, user_id, id, score)
                 return JsonResponse(data)
             else:
@@ -302,7 +344,6 @@ def getimage(request):
         }
         print('data', data)
         storeImageById(image_path, name, user_id, id, score)
-        storeImageById(image_path, name, user_id, id, score)
         return JsonResponse(data, status=500)
 # store image function
 def storeImageById(image_path, text_path, user_id, disease_id, image_score):
@@ -324,13 +365,9 @@ def storeImageById(image_path, text_path, user_id, disease_id, image_score):
             disease=skin_disease_instance,    
             detect_score=image_score           
         )
-
         # Attach the image and text file to the instance
-        # detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(open(image_path, 'rb').read()))
         with open(image_path, 'rb') as f:
             detect_info.detect_photo.save(os.path.basename(image_path), ContentFile(f.read()), save=False)
-        # path = 'detect_pics/' + image_path
-        # detect_info.detect_photo = path
         detect_info.detect_result = text_path
         detect_info.save()  # Save the instance to the database
 
@@ -439,7 +476,6 @@ def getDetail(request):
         'diseased_symptom': disese.disease_symptoms,
         'diseased_causes': disese.disease_causeses,
         'diseased_prevention': disese.disease_preventions,
-        'diseased_image_folder': image_urls,
         'diseased_image_folder': image_urls,
     }
     jsonData = { 'diseaseModel': disease_model}

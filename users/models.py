@@ -1,4 +1,3 @@
-# from django.contrib.auth.models import AbstractUser
 from email.policy import default
 import os
 from django.conf import settings
@@ -11,6 +10,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 
 from django.core.files.storage import default_storage
+
 
 def profile_image_path(instance, filename):
     # Upload to 'media/profile_pics/{user_id}/' directory with a unique filename
@@ -42,10 +42,6 @@ class SkinDisease(models.Model):
     def __str__(self) -> str:
         return self.disease_name
     
-from django.db import models
-from django.contrib.auth.models import User
-from django.utils import timezone
-
 class DetectInfo(models.Model):
     detect_id = models.AutoField(primary_key=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
@@ -57,12 +53,6 @@ class DetectInfo(models.Model):
     
     def __str__(self) -> str:
         return super().__str__()
-
-# @receiver(post_save, sender=Profile)
-# def create_profile_image_path(sender, instance, created, **kwargs):
-#     if created:
-#         profile_image_path(instance, instance.avatar.name)
-#         instance.save()
 
 @receiver(pre_save, sender=Profile)
 def delete_old_avatar(sender, instance, **kwargs):

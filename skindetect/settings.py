@@ -36,7 +36,7 @@ SECRET_KEY = 'django-insecure-(-1^&turd3lnmuz64=i($3$by#(0avtwy2h69a&96t_n$%l7#)
 DEBUG = True
 
 # In settings.py
-ALLOWED_HOSTS = ['yourdomain.com', '08f9-180-148-6-78.ngrok-free.app', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['yourdomain.com', '25a6-2402-800-6311-78be-ed23-9288-937f-c72b.ngrok-free.app', 'localhost', '127.0.0.1']
 
 
 # Application definitionpy
@@ -77,7 +77,7 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
 ]
 CORS_ALLOWED_ORIGINS = [
-    "https://08f9-180-148-6-78.ngrok-free.app",  # Add your NGROK URL here
+    "https://25a6-2402-800-6311-78be-ed23-9288-937f-c72b.ngrok-free.app",  # Add your NGROK URL here
     # Add other allowed origins if needed
 ]
 ROOT_URLCONF = 'skindetect.urls'
@@ -231,6 +231,11 @@ SOCIALACCOUNT_PROVIDERS = {
     }
 }
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ]
+}
 # from allauth.socialaccount.models import SocialApp
 # SOCIALACCOUNT_PROVIDERS = {
 #     'google': {

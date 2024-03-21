@@ -1,0 +1,77 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %} Detection Result {% endblock %}
+{% block content %}
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.min.js" defer></script>
+<script src="https://unpkg.com/flowbite@1.4.0/dist/flowbite.js"></script>
+<!-- SwiperJS Library -->
+<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+<section id="work-process" class="relative z-10 pt-[110px]">
+    <div class="container">
+        <section class="mb-32">            
+            <div class="flex flex-wrap items-center">
+                <div class="w-full lg:w-6/12 xl:w-8/12">
+                    <div class="px-6 py-12 md:px-12">
+                        <h1 class="mb-4 text-4xl font-bold">
+                            {{ skin_disease.disease_name }} 
+                        </h1>
+                        <p class="text-neutral-500 dark:text-neutral-300">
+                            <span class="font-semibold">Overview: </span>{{ skin_disease.disease_overview }} 
+                        </p> 
+                    </div>
+                </div>
+                <div class="hidden shrink-0 grow-0 basis-auto lg:flex lg:w-6/12 xl:w-4/12">
+                    <!-- Parent div to contain the carousel and position it on the right -->
+                    <div class="w-full lg:sticky lg:top-0 lg:right-0 lg:h-full overflow-hidden">
+                        {% if skin_disease %}
+                            <div class="swiper-container">
+                                <div class="swiper-wrapper">
+                                    {% for image_filename in image_filenames %}
+                                        <div class="swiper-slide">
+                                            <img src="{{ image_filename }}" alt="Skin Disease Image" class="w-full rounded-t-lg lg:rounded-tr-none lg:rounded-bl-lg rounded-2xl" />
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                                <!-- Add Pagination -->
+                                <div class="swiper-pagination"></div>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+                <div class="px-6 pb-12 md:px-12">
+                    <p class="text-neutral-500 dark:text-neutral-300 mb-6">
+                        <span class="font-semibold">Symptoms: </span>{{ skin_disease.disease_symptoms }} 
+                    </p>
+                    <p class="text-neutral-500 dark:text-neutral-300 mb-6">
+                        <span class="font-semibold">Causes:  </span>{{ skin_disease.disease_causeses }} 
+                    </p>
+                    <p class="text-neutral-500 dark:text-neutral-300 ">
+                        <span class="font-semibold">Preventions: </span>{{ skin_disease.disease_preventions }} 
+                    </p>    
+                </div>
+            </div>
+        </section>
+    </div>
+</section>
+
+
+<!-- Custom JavaScript for SwiperJS initialization -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize Swiper
+        var swiper = new Swiper('.swiper-container', {
+            slidesPerView: 'auto',
+            spaceBetween: 30,
+            loop: true,
+            pagination: {
+                el: '.swiper-pagination',
+                clickable: true,
+            },
+        });
+    });
+</script>
+
+{% endblock %}

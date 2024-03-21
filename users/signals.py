@@ -8,7 +8,7 @@ from .models import Profile
 @receiver(post_save, sender=User)
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
-        Profile.objects.create(user=instance, avatar='profile_pics/default.jpg',gender='O')
+        Profile.objects.create(user=instance, avatar='profile_pics/default.jpg',gender='Other')
 
 
 @receiver(post_save, sender=User)

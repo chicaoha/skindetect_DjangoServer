@@ -98,7 +98,7 @@ def detect(image_file):
                     name = name_arr[id]
                     # print('checkkkk')
                     print(score, id, name)
-                    return [name, float(score), date, time, id, result]
+                    return [name, float(score), date, time, id+1, result]
             score = random.uniform(0.01, 0.1)
             return ["Skin without pathology!", float(score), date, time, '8']
         except cv2.error as e:
@@ -268,14 +268,14 @@ def getimage(request):
                 name = name_arr[id]
                 print(score, id, name)
                 data = {}
-                if (score >= float(0.8) and (id <= 17 or id >= 19)):
-                    data = {
-                        'placement': str(name),
-                        'score': float(score),
-                        'date': date,
-                        'time': time,
-                        'id': str(id),
-                    }
+                # if (score >= float(0.8) and (id <= 17 or id >= 19)):
+                data = {
+                    'placement': str(name),
+                    'score': float(score),
+                    'date': date,
+                    'time': time,
+                    'id': str(id),
+                }
                 return JsonResponse(data)
         else:
             if results.pandas() is not None:

@@ -110,20 +110,8 @@ def register(request):
         except User.DoesNotExist:
             # Create the user if username and email are unique
             user = User.objects.create_user(username=username, email=email, password=password1)
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('')  # Redirect to the desired URL after successful registration
-        if request.POST['password1'] == request.POST['password2']:
-            try:
-                User.objects.get(username=request.POST['username'])
-                return render(request, 'users/register.html', {'error': 'Username is already exist!'})
-            except User.DoesNotExist:
-                user = User.objects.create_user(request.POST['username'], password=request.POST['password1'], email=request.POST['email'])
-
-                auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-                return redirect('')
-        else:
-            return render(request, 'users/phat_register.html', {'error': 'Password does not match!'})
     else:
           # Redirect to the desired URL after successful registration
         return render(request, 'users/register.html')
@@ -270,7 +258,7 @@ def login_time_chart():
     chart_data = [['Hour of the Day', 'Users Login']]
     for hour in range(24):  # Iterate over 24 hours
         count = login_counts_by_hour[hour]
-        chart_data.append([hour, count])
+        chart_data.append([hour, count]) # type: ignore
     return chart_data
 
 from django.contrib.admin.views.decorators import staff_member_required

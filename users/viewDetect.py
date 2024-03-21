@@ -98,15 +98,15 @@ def detect(image_file):
                     name = name_arr[id]
                     # print('checkkkk')
                     print(score, id, name)
-                    return [name, float(score), date, time, id, result]
+                    return [name, float(score), date, time, id+1, result]
             score = random.uniform(0.01, 0.1)
-            return ["Skin without pathology!", float(score), date, time, '8']
+            return ["Skin without pathology!", float(score), date, time, '18']
         except cv2.error as e:
             print("Error in image decoding: {}".format(e))
         except Exception as e:
             print("An unexpected error occurred: {}".format(e))
     score = random.uniform(0.01, 0.1)
-    return ["Skin without pathology!", float(score), date, time, '8']
+    return ["Skin without pathology!", float(score), date, time, '18']
 
 def showResult(request):
     detect_id = request.session.pop('detect_id', None)
@@ -163,18 +163,21 @@ def aboutDisease(request):
 
 
 def deleteDetectResult(request):
-    detect_id = request.GET.get('detect_id')  # Retrieve detect_id from query parameters
-    result = 'unsuccessful'
+    detect_id = request.GET.get('detect_id') 
+    page = request.GET.get('page')
+    result = 'unsuccessful'  # Initialize the result variable
     if detect_id is not None:
         try:
             query = DetectInfo.objects.get(pk=detect_id)  # Retrieve DetectInfo object with the given detect_id
             query.delete()  # Delete the object
-            result = 'successful'
-            return render(request, 'users/detect_history.html')
+            result = 'successful'  # Update the result variable if deletion is successful
+            # Redirect back to the previous page
+            return redirect(request.META.get('HTTP_REFERER'))
         except DetectInfo.DoesNotExist:
             pass 
     
-    return redirect('detectHistory')  # Redirect to the detection history page
+    # If the deletion was unsuccessful or if detect_id is None, redirect back to the previous page
+    return redirect(request.META.get('HTTP_REFERER'), result=result)  # Pass the result variable to the template
 
 
 @login_required(login_url='login')  

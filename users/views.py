@@ -100,6 +100,7 @@ def register(request):
             # Create the user if username and email are unique
             user = User.objects.create_user(username=username, email=email, password=password1)
             user.backend = 'django.contrib.auth.backends.ModelBackend'
+
             auth.login(request, user)
             return redirect('')  # Redirect to the desired URL after successful registration
     else:
@@ -125,7 +126,6 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('')
-
 @login_required
 def profile(request):
     user = request.user
@@ -133,7 +133,7 @@ def profile(request):
         profile = user.profile
     except ObjectDoesNotExist:
         # If profile doesn't exist, create one
-        profile = Profile.objects.create(user=user)
+        profile = Profile.objects.create(user=user, gender='O')
         profile.save()
 
     form_submitted_successfully = False  # Initialize the variable
@@ -175,8 +175,6 @@ def profile(request):
         form = ProfileForm(instance=profile, initial={'first_name': user.first_name, 'last_name': user.last_name, 'email': user.email})
 
     return render(request, 'users/profilePage.html', {'user': user, 'profile': profile, 'form': form, 'form_submitted_successfully': form_submitted_successfully})
-
-
 
 # --------------------Admin-----------------
 def logoutAdmin(request):

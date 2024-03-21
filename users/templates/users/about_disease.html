@@ -18,12 +18,9 @@
                         <h1 class="mb-4 text-4xl font-bold">
                             {{ skin_disease.disease_name }} 
                         </h1>
-                        <p class="mb-6 text-neutral-500 dark:text-neutral-300">
+                        <p class="text-neutral-500 dark:text-neutral-300">
                             <span class="font-semibold">Overview: </span>{{ skin_disease.disease_overview }} 
                         </p> 
-                        <p class="text-neutral-500 dark:text-neutral-300">
-                            <span class="font-semibold">Symptoms: </span>{{ skin_disease.disease_symptoms }} 
-                        </p>
                     </div>
                 </div>
                 <div class="hidden shrink-0 grow-0 basis-auto lg:flex lg:w-6/12 xl:w-4/12">
@@ -46,9 +43,12 @@
                 </div>
                 <div class="px-6 pb-12 md:px-12">
                     <p class="text-neutral-500 dark:text-neutral-300 mb-6">
-                        <span class="font-semibold">Causes:  </span>{{ skin_disease.disease_causeses }} 
+                        <span class="font-semibold">Symptoms: </span>{{ skin_disease.disease_symptoms }} 
                     </p>
                     <p class="text-neutral-500 dark:text-neutral-300 mb-6">
+                        <span class="font-semibold">Causes:  </span>{{ skin_disease.disease_causeses }} 
+                    </p>
+                    <p class="text-neutral-500 dark:text-neutral-300 ">
                         <span class="font-semibold">Preventions: </span>{{ skin_disease.disease_preventions }} 
                     </p>    
                 </div>

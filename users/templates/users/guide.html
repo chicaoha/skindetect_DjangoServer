@@ -1,0 +1,38 @@
+{% extends 'users/base.html' %}
+{% load static %}
+{% block title %} Detection Page {% endblock %}
+{% block content %}
+<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.7.3/dist/alpine.min.js" defer></script>
+
+<section id="work-process" class="relative z-10 pt-[110px]">
+    <div class="container">
+        <div
+            class="container pt-24 md:pt-48 px-6 mx-auto flex flex-wrap flex-col md:flex-row items-center lg:pt-5 mb-5">
+            <div class="container mx-auto my-4 px-4 lg:px-20">
+
+                <div style="display: flex; justify-content: center;">
+                    <iframe width="560" height="315" src="https://www.youtube.com/embed/Cm0oR66-N2M" frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                </div>
+
+
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    var loadFile = function (event) {
+        var output = document.getElementById('avatar-preview');
+        console.log(output);
+        output.src = URL.createObjectURL(event.files[0]);
+        output.onload = function () {
+            URL.revokeObjectURL(output.src) // free memory
+        }
+    };
+</script>
+
+
+{% endblock %}

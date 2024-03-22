@@ -57,6 +57,9 @@ def FAQ(request):
 def contact(request):
     return render(request, 'users/contact.html')
 
+def guide(request):
+    return render(request, 'users/guide.html')
+
 def blog1(request):
     return render(request, 'users/blog1.html')
 

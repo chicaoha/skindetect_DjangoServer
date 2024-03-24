@@ -35,7 +35,7 @@ window.wow.init({
 }); //========= glightbox
 
 glightbox__WEBPACK_IMPORTED_MODULE_5___default()({
-    href: "static/videos/video_hd.mp4'",
+    href: "static/videos/video_hd.mp4",
     type: "video",
     source: "local",
     width: 900,

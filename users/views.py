@@ -99,9 +99,9 @@ def register(request):
         except User.DoesNotExist:
             # Create the user if username and email are unique
             user = User.objects.create_user(username=username, email=email, password=password1)
-            user.backend = 'django.contrib.auth.backends.ModelBackend'
+            # user.backend = 'django.contrib.auth.backends.ModelBackend'
 
-            auth.login(request, user)
+            auth.login(request, user, backend='django.contrib.auth.backends.ModelBackend')
             return redirect('')  # Redirect to the desired URL after successful registration
     else:
         return render(request, 'users/register.html')
@@ -126,6 +126,7 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('')
+
 @login_required
 def profile(request):
     user = request.user
@@ -165,7 +166,7 @@ def profile(request):
             form.save()
             form_submitted_successfully = True  # Set the variable to True upon successful form submission
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('profilePage')
+            # return redirect('profilePage')
         else:
             # Form is invalid, display error messages
             for field, errors in form.errors.items():

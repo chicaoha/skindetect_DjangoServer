@@ -165,18 +165,16 @@ def aboutDisease(request):
 def deleteDetectResult(request):
     detect_id = request.GET.get('detect_id') 
     page = request.GET.get('page')
-    result = 'unsuccessful'  # Initialize the result variable
+    result = 'unsuccessful' 
     if detect_id is not None:
         try:
-            query = DetectInfo.objects.get(pk=detect_id)  # Retrieve DetectInfo object with the given detect_id
-            query.delete()  # Delete the object
-            result = 'successful'  # Update the result variable if deletion is successful
-            # Redirect back to the previous page
+            query = DetectInfo.objects.get(pk=detect_id)  
+            query.delete()  
+            result = 'successful'  
             return redirect(request.META.get('HTTP_REFERER'))
         except DetectInfo.DoesNotExist:
             pass 
     
-    # If the deletion was unsuccessful or if detect_id is None, redirect back to the previous page
     return redirect(request.META.get('HTTP_REFERER'), result=result)  # Pass the result variable to the template
 
 

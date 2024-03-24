@@ -139,6 +139,7 @@ def login(request):
 def logout(request):
     auth.logout(request)
     return redirect('')
+
 @login_required
 def profile(request):
     user = request.user
@@ -178,7 +179,7 @@ def profile(request):
             form.save()
             form_submitted_successfully = True  # Set the variable to True upon successful form submission
             messages.success(request, 'Your profile has been updated successfully.')
-            return redirect('profilePage')
+            # return redirect('profilePage')
         else:
             # Form is invalid, display error messages
             for field, errors in form.errors.items():
